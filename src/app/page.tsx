@@ -1,3 +1,3 @@
 export default function Home() {
-  return <p>랜딩 페이지</p>;
+  return <p>개발용 랜딩 페이지</p>;
 }
