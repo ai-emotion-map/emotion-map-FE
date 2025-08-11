@@ -31,6 +31,7 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
+
         <link
           href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap"
           rel="stylesheet"
@@ -39,7 +40,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex justify-center min-h-screen`}
       >
-        <div className="w-full max-w-sm min-h-screen p-4 shadow-lg bg-background font-suit">
+        <div className="w-full max-w-sm min-h-screen p-4 shadow-lg bg-white font-suit">
           {children}
         </div>
       </body>
