@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Image as ImageIcon, Home, MapPin, Pencil, Copy } from "lucide-react";
+import { Image as ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const Page = () => {
@@ -57,14 +57,6 @@ const Page = () => {
           AI가 읽은 감정 보기
         </button>
       </main>
-
-      {/* Bottom navigation */}
-      <footer className="flex justify-around items-center p-4">
-        <Copy size={28} className="text-green-400" />
-        <MapPin size={28} className="text-green-400" />
-        <Home size={28} className="text-green-400" />
-        <Pencil size={28} className="text-green-400" />
-      </footer>
     </div>
   );
 };

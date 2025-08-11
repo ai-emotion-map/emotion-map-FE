@@ -1,7 +1,6 @@
 "use client";
 
 import React from 'react';
-import { Home, MapPin, Pencil, Copy } from 'lucide-react';
 
 const AnalysisPage = () => {
   const handleSave = () => {
@@ -16,7 +15,7 @@ const AnalysisPage = () => {
       </header>
 
       {/* Main content */}
-      <main className="flex-grow flex flex-col p-4 space-y-4">
+      <div className="flex-grow flex flex-col p-4 space-y-4">
         {/* Map placeholder */}
         <div className="flex-grow flex items-center justify-center bg-gray-200 rounded-2xl">
           <span className="text-gray-500">지도</span>
@@ -36,15 +35,7 @@ const AnalysisPage = () => {
         >
           저장하기
         </button>
-      </main>
-
-      {/* Bottom navigation */}
-      <footer className="flex justify-around items-center p-4">
-        <Copy size={28} className="text-green-400" />
-        <MapPin size={28} className="text-green-400" />
-        <Home size={28} className="text-green-400" />
-        <Pencil size={28} className="text-green-400" />
-      </footer>
+      </div>
     </div>
   );
 };
