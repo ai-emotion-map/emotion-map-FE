@@ -1,19 +1,35 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Image as ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const Page = () => {
   const [text, setText] = useState("");
   const [image, setImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const router = useRouter();
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setImage(e.target.files[0]);
+      const file = e.target.files[0];
+      setImage(file);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      setPreviewUrl(URL.createObjectURL(file));
+      console.log("이미지 업로드 됨!");
     }
   };
+
+  useEffect(() => {
+    // 컴포넌트가 언마운트될 때 생성된 URL을 해제합니다.
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const handleSubmit = () => {
     console.log("입력된 글:", text);
@@ -48,6 +64,13 @@ const Page = () => {
             />
           </label>
         </div>
+
+        {/* 이미지 미리보기 */}
+        {previewUrl && (
+          <div className="mt-4">
+            <img src={previewUrl} alt="Image preview" className="w-24 h-24 object-cover rounded-lg" />
+          </div>
+        )}
 
         {/* 버튼 */}
         <button
