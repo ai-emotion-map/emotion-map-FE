@@ -1,7 +1,62 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
+import { Image as ImageIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
-  return <div>글 작성 페이지</div>;
+  const [text, setText] = useState("");
+  const [image, setImage] = useState<File | null>(null);
+  const router = useRouter();
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = () => {
+    console.log("입력된 글:", text);
+    console.log("첨부 이미지:", image);
+    // 여기서 AI 감정 분석 API 호출 가능
+    router.push('/analysis');
+  };
+
+  return (
+    <div className="flex flex-col h-screen p-4 bg-white">
+      {/* 제목 */}
+      <h1 className="text-xl font-semibold mb-4">emomap</h1>
+
+      {/* 입력 박스 */}
+      <div className="relative flex-grow">
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="편하게 적어보아요"
+          className="w-full h-full p-4 rounded-2xl outline-none resize-none bg-gradient-to-b from-green-50 to-blue-50 text-gray-800 placeholder-gray-400"
+        />
+
+        {/* 이미지 업로드 아이콘 */}
+        <label className="absolute bottom-3 right-3 cursor-pointer">
+          <ImageIcon size={24} className="text-green-400" />
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleImageUpload}
+          />
+        </label>
+      </div>
+
+      {/* 버튼 */}
+      <button
+        className="mt-6 bg-green-400 hover:bg-green-500 text-white font-medium py-3 rounded-xl"
+        onClick={handleSubmit}
+      >
+        AI가 읽은 감정 보기
+      </button>
+    </div>
+  );
 };
 
 export default Page;
