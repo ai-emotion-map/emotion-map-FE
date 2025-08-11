@@ -8,7 +8,7 @@ const Navbar = () => {
   const router = useRouter();
 
   return (
-    <div className="flex items-center justify-around px-4 w-full h-[70px] max-w-sm bg-background">
+    <nav className="flex items-center justify-around px-4 w-full h-[70px] max-w-sm bg-background">
       <House
         size={30}
         color="#B7E0C2"
@@ -33,7 +33,7 @@ const Navbar = () => {
         onClick={() => router.push("/feed")}
         className="cursor-pointer"
       />
-    </div>
+    </nav>
   );
 };
 
