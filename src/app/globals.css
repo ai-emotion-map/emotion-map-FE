@@ -30,3 +30,13 @@ body {
   color: var(--foreground);
   font-family: "SUIT-Regular", Arial, Helvetica, sans-serif; /* 기본 폰트 */
 }
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes dot-scale {
+  0%, 100% { transform: scale(0.5); opacity: 0.5; }
+  50% { transform: scale(1); opacity: 1; }
+}
