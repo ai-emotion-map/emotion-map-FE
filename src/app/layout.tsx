@@ -41,8 +41,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex flex-col w-full max-w-sm min-h-screen mx-auto font-suit">
-          <main className="flex-1 p-4 bg-background">{children}</main>
+        <div className="flex flex-col w-full max-w-sm min-h-dvh h-dvh mx-auto font-suit">
+          {/* 헤더(옵션) */}
+          {/* <header className="h-12 flex items-center px-4 border-b">헤더</header> */}
+          <main className="flex-1 overflow-auto p-4 bg-background" style={{height: 'calc(100dvh - 70px)'}}>{children}</main>
           <Navbar />
         </div>
       </body>
