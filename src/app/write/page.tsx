@@ -74,7 +74,7 @@ const Page = () => {
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="편하게 적어보아요"
-          className="w-full h-full p-4 rounded-2xl outline-none resize-none bg-gradient-to-b from-green-50 to-blue-50 text-gray-800 placeholder-gray-400 min-h-[500px]"
+          className="w-full h-full p-4 rounded-2xl outline-none resize-none bg-gradient-to-b from-green-50 to-blue-50 text-gray-800 placeholder-gray-400 min-h-[300px]"
         />
 
         {/* 이미지 업로드 아이콘 */}
