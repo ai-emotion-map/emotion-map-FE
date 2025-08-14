@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Home, MapPin, Book, Pencil } from "lucide-react";
 
 const cards = Array.from({ length: 12 }).map((_, i) => ({
@@ -12,14 +12,30 @@ const cards = Array.from({ length: 12 }).map((_, i) => ({
 }));
 
 export default function Page() {
+  const [sortBy, setSortBy] = useState("latest");
+
   return (
     <div className="flex flex-col min-h-dvh w-full max-w-sm mx-auto bg-white">
       {/* 헤더 */}
       <header className="shrink-0 p-4 bg-white fixed top-0 left-0 right-0 z-20 w-full max-w-sm mx-auto">
         <h1 className="text-xl font-semibold">emomap</h1>
-        <div className="mt-2 text-sm text-gray-500 flex gap-4">
-          <span>· 최신순</span>
-          <span>· 장소중심 정렬 가능</span>
+        <div className="mt-2 text-sm flex gap-4">
+          <button
+            onClick={() => setSortBy("latest")}
+            className={`font-semibold ${
+              sortBy === "latest" ? "text-black" : "text-gray-500"
+            }`}
+          >
+            · 최신순
+          </button>
+          <button
+            onClick={() => setSortBy("location")}
+            className={`font-semibold ${
+              sortBy === "location" ? "text-black" : "text-gray-500"
+            }`}
+          >
+            · 장소중심 정렬
+          </button>
         </div>
       </header>
 
