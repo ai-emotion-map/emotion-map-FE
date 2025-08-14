@@ -3,21 +3,30 @@
 import React, { useState } from "react";
 import { Home, MapPin, Book, Pencil } from "lucide-react";
 
-const cards = Array.from({ length: 12 }).map((_, i) => ({
-  id: i,
-  color:
-    ["bg-green-100", "bg-blue-100", "bg-emerald-200", "bg-indigo-100"][
-      i % 4
-    ],
-}));
+const cards = Array.from({ length: 12 }).map((_, i) => {
+  // 0.2 ~ 0.5 사이의 랜덤 불투명도
+  const overlayOpacity = (Math.random() * 0.5 +0.3).toFixed(2);
+  return {
+    id: i,
+    color: [
+      "bg-marker-yellow",
+      "bg-marker-blue",
+      "bg-marker-orange",
+      "bg-marker-purple",
+      "bg-marker-pink",
+      "bg-marker-green"
+    ][i % 6],
+    overlayOpacity,
+  };
+});
 
 export default function Page() {
   const [sortBy, setSortBy] = useState("latest");
 
   return (
-    <div className="flex flex-col min-h-dvh w-full max-w-sm mx-auto bg-white">
+    <div className="flex flex-col min-h-dvh w-full max-w-sm mx-auto">
       {/* 헤더 */}
-      <header className="shrink-0 p-4 bg-white fixed top-0 left-0 right-0 z-20 w-full max-w-sm mx-auto">
+      <header className="shrink-0 p-4 fixed top-0 left-0 right-0 z-20 w-full max-w-sm mx-auto bg-background">
         <h1 className="text-xl font-semibold">emomap</h1>
         <div className="mt-2 text-sm flex gap-4">
           <button
@@ -40,7 +49,7 @@ export default function Page() {
       </header>
 
       {/* 메인: 스크롤 영역 (header 아래에서 시작) */}
-  <main className="flex-1 overflow-y-auto px-4 pb-20 pt-20 bg-white">
+  <main className="flex-1 overflow-y-auto px-4 pb-20 pt-20">
         {/* 검색창 */}
         <div className="mb-4">
           <input
@@ -55,14 +64,28 @@ export default function Page() {
           {cards.map((c, i) => (
             <article
               key={c.id}
-              className={`rounded-xl p-3 ${c.color}`}
+              className={`relative rounded-xl p-3 ${c.color}`}
+              style={{ overflow: 'hidden' }}
             >
-              <div className="bg-gray-300/70 rounded-lg h-24 mb-2 flex items-center justify-center text-sm text-gray-700">
-                사진
+              {/* 흰색 오버레이 */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: `rgba(245, 245, 245,${c.overlayOpacity})`,
+                  borderRadius: '0.75rem', // Tailwind rounded-xl
+                  pointerEvents: 'none',
+                  zIndex: 1,
+                }}
+              />
+              <div className="relative z-10">
+                <div className="bg-gray-300/70 rounded-lg h-24 mb-2 flex items-center justify-center text-sm text-gray-700">
+                  사진
+                </div>
+                <p className="text-sm font-medium">위치</p>
+                <p className="text-xs text-gray-600">첫 문장</p>
+                <p className="text-xs text-gray-500">감성 태그</p>
               </div>
-              <p className="text-sm font-medium">위치</p>
-              <p className="text-xs text-gray-600">첫 문장</p>
-              <p className="text-xs text-gray-500">감성 태그</p>
             </article>
           ))}
         </div>
