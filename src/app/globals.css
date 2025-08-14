@@ -25,17 +25,19 @@
   }
 } */
 
-html, body {
+html,
+body {
+  /* 글로벌 초기화(Reset) */
   margin: 0;
   padding: 0;
   width: 100%;
   height: 100%;
 }
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: "SUIT-Regular", Arial, Helvetica, sans-serif; /* 기본 폰트 */
-  overflow: hidden;
 }
 
 @keyframes spin-slow {
