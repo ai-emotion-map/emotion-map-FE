@@ -8,16 +8,16 @@ const AnalysisPage = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <header className="p-4">
+      <header>
         <h1 className="text-2xl font-bold">emomap</h1>
       </header>
 
       {/* Main content */}
-      <div className="flex-grow flex flex-col p-4 space-y-4">
+      <div className="flex-grow flex flex-col space-y-4 pt-4">
         {/* Map placeholder */}
-        <div className="flex-grow flex items-center justify-center bg-gray-200 rounded-2xl">
+        <div className="h-[548px] flex items-center justify-center bg-gray-200 rounded-2xl">
           <span className="text-gray-500">지도</span>
         </div>
 
