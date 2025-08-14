@@ -4,6 +4,7 @@ import type { Card } from "./client";
 export default function Page() {
   const cards: Card[] = Array.from({ length: 12 }).map((_, i) => {
     const overlayOpacity = (Math.random() * 0.5 + 0.3).toFixed(2);
+    const height = Math.floor(Math.random() * (300 - 150 + 1)) + 150;
     return {
       id: i,
       color: [
@@ -15,6 +16,7 @@ export default function Page() {
         "bg-marker-green"
       ][i % 6],
       overlayOpacity,
+      height,
     };
   });
 

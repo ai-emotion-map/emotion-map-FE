@@ -1,19 +1,25 @@
 "use client";
 
 import React, { useState } from "react";
+import Masonry from "react-masonry-css";
 import { Home, MapPin, Book, Pencil } from "lucide-react";
 
 export type Card = {
   id: number;
   color: string;
   overlayOpacity: string;
+  height: number;
 };
 
 export default function FeedClient({ cards }: { cards: Card[] }) {
   const [sortBy, setSortBy] = useState("latest");
 
+  const breakpointColumnsObj = {
+    default: 2,
+  };
+
   return (
-    <div className="flex flex-col min-h-dvh w-full max-w-sm mx-auto">
+    <div className="flex flex-col min-h-dvh w-full mx-auto">
       {/* 헤더 */}
       <header className="shrink-0 p-4 fixed top-0 left-0 right-0 z-20 w-full max-w-sm mx-auto bg-background">
         <h1 className="text-xl font-semibold">emomap</h1>
@@ -38,7 +44,7 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
       </header>
 
       {/* 메인: 스크롤 영역 (header 아래에서 시작) */}
-  <main className="flex-1 overflow-y-auto px-4 pb-20 pt-20">
+      <main className="flex-1 overflow-y-auto pb-20 pt-20 w-full">
         {/* 검색창 */}
         <div className="mb-4">
           <input
@@ -48,13 +54,17 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
           />
         </div>
 
-        {/* 카드 그리드 (간단 Masonry 느낌) */}
-        <div className="grid grid-cols-2 gap-3">
+        {/* 카드 그리드 (Masonry 라이브러리 적용) */}
+        <Masonry
+          breakpointCols={2}
+          className="my-masonry-grid"
+          columnClassName="my-masonry-grid_column"
+        >
           {cards.map((c, i) => (
             <article
               key={c.id}
-              className={`relative rounded-xl p-3 ${c.color}`}
-              style={{ overflow: 'hidden' }}
+              className={`relative rounded-xl p-3 mb-3 ${c.color}`}
+              style={{ overflow: 'hidden', height: `${c.height}px` }}
             >
               {/* 흰색 오버레이 */}
               <div
@@ -77,7 +87,7 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
               </div>
             </article>
           ))}
-        </div>
+        </Masonry>
       </main>
 
   {/* ...중복 navbar 제거, layout의 navbar만 사용... */}
