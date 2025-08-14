@@ -114,3 +114,19 @@ body {
     --chart-5: 340 75% 55%;
   }
 }
+
+/* react-masonry-css */
+.my-masonry-grid {
+  display: flex;
+  margin-left: -12px; /* gutter size offset */
+  width: auto;
+}
+.my-masonry-grid_column {
+  padding-left: 12px; /* gutter size */
+  background-clip: padding-box;
+}
+
+/* Style your items */
+.my-masonry-grid_column > article {
+  margin-bottom: 12px;
+}
