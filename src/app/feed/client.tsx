@@ -44,7 +44,7 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
       </header>
 
       {/* 메인: 스크롤 영역 (header 아래에서 시작) */}
-      <main className="flex-1 overflow-y-auto pb-20 pt-20 w-full">
+      <main className="flex-1 overflow-y-auto px-1 pb-20 pt-20 w-full">
         {/* 검색창 */}
         <div className="mb-4">
           <input
@@ -63,7 +63,7 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
           {cards.map((c, i) => (
             <article
               key={c.id}
-              className={`relative rounded-xl p-3 mb-3 ${c.color}`}
+              className={`relative p-3 ${c.color}`}
               style={{ overflow: 'hidden', height: `${c.height}px` }}
             >
               {/* 흰색 오버레이 */}
@@ -72,7 +72,7 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
                   position: 'absolute',
                   inset: 0,
                   background: `rgba(245, 245, 245,${c.overlayOpacity})`,
-                  borderRadius: '0.75rem', // Tailwind rounded-xl
+          
                   pointerEvents: 'none',
                   zIndex: 1,
                 }}
