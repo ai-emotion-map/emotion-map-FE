@@ -15,10 +15,19 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
   const [sortBy, setSortBy] = useState("latest");
 
   return (
-    <div className="flex flex-col h-full relative">
+    <div className="flex sticky flex-col h-full relative">
+        {/* 검색창 */}
+        <div className="mb-4 ">
+          <input
+            type="text"
+            placeholder="당신이 몰랐던 감정의 장소를 발견해보세요"
+            className="w-full bg-background rounded-xl border-[3px] hover:bg-[#F5F5F5] px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
+          />
+      </div>
+      
       {/* 헤더 */}
-      <div className="shrink-0 pb-4 top-0 left-0 right-0 z-20 w-full max-w-sm mx-auto bg-background">
-        <div className="mt-2 text-sm flex gap-4">
+      <div className="shrink-0  pb-2 top-0 z-20 w-full max-w-sm mx-auto bg-background">
+        <div className=" text-sm flex gap-4">
           <button
             onClick={() => setSortBy("latest")}
             className={`font-semibold px-2 py-1 rounded-xl transition-colors duration-200 hover:bg-gray-100 ${
@@ -36,19 +45,12 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
             · 장소중심 정렬
           </button>
         </div>
-      </div>
-   
-      {/* 검색창 */}
-      <div className="mb-4 mt-1">
-        <input
-          type="text"
-          placeholder="당신이 몰랐던 감정의 장소를 발견해보세요"
-          className="w-full bg-background rounded-xl border-[3px] hover:bg-[#F5F5F5] px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
-        />
+    
       </div>
 
       {/* Masonry 카드 그리드만 스크롤 */}
       <div className="flex-1 overflow-auto px-1 pb-2 w-full">
+
         <Masonry
           breakpointCols={2}
           className="my-masonry-grid"
