@@ -17,7 +17,7 @@ type LayerPopupProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void; // 팝업 상태 관리
   onConfirm?: () => void;
-  type?: string;
+  type?: "confirm" | "cancelConfirm"; // confirm: 확인 버튼만, cancelConfirm: 취소 + 확인 버튼
   title: string;
   description: string;
 };
