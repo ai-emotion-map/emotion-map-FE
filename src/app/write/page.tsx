@@ -39,11 +39,12 @@ const Page = () => {
       </div>
       <NaverMap lat={37.5665} lng={126.978} zoom={12} height="500px" />
       <Button
-        children="이야기 시작하기"
         onClick={() => {
           setIsOpen(true);
         }}
-      />
+      >
+        이야기 시작하기
+      </Button>
       {isOpen && (
         <LayerPopup
           open={isOpen}
