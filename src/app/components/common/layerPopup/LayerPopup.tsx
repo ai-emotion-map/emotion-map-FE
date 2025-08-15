@@ -59,7 +59,9 @@ const LayerPopup = ({
         ) : (
           <DialogFooter>
             <DialogClose asChild>
-              <button className={closeButtonStyle}>취소</button>
+              <button className={confirmButtonStyle} onClick={handleConfirm}>
+                확인
+              </button>
             </DialogClose>
           </DialogFooter>
         )}
