@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./components/common/Navbar";
+import Header from "./components/common/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,10 +42,14 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex flex-col w-full max-w-sm min-h-dvh h-dvh mx-auto font-suit">
-          {/* 헤더(옵션) */}
-          {/* <header className="h-12 flex items-center px-4 border-b">헤더</header> */}
-          <main className="flex-1 overflow-auto p-4 bg-background" style={{height: 'calc(100dvh - 70px)'}}>{children}</main>
+        <div className="flex flex-col w-full max-w-sm mx-auto min-h-dvh h-dvh font-suit">
+          <Header />
+          <main
+            className="flex-1 p-4 overflow-auto bg-background"
+            style={{ height: "calc(100dvh - 70px)" }}
+          >
+            {children}
+          </main>
           <Navbar />
         </div>
       </body>
