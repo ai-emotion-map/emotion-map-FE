@@ -8,7 +8,7 @@ export type Card = {
   id: number;
   color: string;
   overlayOpacity: string;
-  height: number;
+  imageHeight: number;
 };
 
 export default function FeedClient({ cards }: { cards: Card[] }) {
@@ -63,8 +63,8 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
           {cards.map((c, i) => (
             <article
               key={c.id}
-              className={`relative p-3 ${c.color}`}
-              style={{ overflow: 'hidden', height: `${c.height}px` }}
+              className={`relative p-3 rounded-md ${c.color}`}
+              style={{ overflow: 'hidden' }}
             >
               {/* 흰색 오버레이 */}
               <div
@@ -72,25 +72,30 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
                   position: 'absolute',
                   inset: 0,
                   background: `rgba(245, 245, 245,${c.overlayOpacity})`,
-          
+
                   pointerEvents: 'none',
                   zIndex: 1,
                 }}
               />
               <div className="relative z-10">
-                <div className="bg-gray-300/70 rounded-lg h-24 mb-2 flex items-center justify-center text-sm text-gray-700">
+                <div
+                  className="bg-gray-300/70 rounded-lg mb-2 flex items-center justify-center text-sm text-gray-700"
+                  style={{ height: `${c.imageHeight}px` }}
+                >
                   사진
                 </div>
-                <p className="text-sm font-medium">위치</p>
-                <p className="text-xs text-gray-600">첫 문장</p>
-                <p className="text-xs text-gray-500">감성 태그</p>
+                <p className="text-sm font-medium line-clamp-1">정릉기숙사</p>
+                <p className="text-xs text-gray-600 line-clamp-2">
+                  <span> line-clamp-1 클래스를 사용하면 한 줄만 보이게 할 수 있습니다.</span>
+                </p>
+                <p className="text-xs text-gray-500 line-clamp-1 mt-2"># 감성 태그</p>
               </div>
             </article>
           ))}
         </Masonry>
       </main>
 
-  {/* ...중복 navbar 제거, layout의 navbar만 사용... */}
+      {/* ...중복 navbar 제거, layout의 navbar만 사용... */}
     </div>
   );
 }
