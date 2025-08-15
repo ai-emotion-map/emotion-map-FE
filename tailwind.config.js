@@ -12,7 +12,7 @@ module.exports = {
       colors: {
         "main-green": "#6FCF97",
         "sub-green": "#B7E0C2",
-        "hover-green":"#23a559ff",
+        "hover-green": "#23a559ff",
         background: "#fafafa",
         "marker-yellow": "#fff386",
         "marker-blue": "#a2beff",
