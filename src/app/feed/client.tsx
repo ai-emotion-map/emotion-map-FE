@@ -16,16 +16,16 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
 
   return (
     <div className="flex sticky flex-col h-full relative">
-        {/* 검색창 */}
-        <div className="mb-4 ">
-          <input
-            type="text"
-            placeholder="당신이 몰랐던 감정의 장소를 발견해보세요"
-            className="w-full bg-background rounded-xl border-[3px] hover:bg-[#F5F5F5] px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
-          />
+      {/* 검색창 */}
+      <div className="mb-4 ">
+        <input
+          type="text"
+          placeholder="당신이 몰랐던 감정의 장소를 발견해보세요"
+          className="w-full bg-background rounded-xl border-[3px] hover:bg-[#F5F5F5] px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
+        />
       </div>
       
-      {/* 헤더 */}
+      {/* 정렬 */}
       <div className="shrink-0  pb-2 top-0 z-20 w-full max-w-sm mx-auto bg-background">
         <div className=" text-sm flex gap-4">
           <button
@@ -45,6 +45,8 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
             · 장소중심 정렬
           </button>
         </div>
+        
+      
     
       </div>
 
