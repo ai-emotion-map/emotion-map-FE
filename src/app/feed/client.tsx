@@ -26,7 +26,7 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
         <div className="mt-2 text-sm flex gap-4">
           <button
             onClick={() => setSortBy("latest")}
-            className={`font-semibold ${
+            className={`font-semibold px-2 py-1 rounded-xl transition-colors duration-200 hover:bg-gray-100 ${
               sortBy === "latest" ? "text-black" : "text-gray-400"
             }`}
           >
@@ -34,7 +34,7 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
           </button>
           <button
             onClick={() => setSortBy("location")}
-            className={`font-semibold ${
+            className={`font-semibold px-2 py-1 rounded-xl transition-colors duration-200 hover:bg-gray-100 ${
               sortBy === "location" ? "text-black" : "text-gray-400"
             }`}
           >
@@ -46,7 +46,7 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
       {/* 메인: 스크롤 영역 (header 아래에서 시작) */}
       <main className="flex-1 overflow-y-auto px-1 pb-20 pt-20 w-full">
         {/* 검색창 */}
-        <div className="mb-4">
+        <div className="mb-4 mt-1">
           <input
             type="text"
             placeholder="당신이 몰랐던 감정의 장소를 발견해보세요"
@@ -63,7 +63,7 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
           {cards.map((c, i) => (
             <article
               key={c.id}
-              className={`relative p-3 rounded-md ${c.color}`}
+              className={`relative p-3 rounded-xl box-shadow-inset ${c.color} hover:brightness-90 transition-all duration-200`}
               style={{ overflow: 'hidden' }}
             >
               {/* 흰색 오버레이 */}
@@ -79,10 +79,14 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
               />
               <div className="relative z-10">
                 <div
-                  className="bg-gray-300/70 rounded-lg mb-2 flex items-center justify-center text-sm text-gray-700"
-                  style={{ height: `${c.imageHeight}px` }}
+                  className="bg-gray-300/70 rounded-lg overflow-hidden mb-2 flex items-center justify-center text-sm text-gray-700"
+                  style={{ height: `${c.imageHeight}px` }}/* 추후 aspect-ratio 사용*/
                 >
-                  사진
+                    {/* 아직은 플레이스홀더만 보임 */}
+                    사진
+
+                    {/* 나중에 실제 이미지가 생기면 이 자리에 넣기 */}
+                    {/* <img src={item.src} alt="" className="absolute inset-0 w-full h-full object-cover" /> */}
                 </div>
                 <p className="text-sm font-medium line-clamp-1">정릉기숙사</p>
                 <p className="text-xs text-gray-600 line-clamp-2">
