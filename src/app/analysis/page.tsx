@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Button from '../components/common/button/Button';
 
 const AnalysisPage = () => {
   const handleSave = () => {
@@ -17,7 +18,7 @@ const AnalysisPage = () => {
       {/* Main content */}
       <div className="flex-grow flex flex-col space-y-4 pt-4">
         {/* Map placeholder */}
-        <div className="h-[548px] flex items-center justify-center bg-gray-200 rounded-2xl">
+        <div className="h-[500px] flex items-center justify-center bg-gray-200 rounded-2xl">
           <span className="text-gray-500">지도</span>
         </div>
 
@@ -27,15 +28,15 @@ const AnalysisPage = () => {
           <div className="w-1/3 h-12 bg-green-100 rounded-lg"></div>
           <div className="w-1/3 h-12 bg-green-100 rounded-lg"></div>
         </div>
-
+      </div>
         {/* Save button */}
-        <button 
+        <Button
           onClick={handleSave}
-          className="w-full py-4 bg-main-green hover:bg-hover-green text-white rounded-2xl "
+          className="py-4"
         >
           저장하기
-        </button>
-      </div>
+        </Button>
+      
     </div>
   );
 };
