@@ -14,16 +14,20 @@ export type Card = {
 export default function FeedClient({ cards }: { cards: Card[] }) {
   const [sortBy, setSortBy] = useState("latest");
 
-  const breakpointColumnsObj = {
-    default: 2,
-  };
-
   return (
-    <div className="flex flex-col min-h-dvh w-full mx-auto">
-      {/* 헤더 */}
-      <header className="shrink-0 p-4 fixed top-0 left-0 right-0 z-20 w-full max-w-sm mx-auto bg-background">
-        <h1 className="text-xl font-semibold">emomap</h1>
-        <div className="mt-2 text-sm flex gap-4">
+    <div className="flex sticky flex-col h-full relative">
+      {/* 검색창 */}
+      <div className="mb-4 ">
+        <input
+          type="text"
+          placeholder="당신이 몰랐던 감정의 장소를 발견해보세요"
+          className="w-full bg-background rounded-xl border-[3px] hover:bg-[#F5F5F5] px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
+        />
+      </div>
+      
+      {/* 정렬 */}
+      <div className="shrink-0  pb-2 top-0 z-20 w-full max-w-sm mx-auto bg-background">
+        <div className=" text-sm flex gap-4">
           <button
             onClick={() => setSortBy("latest")}
             className={`font-semibold px-2 py-1 rounded-xl transition-colors duration-200 hover:bg-gray-100 ${
@@ -41,20 +45,14 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
             · 장소중심 정렬
           </button>
         </div>
-      </header>
+        
+      
+    
+      </div>
 
-      {/* 메인: 스크롤 영역 (header 아래에서 시작) */}
-      <main className="flex-1 overflow-y-auto px-1 pb-20 pt-20 w-full">
-        {/* 검색창 */}
-        <div className="mb-4 mt-1">
-          <input
-            type="text"
-            placeholder="당신이 몰랐던 감정의 장소를 발견해보세요"
-            className="w-full bg-background rounded-xl border-[3px] hover:bg-[#F5F5F5] px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
-          />
-        </div>
+      {/* Masonry 카드 그리드만 스크롤 */}
+      <div className="flex-1 overflow-auto px-1 pb-2 w-full">
 
-        {/* 카드 그리드 (Masonry 라이브러리 적용) */}
         <Masonry
           breakpointCols={2}
           className="my-masonry-grid"
@@ -72,7 +70,6 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
                   position: 'absolute',
                   inset: 0,
                   background: `rgba(245, 245, 245,${c.overlayOpacity})`,
-
                   pointerEvents: 'none',
                   zIndex: 1,
                 }}
@@ -80,13 +77,10 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
               <div className="relative z-10">
                 <div
                   className="bg-gray-300/70 rounded-lg overflow-hidden mb-2 flex items-center justify-center text-sm text-gray-700"
-                  style={{ height: `${c.imageHeight}px` }}/* 추후 aspect-ratio 사용*/
+                  style={{ height: `${c.imageHeight}px` }}
                 >
-                    {/* 아직은 플레이스홀더만 보임 */}
-                    사진
-
-                    {/* 나중에 실제 이미지가 생기면 이 자리에 넣기 */}
-                    {/* <img src={item.src} alt="" className="absolute inset-0 w-full h-full object-cover" /> */}
+                  사진
+                  {/* <img src={item.src} alt="" className="absolute inset-0 w-full h-full object-cover" /> */}
                 </div>
                 <p className="text-sm font-medium line-clamp-1">정릉기숙사</p>
                 <p className="text-xs text-gray-600 line-clamp-2">
@@ -97,9 +91,8 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
             </article>
           ))}
         </Masonry>
-      </main>
+      </div>
 
-      {/* ...중복 navbar 제거, layout의 navbar만 사용... */}
     </div>
   );
 }
