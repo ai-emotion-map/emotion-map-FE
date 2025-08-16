@@ -5,11 +5,13 @@ import { Image as ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image"; // Added import for Next.js Image component
 import Button from '../components/common/button/Button'; // Add import for Button component
+import LayerPopup from '../components/common/layerPopup/LayerPopup'; // Add import for LayerPopup component
 
 const Page = () => {
   const [text, setText] = useState("");
   const [images, setImages] = useState<File[]>([]); // Changed to array
   const [previewUrls, setPreviewUrls] = useState<string[]>([]); // Changed to array
+  const [isPopupOpen, setIsPopupOpen] = useState(false); // State for popup
   const router = useRouter();
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,14 +64,14 @@ const Page = () => {
     console.log("입력된 글:", text);
     console.log("첨부 이미지:", images);
     // 여기서 AI 감정 분석 API 호출 가능
-    router.push('/analysis');
+    // router.push('/analysis'); // Remove direct navigation
+    setIsPopupOpen(true); // Open the popup
   };
 
   return (
     <div className="flex flex-col h-full relative"> {/* Changed min-h-screen to h-full and added relative */}
       <div className="flex-grow overflow-y-auto pb-[70px]"> {/* Added pb-4 to content area */}
-        {/* 제목 */}
-        <h1 className="text-xl font-semibold mb-4">emomap</h1>
+        
 
         {/* 입력 박스 */}
         <div className="relative flex-grow flex flex-col max-h-[calc(100vh-200px)]"> {/* Added flex flex-col */}
@@ -94,7 +96,7 @@ const Page = () => {
 
         {/* 이미지 미리보기 */}
         {previewUrls.length > 0 && (
-          <div className="mt-4 flex space-x-2">
+          <div className="mt-4 flex space-x-2"> {/* Added flex, space-x-2, overflow-x-auto */}
             {previewUrls.map((url, index) => (
               <Image // Changed img to Image
                 key={index}
@@ -108,6 +110,7 @@ const Page = () => {
           </div>
         )}
       </div>
+
       {/* 버튼 */}
       <Button // Changed from button to Button
         className="absolute bottom-0 left-0 right-0 py-4"
@@ -115,7 +118,15 @@ const Page = () => {
       >
         AI가 읽은 감정 보기
       </Button>
-    
+
+      <LayerPopup
+        open={isPopupOpen}
+        onOpenChange={setIsPopupOpen}
+        title="감정 분석 완료"
+        description="감정 분석이 완료되었습니다. 분석 페이지로 이동하시겠습니까?"
+        onConfirm={() => router.push('/analysis')}
+        type="cancelConfirm"
+      />
     </div>
     </div>
   );

@@ -10,10 +10,7 @@ const AnalysisPage = () => {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <header>
-        <h1 className="text-2xl font-bold">emomap</h1>
-      </header>
+     
 
       {/* Main content */}
       <div className="flex-grow flex flex-col space-y-4 pt-4">

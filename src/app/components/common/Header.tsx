@@ -8,12 +8,12 @@ const Header = () => {
   const router = useRouter();
 
   return (
-    <header className="flex items-center h-16 pl-5 bg-background">
+        <header className="flex items-center h-20 pl-5 bg-background">
       <Image
         src="/images/clustory.png"
         alt="Logo"
         width={100}
-        height={40}
+        height={50}
         className="cursor-pointer"
         onClick={() => router.push("/")}
       />
