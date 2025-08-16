@@ -69,7 +69,7 @@ export default function Home() {
 
       <TagTicker />
 
-      <div className="w-[calc(100%+2rem)] -mx-4 h-[170px] bg-main-green flex items-center px-5 overflow-x-auto scrollbar-hide">
+      <div className="w-[calc(100%+2rem)] -mx-4 h-[175px] bg-main-green flex items-center px-5 overflow-x-auto scrollbar-hide">
         <div className="flex gap-4 flex-nowrap">
           {reviews.map((review) => (
             <Review
