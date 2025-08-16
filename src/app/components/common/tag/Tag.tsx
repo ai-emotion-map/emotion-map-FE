@@ -1,6 +1,6 @@
 import React from "react";
 
-type TagProps = {
+export type TagProps = {
   color: string;
   shadowColor: string;
   text: string;
@@ -26,6 +26,7 @@ const Tag = ({ color, shadowColor, text }: TagProps) => {
         filter: `drop-shadow(0 2px 2px ${hexToRgba(shadowColor, 0.3)})`,
       }}
     >
+      <span className="font-extralight font-onepick text-main-green">#</span>{" "}
       {text}
     </span>
   );
