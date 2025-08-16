@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Image as ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image"; // Added import for Next.js Image component
+import Button from '../components/common/button/Button'; // Add import for Button component
 
 const Page = () => {
   const [text, setText] = useState("");
@@ -59,7 +60,7 @@ const Page = () => {
 
   const handleSubmit = () => {
     console.log("입력된 글:", text);
-    console.log("첨부 이미지:", images); // Changed from 'image' to 'images'
+    console.log("첨부 이미지:", images);
     // 여기서 AI 감정 분석 API 호출 가능
     router.push('/analysis');
   };
@@ -76,12 +77,12 @@ const Page = () => {
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="편하게 적어보아요"
-            className="w-full flex-grow p-4 rounded-2xl outline-none resize-none bg-gradient-to-b from-green-50 to-blue-50 text-gray-800 placeholder-gray-400 min-h-[450px]" // Changed h-full to flex-grow
+            className="w-full flex-grow p-4 rounded-2xl outline-none resize-none bg-gradient-to-b from-green-50 to-blue-50 text-gray-800 placeholder-gray-400 min-h-[400px]" // Changed h-full to flex-grow
           />
 
           {/* 이미지 업로드 아이콘 */}
           <label className="absolute bottom-3 right-3 cursor-pointer">
-            <ImageIcon size={24} className="text-hover-green" />
+            <ImageIcon size={24} className="text-green-400" />
             <input
               type="file"
               accept="image/*"
@@ -90,11 +91,10 @@ const Page = () => {
               multiple // Added multiple attribute
             />
           </label>
-        </div>
 
         {/* 이미지 미리보기 */}
         {previewUrls.length > 0 && (
-          <div className="mt-4 flex space-x-2 overflow-x-auto">
+          <div className="mt-4 flex space-x-2">
             {previewUrls.map((url, index) => (
               <Image // Changed img to Image
                 key={index}
@@ -108,14 +108,15 @@ const Page = () => {
           </div>
         )}
       </div>
-
       {/* 버튼 */}
-      <button
-        className="absolute bottom-0 left-0 right-0 bg-main-green hover:bg-hover-green text-white py-3 rounded-xl mx-4 mb-0"
+      <Button // Changed from button to Button
+        className="absolute bottom-0 left-0 right-0 py-4"
         onClick={handleSubmit}
       >
         AI가 읽은 감정 보기
-      </button>
+      </Button>
+    
+    </div>
     </div>
   );
 };
