@@ -81,7 +81,7 @@ const Page = () => {
 
           {/* 이미지 업로드 아이콘 */}
           <label className="absolute bottom-3 right-3 cursor-pointer">
-            <ImageIcon size={24} className="text-green-400" />
+            <ImageIcon size={24} className="text-hover-green" />
             <input
               type="file"
               accept="image/*"
@@ -111,7 +111,7 @@ const Page = () => {
 
       {/* 버튼 */}
       <button
-        className="absolute bottom-0 left-0 right-0 bg-green-400 hover:bg-green-500 text-white font-medium py-3 rounded-xl mx-4 mb-0"
+        className="absolute bottom-0 left-0 right-0 bg-main-green hover:bg-hover-green text-white py-3 rounded-xl mx-4 mb-0"
         onClick={handleSubmit}
       >
         AI가 읽은 감정 보기

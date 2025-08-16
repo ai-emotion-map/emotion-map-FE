@@ -31,7 +31,7 @@ const AnalysisPage = () => {
         {/* Save button */}
         <button 
           onClick={handleSave}
-          className="w-full py-4 bg-green-400 text-white rounded-2xl font-semibold"
+          className="w-full py-4 bg-main-green hover:bg-hover-green text-white rounded-2xl "
         >
           저장하기
         </button>
