@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { Image as ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Button from "@/app/components/common/button/Button";
 
 const Page = () => {
   const [text, setText] = useState("");
@@ -64,20 +65,19 @@ const Page = () => {
   };
 
   return (
-    <div className="relative flex flex-col h-full">
-      <div className="flex-grow overflow-y-auto pb-[70px]">
-        <h1 className="mb-4 text-xl font-semibold">emomap</h1>
-
-        <div className="relative flex-grow flex flex-col max-h-[calc(100vh-200px)]">
+    <div className="flex flex-col min-h-full">
+      {/* 스크롤 영역 */}
+      <div className="flex-1 overflow-y-auto min-h-[530px]">
+        <div className="relative flex flex-col">
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="편하게 적어보아요"
-            className="w-full flex-grow p-4 rounded-2xl outline-none resize-none bg-gradient-to-b from-green-50 to-blue-50 text-gray-800 placeholder-gray-400 min-h-[450px]"
+            className="w-full p-4 rounded-2xl outline-none resize-none bg-gradient-to-b from-green-50 to-blue-50 text-gray-800 placeholder-gray-400 min-h-[400px]"
           />
 
           <label className="absolute cursor-pointer bottom-3 right-3">
-            <ImageIcon size={24} className="text-green-400" />
+            <ImageIcon size={24} className="text-main-green" />
             <input
               type="file"
               accept="image/*"
@@ -103,13 +103,7 @@ const Page = () => {
           </div>
         )}
       </div>
-
-      <button
-        className="absolute bottom-0 left-0 right-0 py-3 mx-4 mb-0 font-medium text-white bg-green-400 hover:bg-green-500 rounded-xl"
-        onClick={handleSubmit}
-      >
-        AI가 읽은 감정 보기
-      </button>
+      <Button onClick={handleSubmit}>AI가 읽은 감정 보기</Button>
     </div>
   );
 };

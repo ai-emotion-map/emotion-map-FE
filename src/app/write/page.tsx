@@ -21,23 +21,35 @@ const Page = () => {
   };
 
   return (
-    <div className="relative flex flex-col items-center gap-10">
-      <div className="absolute flex items-center top-3">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          placeholder="오늘의 이야기가 시작될 장소를 찾아보세요."
-          className="focus:outline-none text-sm w-[320px] z-10 pl-4 py-2 border rounded-2xl bg-gradient-to-r from-[#F0FEEF] to-[#EBEEFF]"
-        />
-        <Search
-          className="absolute z-10 text-base cursor-pointer right-3"
-          color="#a6a6a6"
-          size={18}
-          onClick={handleSearch}
-        />
+    <div className="flex flex-col min-h-full">
+      <div className="relative flex flex-col items-center flex-1 gap-10">
+        <div className="absolute flex items-center top-3">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="오늘의 이야기가 시작될 장소를 찾아보세요."
+            className="focus:outline-none text-sm w-[320px] z-10 pl-4 py-2 border rounded-2xl bg-gradient-to-r from-[#F0FEEF] to-[#EBEEFF]"
+          />
+          <Search
+            className="absolute z-10 text-base cursor-pointer right-3"
+            color="#a6a6a6"
+            size={18}
+            onClick={handleSearch}
+          />
+        </div>
+        <NaverMap lat={37.5665} lng={126.978} zoom={12} height="500px" />
+        {isOpen && (
+          <LayerPopup
+            open={isOpen}
+            onOpenChange={setIsOpen}
+            title="위치를 등록할까요?"
+            description="이 위치를 오늘의 이야기 시작 장소로 등록합니다."
+            onConfirm={handleButtonClick}
+            type="cancelConfirm"
+          />
+        )}
       </div>
-      <NaverMap lat={37.5665} lng={126.978} zoom={12} height="500px" />
       <Button
         onClick={() => {
           setIsOpen(true);
@@ -45,16 +57,6 @@ const Page = () => {
       >
         이야기 시작하기
       </Button>
-      {isOpen && (
-        <LayerPopup
-          open={isOpen}
-          onOpenChange={setIsOpen}
-          title="위치를 등록할까요?"
-          description="이 위치를 오늘의 이야기 시작 장소로 등록합니다."
-          onConfirm={handleButtonClick}
-          type="cancelConfirm"
-        />
-      )}
     </div>
   );
 };
