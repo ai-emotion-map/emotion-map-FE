@@ -5,9 +5,24 @@ module.exports = {
 
   theme: {
     extend: {
+      keyframes: {
+        scrollLeft: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        scrollRight: {
+          "0%": { transform: "translateX(-50%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+      },
+      animation: {
+        scrollLeft: "scrollLeft linear infinite",
+        scrollRight: "scrollRight linear infinite",
+      },
       fontFamily: {
         suit: ["SUIT-Regular", "sans-serif"],
         nunito: ['Nunito"', "sans-serif"],
+        onepick: ['"YOnepickTTF-Bold"', "sans-serif"],
       },
       colors: {
         "main-green": "#6FCF97",
@@ -67,5 +82,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("tailwind-scrollbar-hide")],
 };

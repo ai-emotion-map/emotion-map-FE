@@ -11,6 +11,14 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "YOnepickTTF-Bold";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/YOnepickTTF-Bold.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
 :root {
   /* 변수 정의 */
   --background: #efefef;
@@ -131,4 +139,28 @@ body {
 /* Style your items */
 .my-masonry-grid_column > article {
   margin-bottom: 5px;
+}
+
+/* 전역 스크롤바 스타일 */
+
+/* 크롬/사파리/엣지 */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 파이어폭스 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
