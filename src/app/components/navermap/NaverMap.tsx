@@ -11,7 +11,7 @@ interface MarkerData {
 }
 
 interface NaverMapOptions {
-  center?: any;
+  center?: naver.maps.LatLng;
   zoom?: number;
   draggable?: boolean;
   pinchZoom?: boolean;
@@ -56,7 +56,11 @@ const NaverMap: React.FC<NaverMapProps> = ({
         ? new window.naver.maps.LatLng(markers[0].lat, markers[0].lng)
         : new window.naver.maps.LatLng(37.5665, 126.978), // 기본 서울
       zoom,
-      ...options,
+      draggable: options?.draggable ?? true,
+      pinchZoom: options?.pinchZoom ?? true,
+      scrollWheel: options?.scrollWheel ?? true,
+      keyboardShortcuts: options?.keyboardShortcuts ?? true,
+      disableDoubleClickZoom: options?.disableDoubleClickZoom ?? false,
     });
 
     // 기존 마커 제거
