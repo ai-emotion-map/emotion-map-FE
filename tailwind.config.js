@@ -1,7 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  content: ["./src/**/*.{js,ts,jsx,tsx}", "./src/app/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/app/**/*.{js,ts,jsx,tsx}",
+    "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx}",
+  ],
 
   theme: {
     extend: {
@@ -35,10 +40,10 @@ module.exports = {
         "marker-purple": "#c26dde",
         "marker-pink": "#ff9fc4",
         "marker-green": "#8fd298",
-        
+
         "feed-blue1": "#7276ecff",
         "feed-blue2": "#99a6ffff",
-        "feed-blue3":"#90a6ffff",
+        "feed-blue3": "#90a6ffff",
         "feed-green1": "#57e3f3e4",
         "feed-green2": "#6ecf71ff",
         "feed-green3": "#54d8b9ff",
