@@ -46,18 +46,11 @@ export default function Home() {
       name: "최OO",
       date: "2025년 3월 이용",
     },
-    {
-      id: 7,
-      content:
-        "친구와 함께 앱을 사용했는데, 서로의 감정을 공유하면서 대화가 깊어졌어요. 사람과 사람을 이어주는 따뜻한 서비스 같아요.",
-      name: "한OO",
-      date: "2025년 2월 이용",
-    },
   ];
 
   return (
     <main className="flex flex-col gap-5">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         <div className="flex items-end justify-between px-3">
           <p className="text-base">오늘의 정릉동</p>
           <span className="px-2 py-1 text-sm text-white bg-main-green rounded-xl">
@@ -69,8 +62,12 @@ export default function Home() {
 
       <TagTicker />
 
-      <div className="w-[calc(100%+2rem)] -mx-4 h-[175px] bg-main-green flex items-center px-5 overflow-x-auto scrollbar-hide">
-        <div className="flex gap-4 flex-nowrap">
+      <div className="relative w-[calc(100%+2rem)] -mx-4 h-[200px] bg-main-green">
+        {/* 제목 고정 */}
+        <p className="absolute text-white top-3 left-6">Clustory 이용 후기</p>
+
+        {/* 리뷰 스크롤 영역 */}
+        <div className="flex items-end h-full gap-3 px-5 pb-5 overflow-x-auto scrollbar-hide ">
           {reviews.map((review) => (
             <Review
               key={review.id}

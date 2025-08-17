@@ -45,7 +45,7 @@ export default function RootLayout({
         <div className="flex flex-col w-full max-w-sm mx-auto min-h-dvh h-dvh font-suit">
           <Header />
           <main
-            className="flex-1 p-4 overflow-auto bg-background"
+            className="flex-1 px-4 overflow-auto bg-background"
             style={{ height: "calc(100dvh - 70px)" }}
           >
             {children}
