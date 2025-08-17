@@ -1,5 +1,3 @@
-import { image } from "framer-motion/client";
-import { title } from "process";
 import React from "react";
 import Tag, { TagVariant } from "./common/tag/Tag";
 import clsx from "clsx";
