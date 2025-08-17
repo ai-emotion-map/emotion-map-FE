@@ -19,24 +19,14 @@ function TagRow({ tags, direction = "left", speed = "30s" }: TagRowProps) {
         {/* 원본 */}
         <ul className="flex gap-3">
           {tags.map((tag, i) => (
-            <Tag
-              key={i}
-              color={tag.color}
-              shadowColor={tag.shadowColor}
-              text={tag.text}
-            />
+            <Tag key={i} variant={tag.variant} />
           ))}
         </ul>
 
         {/* 복제본 */}
         <ul className="flex gap-3" aria-hidden="true">
           {tags.map((tag, i) => (
-            <Tag
-              key={i}
-              color={tag.color}
-              shadowColor={tag.shadowColor}
-              text={tag.text}
-            />
+            <Tag key={i} variant={tag.variant} />
           ))}
         </ul>
       </div>
@@ -45,19 +35,13 @@ function TagRow({ tags, direction = "left", speed = "30s" }: TagRowProps) {
 }
 
 export default function TagTicker() {
-  const tags = [
-    // color="#FDFAE8" shadowColor="#E7E0A0" text="예시1"
-    // color="#EEF5FC" shadowColor="#AEE4FF" text="예시2" />
-    //     <Tag color="#E0F1E4" shadowColor="#9ED9A9" text="예시3" />
-    //     <Tag color="#E8D8EE" shadowColor="#D8ABEE" text="예시4" />
-    //     <Tag color="#FCEBF3" shadowColor="#E3BCE0" text="예시5" />
-    //     <Tag color="#FEEFEE" shadowColor="#FFCCCD" text="예시6"
-    { color: "#FDFAE8", shadowColor: "#E7E0A0", text: "가족 🏠" },
-    { color: "#EEF5FC", shadowColor: "#AEE4FF", text: "우정 🤝" },
-    { color: "#E0F1E4", shadowColor: "#9ED9A9", text: "위로/치유 🌱" },
-    { color: "#E8D8EE", shadowColor: "#D8ABEE", text: "외로움 🌙" },
-    { color: "#FCEBF3", shadowColor: "#E3BCE0", text: "설렘/사랑 💌" },
-    { color: "#FEEFEE", shadowColor: "#FFCCCD", text: "향수 🌿" },
+  const tags: TagProps[] = [
+    { variant: "가족 🏠" },
+    { variant: "우정 🤝" },
+    { variant: "위로/치유 🌱" },
+    { variant: "외로움 🌙" },
+    { variant: "설렘/사랑 💌" },
+    { variant: "향수 🌿" },
   ];
 
   return (
