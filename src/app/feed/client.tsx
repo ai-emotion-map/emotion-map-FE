@@ -94,7 +94,7 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
                   </span>
                 </p>
 
-                <div className="flex gap-2 pt-2 overflow-x-auto whitespace-nowrap">
+                <div className="flex gap-2 pt-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                   {TAG_LIST.map((tag) => (
                     <Tag key={tag.variant} variant={tag.variant} type="small" />
                   ))}
