@@ -39,12 +39,12 @@ const AnalysisPage = () => {
      
 
       {/* Main content */}
-      <div className="flex-grow flex flex-col space-y-4 pt-4">
+      <div className="flex-grow flex flex-col space-y-5 pt-5">
         {/* Map placeholder replaced with NaverMap */}
-        <NaverMap markers={dummyMarkers} height="500px" /> {/* Pass dummy markers and height */}
+        <NaverMap markers={dummyMarkers} height="420px" /> {/* Changed height to 300px */}
 
         {/* Emotion tags */}
-        <div className="flex justify-between space-x-2">
+        <div className="flex justify-center space-x-4"> {/* Changed justify-between to justify-center and space-x-2 to space-x-1 */}
           {randomTags.map((tag, index) => (
             <Tag key={index} variant={tag} type="default" /> // Render Tag component
           ))}
@@ -53,7 +53,7 @@ const AnalysisPage = () => {
         {/* Save button */}
         <Button
           onClick={handleSave}
-          className="py-4"
+          className="mb-3"
         >
           저장하기
         </Button>
