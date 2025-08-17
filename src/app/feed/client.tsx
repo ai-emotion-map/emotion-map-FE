@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Masonry from "react-masonry-css";
 import Tag, { type TagProps } from "../components/common/tag/Tag";
+import { useRouter } from "next/navigation";
 
 export type Card = {
   id: number;
@@ -22,6 +23,7 @@ export const TAG_LIST: TagProps[] = [
 
 export default function FeedClient({ cards }: { cards: Card[] }) {
   const [sortBy, setSortBy] = useState("latest");
+  const router = useRouter();
 
   return (
     <div className="relative sticky flex flex-col h-full">
@@ -66,8 +68,9 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
           {cards.map((c) => (
             <article
               key={c.id}
-              className={`relative p-3 rounded-xl box-shadow-inset ${c.color} hover:brightness-90 transition-all duration-200`}
+              className={`relative p-3 rounded-xl box-shadow-inset ${c.color} hover:brightness-90 transition-all duration-200 cursor-pointer`}
               style={{ overflow: "hidden" }}
+              onClick={() => router.push("/detail")}
             >
               {/* 흰색 오버레이 */}
               <div
