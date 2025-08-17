@@ -32,7 +32,7 @@ const NaverMap: React.FC<NaverMapProps> = ({
   height = "250px",
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const markerRefs = useRef<any[]>([]);
+  const markerRefs = useRef<naver.maps.Marker[]>([]);
 
   const initMap = () => {
     if (!window.naver || !mapRef.current) return;
