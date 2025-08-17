@@ -16,7 +16,7 @@ interface NaverMapOptions {
   draggable?: boolean;
   pinchZoom?: boolean;
   scrollWheel?: boolean;
-  keyboardShortcuts?: boolean | Record<string, any>;
+  keyboardShortcuts?: boolean | Record<string, boolean>;
   disableDoubleClickZoom?: boolean;
 }
 
