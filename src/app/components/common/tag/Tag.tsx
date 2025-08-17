@@ -1,5 +1,7 @@
+"use client";
+
 import clsx from "clsx";
-import React from "react";
+import React, { useState } from "react";
 
 export type TagVariant =
   | "가족 🏠"
@@ -21,10 +23,13 @@ const TAG_STYLES: Record<TagVariant, { color: string; shadowColor: string }> = {
 export type TagProps = {
   variant: TagVariant;
   type?: "default" | "small";
+  onClick?: () => void;
+  isActive?: boolean;
 };
 
-const Tag = ({ variant, type = "default" }: TagProps) => {
+const Tag = ({ variant, type = "default", onClick, isActive }: TagProps) => {
   const { color, shadowColor } = TAG_STYLES[variant];
+  const [active, setActive] = useState(false);
 
   // HEX -> RGBA 변환
   const hexToRgba = (hex: string, alpha: number) => {
@@ -35,18 +40,25 @@ const Tag = ({ variant, type = "default" }: TagProps) => {
   };
 
   const innerShadow = `inset 0 2px 4px 0 ${hexToRgba(shadowColor, 0.3)}`;
+  const dropShadow = `drop-shadow(0 2px 2px ${hexToRgba(shadowColor, 0.3)})`;
 
   return (
     <span
       className={clsx(
-        "rounded-2xl border border-gray-200 cursor-pointer",
+        "rounded-2xl border border-gray-200 cursor-pointer transition-all",
         type === "small" ? "text-xs px-2 py-0.5" : "text-[15px] px-3 py-1"
       )}
       style={{
-        backgroundColor: color,
+        backgroundColor: active || isActive ? shadowColor : color,
         boxShadow: innerShadow,
-        filter: `drop-shadow(0 2px 2px ${hexToRgba(shadowColor, 0.3)})`,
+        filter: dropShadow,
       }}
+      tabIndex={0}
+      onClick={onClick}
+      onMouseEnter={() => setActive(true)}
+      onMouseLeave={() => setActive(false)}
+      onFocus={() => setActive(true)}
+      onBlur={() => setActive(false)}
     >
       <span className="font-extralight font-onepick text-main-green">#</span>{" "}
       {variant}
