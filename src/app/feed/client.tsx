@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import Masonry from "react-masonry-css";
 import { Home, MapPin, Book, Pencil } from "lucide-react";
+import Tag, { type TagProps } from "../components/common/tag/Tag";
+import TagTicker from "../components/TagTicker";
 
 export type Card = {
   id: number;
@@ -10,6 +12,15 @@ export type Card = {
   overlayOpacity: string;
   imageHeight: number;
 };
+
+export const TAG_LIST: TagProps[] = [
+  { color: "#fffceeff", shadowColor: "#ece49dff", text: "가족 🏠" },
+  { color: "#f6faffff", shadowColor: "#9ed5f1ff", text: "우정 🤝" },
+  { color: "#f4fcf6ff", shadowColor: "#83cc91ff", text: "위로 🌱" },
+  { color: "#faedffff", shadowColor: "#d7a5f0ff", text: "외로움 🌙" },
+  { color: "#fbecf3ff", shadowColor: "#e2a7deff", text: "사랑 💌" },
+  { color: "#fdf0efff", shadowColor: "#f3b4b5ff", text: "향수 🌿" },
+];
 
 export default function FeedClient({ cards }: { cards: Card[] }) {
   const [sortBy, setSortBy] = useState("latest");
@@ -86,7 +97,18 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
                 <p className="text-xs text-gray-600 line-clamp-2">
                   <span> line-clamp-1 클래스를 사용하면 한 줄만 보이게 할 수 있습니다.</span>
                 </p>
-                <p className="text-xs text-gray-500 line-clamp-1 mt-2"># 감성 태그</p>
+                
+                <div className="flex gap-2 overflow-x-auto pt-2 whitespace-nowrap">
+                  {TAG_LIST.map((tag, idx) => (
+                    <Tag
+                      key={idx}
+                      color={tag.color}
+                      shadowColor={tag.shadowColor}
+                      text={tag.text}
+                      
+                    />
+                  ))}
+                </div>
               </div>
             </article>
           ))}

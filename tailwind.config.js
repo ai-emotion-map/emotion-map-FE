@@ -35,6 +35,13 @@ module.exports = {
         "marker-purple": "#c26dde",
         "marker-pink": "#ff9fc4",
         "marker-green": "#8fd298",
+        
+        "feed-blue1": "#7276ecff",
+        "feed-blue2": "#99a6ffff",
+        "feed-blue3":"#90a6ffff",
+        "feed-green1": "#57e3f3e4",
+        "feed-green2": "#6ecf71ff",
+        "feed-green3": "#54d8b9ff",
         foreground: "hsl(var(--foreground))",
         card: {
           DEFAULT: "hsl(var(--card))",
