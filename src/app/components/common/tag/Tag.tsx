@@ -11,7 +11,7 @@ export type TagVariant =
   | "설렘/사랑 💌"
   | "향수 🌿";
 
-const TAG_STYLES: Record<TagVariant, { color: string; shadowColor: string }> = {
+export  const TAG_STYLES: Record<TagVariant, { color: string; shadowColor: string }> = {
   "가족 🏠": { color: "#FDFAE8", shadowColor: "#E7E0A0" },
   "우정 🤝": { color: "#EEF5FC", shadowColor: "#AEE4FF" },
   "위로/치유 🌱": { color: "#E0F1E4", shadowColor: "#9ED9A9" },

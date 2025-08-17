@@ -52,6 +52,17 @@ const Page = () => {
     console.log("이미지 업로드 됨!");
   };
 
+  const handleRemoveImage = (indexToRemove: number) => {
+    // Revoke the object URL for the image being removed
+    URL.revokeObjectURL(previewUrls[indexToRemove]);
+
+    // Update images state
+    setImages(prevImages => prevImages.filter((_, index) => index !== indexToRemove));
+
+    // Update previewUrls state
+    setPreviewUrls(prevUrls => prevUrls.filter((_, index) => index !== indexToRemove));
+  };
+
   useEffect(() => {
     return () => {
       previewUrls.forEach((url) => URL.revokeObjectURL(url));
@@ -89,16 +100,24 @@ const Page = () => {
         </div>
 
         {previewUrls.length > 0 && (
-          <div className="flex mt-4 space-x-2 overflow-x-auto">
+          <div className="flex mt-6 space-x-2 overflow-x-auto pt-3"> {/* Added pt-3 */}
             {previewUrls.map((url, index) => (
-              <Image
-                key={index}
-                src={url}
-                alt={`Image preview ${index + 1}`}
-                width={96}
-                height={96}
-                className="object-cover w-24 h-24 rounded-lg"
-              />
+              <div key={index} className="relative"> {/* Added relative container */}
+                <Image
+                  src={url}
+                  alt={`Image preview ${index + 1}`}
+                  width={96}
+                  height={96}
+                  className="object-cover w-24 h-24 rounded-lg"
+                />
+                {/* Delete button */}
+                <button
+                  onClick={() => handleRemoveImage(index)}
+                  className="absolute top-[-10px] right-[-10px] bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold" // Adjusted positioning
+                >
+                  X
+                </button>
+              </div>
             ))}
           </div>
         )}
