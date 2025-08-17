@@ -8,7 +8,7 @@ type reviewProps = {
 
 const Review = ({ content, name, date }: reviewProps) => {
   return (
-    <div className="flex flex-col gap-2 p-5 w-[300px] rounded-3xl bg-background h-32">
+    <div className="flex flex-col gap-2 p-5 min-w-[300px] rounded-3xl bg-background h-32">
       <div className="flex text-sm">
         <p>
           {name} | {date}
