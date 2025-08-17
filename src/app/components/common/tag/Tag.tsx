@@ -1,12 +1,31 @@
+import clsx from "clsx";
 import React from "react";
 
-export type TagProps = {
-  color: string;
-  shadowColor: string;
-  text: string;
+export type TagVariant =
+  | "가족 🏠"
+  | "우정 🤝"
+  | "위로/치유 🌱"
+  | "외로움 🌙"
+  | "설렘/사랑 💌"
+  | "향수 🌿";
+
+const TAG_STYLES: Record<TagVariant, { color: string; shadowColor: string }> = {
+  "가족 🏠": { color: "#FDFAE8", shadowColor: "#E7E0A0" },
+  "우정 🤝": { color: "#EEF5FC", shadowColor: "#AEE4FF" },
+  "위로/치유 🌱": { color: "#E0F1E4", shadowColor: "#9ED9A9" },
+  "외로움 🌙": { color: "#E8D8EE", shadowColor: "#D8ABEE" },
+  "설렘/사랑 💌": { color: "#FCEBF3", shadowColor: "#E3BCE0" },
+  "향수 🌿": { color: "#FEEFEE", shadowColor: "#FFCCCD" },
 };
 
-const Tag = ({ color, shadowColor, text }: TagProps) => {
+export type TagProps = {
+  variant: TagVariant;
+  type?: "default" | "small";
+};
+
+const Tag = ({ variant, type = "default" }: TagProps) => {
+  const { color, shadowColor } = TAG_STYLES[variant];
+
   // HEX -> RGBA 변환
   const hexToRgba = (hex: string, alpha: number) => {
     const r = parseInt(hex.slice(1, 3), 16);
@@ -19,7 +38,10 @@ const Tag = ({ color, shadowColor, text }: TagProps) => {
 
   return (
     <span
-      className="px-3 py-1 rounded-2xl border border-gray-200 text-[15px] cursor-pointer"
+      className={clsx(
+        "rounded-2xl border border-gray-200 cursor-pointer",
+        type === "small" ? "text-xs px-2 py-0.5" : "text-[15px] px-3 py-1"
+      )}
       style={{
         backgroundColor: color,
         boxShadow: innerShadow,
@@ -27,7 +49,7 @@ const Tag = ({ color, shadowColor, text }: TagProps) => {
       }}
     >
       <span className="font-extralight font-onepick text-main-green">#</span>{" "}
-      {text}
+      {variant}
     </span>
   );
 };
