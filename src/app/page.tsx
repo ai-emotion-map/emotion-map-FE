@@ -1,4 +1,5 @@
 import Review from "./components/common/Review";
+import { TagVariant } from "./components/common/tag/Tag";
 import NaverMap from "./components/navermap/NaverMap";
 import TagTicker from "./components/TagTicker";
 
@@ -48,6 +49,13 @@ export default function Home() {
     },
   ];
 
+  const markers = [
+    { lat: 37.5665, lng: 126.978, emotion: "가족 🏠" as TagVariant },
+    { lat: 37.5651, lng: 126.9895, emotion: "우정 🤝" as TagVariant },
+    { lat: 37.57, lng: 126.982, emotion: "설렘/사랑 💌" as TagVariant },
+    { lat: 37.561, lng: 126.975, emotion: "향수 🌿" as TagVariant },
+  ];
+
   return (
     <main className="flex flex-col gap-5">
       <div className="flex flex-col gap-3">
@@ -57,7 +65,7 @@ export default function Home() {
             ☀️맑음 / 26°C️
           </span>
         </div>
-        <NaverMap lat={37.5665} lng={126.978} zoom={12} />
+        <NaverMap markers={markers} zoom={13} />
       </div>
 
       <TagTicker />

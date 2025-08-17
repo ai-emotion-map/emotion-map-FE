@@ -6,8 +6,13 @@ import Button from "../components/common/button/Button";
 import { Search } from "lucide-react";
 import LayerPopup from "../components/common/layerPopup/LayerPopup";
 import { useRouter } from "next/navigation";
+import { TagVariant } from "../components/common/tag/Tag";
 
 const Page = () => {
+  const markers = [
+    { lat: 37.5665, lng: 126.978, emotion: "가족 🏠" as TagVariant },
+  ];
+
   const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false); // 레이어팝업
   const router = useRouter();
@@ -38,7 +43,7 @@ const Page = () => {
             onClick={handleSearch}
           />
         </div>
-        <NaverMap lat={37.5665} lng={126.978} zoom={12} height="500px" />
+        <NaverMap markers={markers} zoom={12} height="500px" />
         {isOpen && (
           <LayerPopup
             open={isOpen}
