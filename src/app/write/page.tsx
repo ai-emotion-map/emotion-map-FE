@@ -50,13 +50,15 @@ const Page = () => {
           />
         )}
       </div>
-      <Button
-        onClick={() => {
-          setIsOpen(true);
-        }}
-      >
-        이야기 시작하기
-      </Button>
+      <div className="mb-3">
+        <Button
+          onClick={() => {
+            setIsOpen(true);
+          }}
+        >
+          이야기 시작하기
+        </Button>
+      </div>
     </div>
   );
 };

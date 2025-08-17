@@ -103,7 +103,9 @@ const Page = () => {
           </div>
         )}
       </div>
-      <Button onClick={handleSubmit}>AI가 읽은 감정 보기</Button>
+      <div className="mb-3">
+        <Button onClick={handleSubmit}>AI가 읽은 감정 보기</Button>
+      </div>
     </div>
   );
 };
