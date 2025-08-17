@@ -10,10 +10,22 @@ interface MarkerData {
   emotion: TagVariant;
 }
 
+interface NaverMapOptions {
+  center?: any;
+  zoom?: number;
+  draggable?: boolean;
+  pinchZoom?: boolean;
+  scrollWheel?: boolean;
+  keyboardShortcuts?: boolean | Record<string, any>;
+  disableDoubleClickZoom?: boolean;
+}
+
 interface NaverMapProps {
   markers: MarkerData[];
   zoom?: number;
   height?: string;
+  onMarkerClick?: (marker: MarkerData) => void; // ✅ 마커 클릭 콜백 추가
+  options?: NaverMapOptions;
 }
 
 // 감정별 마커 이미지
@@ -30,6 +42,8 @@ const NaverMap: React.FC<NaverMapProps> = ({
   markers,
   zoom = 10,
   height = "250px",
+  onMarkerClick,
+  options,
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const markerRefs = useRef<naver.maps.Marker[]>([]);
@@ -42,6 +56,7 @@ const NaverMap: React.FC<NaverMapProps> = ({
         ? new window.naver.maps.LatLng(markers[0].lat, markers[0].lng)
         : new window.naver.maps.LatLng(37.5665, 126.978), // 기본 서울
       zoom,
+      ...options,
     });
 
     // 기존 마커 제거
@@ -49,7 +64,9 @@ const NaverMap: React.FC<NaverMapProps> = ({
     markerRefs.current = [];
 
     // 각 마커 생성
-    markers.forEach(({ lat, lng, emotion }) => {
+    markers.forEach((markerData) => {
+      const { lat, lng, emotion } = markerData;
+
       const img = new Image();
       img.onload = () => {
         const marker = new window.naver.maps.Marker({
@@ -62,22 +79,36 @@ const NaverMap: React.FC<NaverMapProps> = ({
             anchor: new window.naver.maps.Point(20, 40),
           },
         });
+
+        // ✅ 마커 클릭 이벤트 등록
+        window.naver.maps.Event.addListener(marker, "click", () => {
+          if (onMarkerClick) onMarkerClick(markerData);
+        });
+
         markerRefs.current.push(marker);
       };
+
       img.onerror = () => {
         const marker = new window.naver.maps.Marker({
           position: new window.naver.maps.LatLng(lat, lng),
           map,
         });
+
+        // ✅ 기본 마커에도 클릭 이벤트
+        window.naver.maps.Event.addListener(marker, "click", () => {
+          if (onMarkerClick) onMarkerClick(markerData);
+        });
+
         markerRefs.current.push(marker);
       };
+
       img.src = emotionImages[emotion];
     });
   };
 
   useEffect(() => {
     if (window.naver) initMap();
-  }, [markers, zoom, initMap]);
+  }, [markers, zoom, options]);
 
   return (
     <>
@@ -88,9 +119,9 @@ const NaverMap: React.FC<NaverMapProps> = ({
       />
       <div
         ref={mapRef}
-        className="w-full overflow-hidden border rounded-3xl border-main-green"
+        className="z-0 w-full overflow-hidden border rounded-3xl border-main-green"
         style={{ height }}
-      ></div>
+      />
     </>
   );
 };
