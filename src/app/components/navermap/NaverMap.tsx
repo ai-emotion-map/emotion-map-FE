@@ -77,7 +77,7 @@ const NaverMap: React.FC<NaverMapProps> = ({
 
   useEffect(() => {
     if (window.naver) initMap();
-  }, [markers, zoom]);
+  }, [markers, zoom, initMap]);
 
   return (
     <>
