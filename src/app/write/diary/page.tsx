@@ -81,13 +81,14 @@ const Page = () => {
   return (
     <div className="flex flex-col min-h-full">
       {/* 스크롤 영역 */}
-      <div className="flex-1 overflow-y-auto min-h-[530px]">
+      <div className="flex-1 overflow-y-auto min-h-[530px] pb-4">
         <div className="relative flex flex-col">
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="편하게 적어보아요"
-            className="w-full p-4 rounded-2xl outline-none resize-none bg-gradient-to-b from-green-50 to-blue-50 text-gray-800 placeholder-gray-400 min-h-[400px]"
+            className="w-full p-3 rounded-2xl outline-none resize-none bg-gradient-to-b from-green-50 to-blue-50 text-gray-800 placeholder-gray-400 min-h-[400px]"
+            maxLength={500} // Added maxLength attribute
           />
 
           <label className="absolute cursor-pointer bottom-3 right-3">
@@ -100,10 +101,14 @@ const Page = () => {
               multiple
             />
           </label>
-        
+          {/* Character count display */}
+          <div className="absolute bottom-3 right-12 text-gray-400 text-sm">
+            ({text.length}/500)
+          </div>
+        </div>
 
         {previewUrls.length > 0 && (
-          <div className="flex mt-6 space-x-2 overflow-x-auto pt-3"> {/* Added pt-3 */}
+          <div className="flex mt-2 space-x-2 overflow-x-auto pt-4"> 
             {previewUrls.map((url, index) => (
               <div key={index} className="relative"> {/* Added relative container */}
                 <Image
@@ -124,7 +129,7 @@ const Page = () => {
             ))}
           </div>
         )}
-      </div>
+      
       </div>
       <div className="mb-3">
         <Button onClick={handleSubmit}>AI가 읽은 감정 보기</Button>
