@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import Script from "next/script";
 import { TagVariant } from "../common/tag/Tag";
 
-interface MarkerData {
+export interface MarkerData {
   lat: number;
   lng: number;
   emotion: TagVariant;
