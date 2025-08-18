@@ -12,7 +12,7 @@ const Header = () => {
       <Image
         src="/images/clustory.png"
         alt="Logo"
-        width={100}
+        width={150}
         height={40}
         className="cursor-pointer"
         onClick={() => router.push("/")}
