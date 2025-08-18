@@ -75,13 +75,6 @@ const Page = () => {
             setIsOpen(true);
             setIsExpanded(false); // 처음은 반만 열림
           }}
-          options={{
-            draggable: false,
-            pinchZoom: false,
-            scrollWheel: false,
-            keyboardShortcuts: false,
-            disableDoubleClickZoom: true,
-          }}
           height="95%"
         />
 
