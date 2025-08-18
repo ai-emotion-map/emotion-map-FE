@@ -41,7 +41,7 @@ const emotionImages: Record<TagVariant, string> = {
 const NaverMap: React.FC<NaverMapProps> = ({
   markers,
   zoom = 10,
-  height = "250px",
+  height,
   onMarkerClick,
   options,
 }) => {
@@ -123,7 +123,7 @@ const NaverMap: React.FC<NaverMapProps> = ({
       />
       <div
         ref={mapRef}
-        className="z-0 w-full overflow-hidden border rounded-3xl border-main-green"
+        className="z-0 flex-1 w-full overflow-hidden border rounded-3xl border-main-green"
         style={{ height }}
       />
     </>

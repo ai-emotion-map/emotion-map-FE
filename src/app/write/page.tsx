@@ -26,7 +26,7 @@ const Page = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-full">
+    <div className="flex flex-col min-h-full gap-10">
       <div className="relative flex flex-col items-center flex-1 gap-10">
         <div className="absolute flex items-center top-3">
           <input
@@ -43,7 +43,7 @@ const Page = () => {
             onClick={handleSearch}
           />
         </div>
-        <NaverMap markers={markers} zoom={12} height="500px" />
+        <NaverMap markers={markers} zoom={12} height="60vh" />
         {isOpen && (
           <LayerPopup
             open={isOpen}
