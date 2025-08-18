@@ -21,7 +21,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className="flex items-center justify-around px-4 w-full h-[70px] max-w-sm bg-background">
+    <nav className="flex items-center justify-around px-4 w-full h-[70px] max-w-[430px] bg-background">
       {icons.map(({ Component, path }, idx) => (
         <Component
           key={path}

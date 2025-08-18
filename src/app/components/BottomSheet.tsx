@@ -39,7 +39,7 @@ const BottomSheet = ({
 
   return (
     <div
-      className={`flex flex-col z-50 fixed left-1/2 bottom-0 transform -translate-x-1/2 w-full max-w-sm bg-background rounded-t-2xl border border-gray-200 transition-all duration-300 ease-in-out ${
+      className={`flex flex-col z-50 fixed left-1/2 bottom-0 transform -translate-x-1/2 w-full max-w-[430px] bg-background rounded-t-2xl border border-gray-200 transition-all duration-300 ease-in-out ${
         isExpanded ? "h-[100vh]" : "h-[40vh]"
       }`}
     >

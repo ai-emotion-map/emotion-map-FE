@@ -42,7 +42,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex flex-col w-full max-w-sm mx-auto min-h-dvh h-dvh font-suit">
+        <div className="flex flex-col w-full max-w-[430px] mx-auto min-h-dvh h-dvh font-suit">
           <Header />
           <main
             className="flex-1 px-4 overflow-auto bg-background"
