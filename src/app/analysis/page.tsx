@@ -41,10 +41,10 @@ const AnalysisPage = () => {
       {/* Main content */}
       <div className="flex-grow flex flex-col space-y-5 pt-5">
         {/* Map placeholder replaced with NaverMap */}
-        <NaverMap markers={dummyMarkers} height="420px" /> {/* Changed height to 300px */}
+        <NaverMap markers={dummyMarkers} height="490px" /> 
 
         {/* Emotion tags */}
-        <div className="flex justify-center space-x-4"> {/* Changed justify-between to justify-center and space-x-2 to space-x-1 */}
+        <div className="flex justify-center space-x-4 pb-6"> 
           {randomTags.map((tag, index) => (
             <Tag key={index} variant={tag} type="default" /> // Render Tag component
           ))}
