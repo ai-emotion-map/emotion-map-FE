@@ -57,14 +57,15 @@ export default function Home() {
   ];
 
   return (
-    <main className="flex flex-col gap-5">
-      <div className="flex flex-col gap-3">
+    <main className="flex flex-col h-[calc(100vh-150px)] gap-5">
+      <div className="flex flex-col flex-1 gap-3">
         <div className="flex items-end justify-between px-3">
           <p className="text-base">오늘의 정릉동</p>
           <span className="px-2 py-1 text-sm text-white bg-main-green rounded-xl">
             ☀️맑음 / 26°C️
           </span>
         </div>
+
         <NaverMap markers={markers} zoom={13} />
       </div>
 

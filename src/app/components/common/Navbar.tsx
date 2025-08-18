@@ -14,20 +14,20 @@ const Navbar = () => {
   };
 
   const icons = [
-    { Component: House, path: "/" },
-    { Component: PenLine, path: "/write" },
-    { Component: MapPin, path: "/map" },
-    { Component: Files, path: "/feed" },
+    { Component: House, path: ["/"] },
+    { Component: PenLine, path: ["/write", "/write/diary", "/analysis"] },
+    { Component: MapPin, path: ["/map"] },
+    { Component: Files, path: ["/feed"] },
   ];
 
   return (
-    <nav className="flex items-center justify-around px-4 w-full h-[70px] max-w-sm bg-background">
+    <nav className="z-10 flex items-center justify-around px-4 w-full h-[70px] max-w-[430px] bg-background">
       {icons.map(({ Component, path }, idx) => (
         <Component
-          key={path}
+          key={path.join(",")}
           {...iconProps}
-          onClick={() => router.push(path)}
-          color={pathname === path ? "#6FCF97" : "#B7E0C2"}
+          onClick={() => router.push(path[0])}
+          color={path.includes(pathname) ? "#6FCF97" : "#B7E0C2"}
         />
       ))}
     </nav>

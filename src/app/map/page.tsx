@@ -35,7 +35,7 @@ const Page = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-full gap-3 pt-2">
+    <div className="flex flex-col h-[calc(100vh-150px)] gap-3 pt-2">
       {/* 검색창 */}
       <div className="relative flex items-center">
         <input
@@ -70,19 +70,12 @@ const Page = () => {
         <NaverMap
           markers={markers}
           zoom={12}
-          height="480px"
           onMarkerClick={(marker) => {
             setSelectedMarker(marker);
             setIsOpen(true);
             setIsExpanded(false); // 처음은 반만 열림
           }}
-          options={{
-            draggable: false,
-            pinchZoom: false,
-            scrollWheel: false,
-            keyboardShortcuts: false,
-            disableDoubleClickZoom: true,
-          }}
+          height="95%"
         />
 
         {/* ✅ 바텀시트 */}

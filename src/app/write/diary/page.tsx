@@ -5,7 +5,7 @@ import { Image as ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Button from "@/app/components/common/button/Button";
-import LayerPopup from '../../components/common/layerPopup/LayerPopup'; // Add import for LayerPopup component
+import LayerPopup from "../../components/common/layerPopup/LayerPopup"; // Add import for LayerPopup component
 
 const Page = () => {
   const [text, setText] = useState("");
@@ -59,10 +59,14 @@ const Page = () => {
     URL.revokeObjectURL(previewUrls[indexToRemove]);
 
     // Update images state
-    setImages(prevImages => prevImages.filter((_, index) => index !== indexToRemove));
+    setImages((prevImages) =>
+      prevImages.filter((_, index) => index !== indexToRemove)
+    );
 
     // Update previewUrls state
-    setPreviewUrls(prevUrls => prevUrls.filter((_, index) => index !== indexToRemove));
+    setPreviewUrls((prevUrls) =>
+      prevUrls.filter((_, index) => index !== indexToRemove)
+    );
   };
 
   useEffect(() => {
@@ -102,15 +106,17 @@ const Page = () => {
             />
           </label>
           {/* Character count display */}
-          <div className="absolute bottom-3 right-12 text-gray-400 text-sm">
+          <div className="absolute text-sm text-gray-400 bottom-3 right-12">
             ({text.length}/500)
           </div>
         </div>
 
         {previewUrls.length > 0 && (
-          <div className="flex mt-2 space-x-2 overflow-x-auto pt-4"> 
+          <div className="flex pt-4 mt-2 space-x-2 overflow-x-auto">
             {previewUrls.map((url, index) => (
-              <div key={index} className="relative"> {/* Added relative container */}
+              <div key={index} className="relative">
+                {" "}
+                {/* Added relative container */}
                 <Image
                   src={url}
                   alt={`Image preview ${index + 1}`}
@@ -129,7 +135,6 @@ const Page = () => {
             ))}
           </div>
         )}
-      
       </div>
       <div className="mb-3">
         <Button onClick={handleSubmit}>AI가 읽은 감정 보기</Button>
@@ -140,7 +145,7 @@ const Page = () => {
         onOpenChange={setIsPopupOpen}
         title="작성 완료"
         description="작성을 완료하시겠습니까?"
-        onConfirm={() => router.push('/analysis')}
+        onConfirm={() => router.push("/analysis")}
         type="cancelConfirm"
       />
     </div>

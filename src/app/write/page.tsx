@@ -26,15 +26,15 @@ const Page = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-full">
+    <div className="flex flex-col min-h-full gap-10">
       <div className="relative flex flex-col items-center flex-1 gap-10">
-        <div className="absolute flex items-center top-3">
+        <div className="absolute flex items-center justify-center w-[90%] top-3">
           <input
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="오늘의 이야기가 시작될 장소를 찾아보세요."
-            className="focus:outline-none text-sm w-[320px] z-10 pl-4 py-2 border rounded-2xl bg-gradient-to-r from-[#F0FEEF] to-[#EBEEFF]"
+            className="focus:outline-none text-sm w-full z-10 pl-4 py-2 border rounded-2xl bg-gradient-to-r from-[#F0FEEF] to-[#EBEEFF]"
           />
           <Search
             className="absolute z-10 text-base cursor-pointer right-3"
@@ -43,7 +43,7 @@ const Page = () => {
             onClick={handleSearch}
           />
         </div>
-        <NaverMap markers={markers} zoom={12} height="500px" />
+        <NaverMap markers={markers} zoom={12} height="60vh" />
         {isOpen && (
           <LayerPopup
             open={isOpen}
@@ -55,7 +55,7 @@ const Page = () => {
           />
         )}
       </div>
-      <div className="mb-3">
+      <div className="z-10 mb-3">
         <Button
           onClick={() => {
             setIsOpen(true);

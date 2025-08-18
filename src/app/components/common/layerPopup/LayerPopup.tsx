@@ -53,30 +53,30 @@ const LayerPopup = ({
       {/* 배경 오버레이 */}
       {open && <div className="fixed inset-0 bg-black bg-opacity-50 z-[998]" />}
 
-      <DialogContent className="fixed z-[999] w-full max-w-[300px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <DialogHeader>
+      <DialogContent className="fixed z-[999] w-full max-w-[300px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl overflow-hidden">
+        <DialogHeader className="flex flex-col items-start">
           <DialogTitle className="text-base">{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
-        {type !== "confirm" ? (
-          <DialogFooter>
-            <DialogClose asChild>
-              <button className={closeButtonStyle}>취소</button>
-            </DialogClose>
-            <button className={confirmButtonStyle} onClick={handleConfirm}>
-              확인
-            </button>
-          </DialogFooter>
-        ) : (
-          <DialogFooter>
+        <DialogFooter className="flex flex-row justify-end gap-2">
+          {type !== "confirm" ? (
+            <>
+              <DialogClose asChild>
+                <button className={closeButtonStyle}>취소</button>
+              </DialogClose>
+              <button className={confirmButtonStyle} onClick={handleConfirm}>
+                확인
+              </button>
+            </>
+          ) : (
             <DialogClose asChild>
               <button className={confirmButtonStyle} onClick={handleConfirm}>
                 확인
               </button>
             </DialogClose>
-          </DialogFooter>
-        )}
+          )}
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
