@@ -5,11 +5,13 @@ import { Image as ImageIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Button from "@/app/components/common/button/Button";
+import LayerPopup from '../../components/common/layerPopup/LayerPopup'; // Add import for LayerPopup component
 
 const Page = () => {
   const [text, setText] = useState("");
   const [images, setImages] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [isPopupOpen, setIsPopupOpen] = useState(false); // State for popup
   const router = useRouter();
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +74,8 @@ const Page = () => {
   const handleSubmit = () => {
     console.log("입력된 글:", text);
     console.log("첨부 이미지:", images);
-    router.push("/analysis");
+    // router.push("/analysis"); // Remove direct navigation
+    setIsPopupOpen(true); // Open the popup
   };
 
   return (
@@ -97,7 +100,7 @@ const Page = () => {
               multiple
             />
           </label>
-        </div>
+        
 
         {previewUrls.length > 0 && (
           <div className="flex mt-6 space-x-2 overflow-x-auto pt-3"> {/* Added pt-3 */}
@@ -122,9 +125,19 @@ const Page = () => {
           </div>
         )}
       </div>
+      </div>
       <div className="mb-3">
         <Button onClick={handleSubmit}>AI가 읽은 감정 보기</Button>
       </div>
+
+      <LayerPopup
+        open={isPopupOpen}
+        onOpenChange={setIsPopupOpen}
+        title="작성 완료"
+        description="작성을 완료하시겠습니까?"
+        onConfirm={() => router.push('/analysis')}
+        type="cancelConfirm"
+      />
     </div>
   );
 };
