@@ -30,12 +30,12 @@ interface NaverMapProps {
 
 // 감정별 마커 이미지
 const emotionImages: Record<TagVariant, string> = {
-  "가족 🏠": "/images/marker/yellow-marker.png",
-  "우정 🤝": "/images/marker/blue-marker.png",
-  "위로/치유 🌱": "/images/marker/green-marker.png",
-  "외로움 🌙": "/images/marker/purple-marker.png",
-  "설렘/사랑 💌": "/images/marker/pink-marker.png",
-  "향수 🌿": "/images/marker/red-marker.png",
+  "가족 🏠": "/images/marker/yellow-marker.svg",
+  "우정 🤝": "/images/marker/blue-marker.svg",
+  "위로/치유 🌱": "/images/marker/green-marker.svg",
+  "외로움 🌙": "/images/marker/purple-marker.svg",
+  "설렘/사랑 💌": "/images/marker/pink-marker.svg",
+  "향수 🌿": "/images/marker/red-marker.svg",
 };
 
 const NaverMap: React.FC<NaverMapProps> = ({
