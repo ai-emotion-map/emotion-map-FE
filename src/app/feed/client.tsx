@@ -10,6 +10,7 @@ export type Card = {
   color: string;
   overlayOpacity: string;
   imageHeight: number;
+  imageUrl?: string;
 };
 
 export const TAG_LIST: TagProps[] = [
@@ -21,9 +22,18 @@ export const TAG_LIST: TagProps[] = [
   { variant: "향수 🌿" },
 ];
 
-export default function FeedClient({ cards }: { cards: Card[] }) {
+export default function FeedClient({ cards: initialCards }: { cards: Card[] }) {
   const [sortBy, setSortBy] = useState("latest");
+  const [cards, setCards] = useState(initialCards);
   const router = useRouter();
+
+  const handleImageError = (cardId: number) => {
+    setCards((prevCards) =>
+      prevCards.map((card) =>
+        card.id === cardId ? { ...card, imageUrl: undefined } : card
+      )
+    );
+  };
 
   return (
     <div className="relative sticky flex flex-col h-full">
@@ -83,12 +93,19 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
                 }}
               />
               <div className="relative z-10">
-                <div
-                  className="flex items-center justify-center mb-2 overflow-hidden text-sm text-gray-700 rounded-lg bg-gray-300/70"
-                  style={{ height: `${c.imageHeight}px` }}
-                >
-                  사진
-                </div>
+                {c.imageUrl && (
+                  <div
+                    className="flex items-center justify-center mb-2 overflow-hidden text-sm text-gray-700 rounded-lg bg-gray-300/70"
+                    style={{ height: `${c.imageHeight}px` }}
+                  >
+                    <img
+                      src={c.imageUrl}
+                      alt="피드 이미지"
+                      className="object-cover w-full h-full"
+                      onError={() => handleImageError(c.id)}
+                    />
+                  </div>
+                )}
                 <p className="text-sm font-medium line-clamp-1">정릉기숙사</p>
                 <p className="text-xs text-gray-600 line-clamp-2">
                   <span>
