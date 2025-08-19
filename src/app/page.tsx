@@ -2,6 +2,7 @@ import Review from "./components/common/Review";
 import { TagVariant } from "./components/common/tag/Tag";
 import NaverMap from "./components/navermap/NaverMap";
 import TagTicker from "./components/TagTicker";
+import Weather from "./components/Weather";
 
 export default function Home() {
   const reviews = [
@@ -61,9 +62,7 @@ export default function Home() {
       <div className="flex flex-col flex-1 gap-3">
         <div className="flex items-end justify-between px-3">
           <p className="text-base">오늘의 정릉동</p>
-          <span className="px-2 py-1 text-sm text-white bg-main-green rounded-xl">
-            ☀️맑음 / 26°C️
-          </span>
+          <Weather />
         </div>
 
         <NaverMap markers={markers} zoom={13} />
