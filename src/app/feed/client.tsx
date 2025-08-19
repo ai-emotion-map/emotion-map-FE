@@ -28,7 +28,7 @@ export default function FeedClient({ cards }: { cards: Card[] }) {
   return (
     <div className="relative sticky flex flex-col h-full">
       {/* 검색창 */}
-      <div className="mb-4 ">
+      <div className="mb-4 mt-1">
         <input
           type="text"
           placeholder="당신이 몰랐던 감정의 장소를 발견해보세요"
