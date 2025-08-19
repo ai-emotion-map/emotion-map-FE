@@ -20,9 +20,12 @@ const Page = () => {
     // 검색 로직 구현
     console.log(searchTerm);
   };
+
   const handleButtonClick = () => {
-    // 버튼 클릭 시 /diary로 이동
-    router.push("/write/diary");
+    if (markers.length > 0) {
+      const { lat, lng, emotion } = markers[0];
+      router.push(`/write/diary?lat=${lat}&lng=${lng}`);
+    }
   };
 
   return (
