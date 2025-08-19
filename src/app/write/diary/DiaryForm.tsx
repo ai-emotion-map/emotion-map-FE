@@ -9,6 +9,13 @@ import LayerPopup from "../../components/common/layerPopup/LayerPopup";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "@/util/cropImage";
 
+interface Area {
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+}
+
 const DiaryForm = () => {
   const searchParams = useSearchParams();
   const lat = searchParams.get("lat");
@@ -26,7 +33,7 @@ const DiaryForm = () => {
   const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
-  const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
   const router = useRouter();
 
@@ -38,7 +45,7 @@ const DiaryForm = () => {
     e.target.value = "";
   };
 
-  const onCropComplete = useCallback((_: any, croppedAreaPixels: any) => {
+  const onCropComplete = useCallback((_: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels);
   }, []);
 
