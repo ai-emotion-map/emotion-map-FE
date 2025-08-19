@@ -46,27 +46,7 @@ export default function FeedClient({ cards: initialCards }: { cards: Card[] }) {
         />
       </div>
 
-      {/* 정렬 */}
-      <div className="top-0 z-20 w-full max-w-sm pb-2 mx-auto shrink-0 bg-background">
-        <div className="flex gap-4 text-sm">
-          <button
-            onClick={() => setSortBy("latest")}
-            className={`font-semibold px-2 py-1 rounded-xl transition-colors duration-200 hover:bg-gray-100 ${
-              sortBy === "latest" ? "text-black" : "text-gray-400"
-            }`}
-          >
-            · 최신순
-          </button>
-          <button
-            onClick={() => setSortBy("location")}
-            className={`font-semibold px-2 py-1 rounded-xl transition-colors duration-200 hover:bg-gray-100 ${
-              sortBy === "location" ? "text-black" : "text-gray-400"
-            }`}
-          >
-            · 장소중심 정렬
-          </button>
-        </div>
-      </div>
+      
 
       {/* Masonry 카드 그리드 */}
       <div className="flex-1 w-full px-1 pb-2 overflow-auto">
