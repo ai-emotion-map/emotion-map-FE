@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Review from "./components/common/Review";
 import { TagVariant } from "./components/common/tag/Tag";
 import NaverMap from "./components/navermap/NaverMap";
@@ -60,7 +61,7 @@ export default function Home() {
   return (
     <main className="flex flex-col h-[calc(100vh-150px)] gap-5">
       <div className="flex flex-col flex-1 gap-3">
-        <div className="flex items-end justify-between px-3">
+        <div className="flex items-end justify-between px-1">
           <p className="text-base">오늘의 정릉동</p>
           <Weather />
         </div>
@@ -72,7 +73,15 @@ export default function Home() {
 
       <div className="relative w-[calc(100%+2rem)] -mx-4 h-[200px] bg-main-green">
         {/* 제목 고정 */}
-        <p className="absolute text-white top-3 left-6">Clustory 이용 후기</p>
+        <p className="absolute flex items-center gap-2 font-bold text-white top-4 left-6">
+          <Image
+            src="/images/logo-white.png"
+            alt="logo-white"
+            width={70}
+            height={50}
+          />{" "}
+          이용 후기
+        </p>
 
         {/* 리뷰 스크롤 영역 */}
         <div className="flex items-end h-full gap-3 px-5 pb-5 overflow-x-auto scrollbar-hide ">
