@@ -2,11 +2,10 @@ import FeedClient from "./client";
 import type { Card } from "./client";
 
 export default function Page() {
-  const presetHeights = [100, 130, 150, 180, 200];
-
   const cards: Card[] = Array.from({ length: 12 }).map((_, i) => {
-    const overlayOpacity = (Math.random() * 0.2 + 0.7).toFixed(2);
-        const imageHeight = presetHeights[Math.floor(Math.random() * presetHeights.length)]/2;  
+    const overlayOpacity = (Math.random() * 0.4 + 0.5).toFixed(2);
+    const imageHeight = Math.floor(Math.random() * (200 - 100 + 1) + 100); // Random height between 100 and 200
+    const imageUrl = `https://picsum.photos/seed/\${i}/200/300`; // Placeholder image URL
     return {
       id: i,
       color: (() => {
@@ -26,6 +25,7 @@ export default function Page() {
       })(),
       overlayOpacity,
       imageHeight,
+      imageUrl,
     };
   });
 

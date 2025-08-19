@@ -92,6 +92,7 @@ export default function FeedClient({ cards: initialCards }: { cards: Card[] }) {
                   zIndex: 1,
                 }}
               />
+              {/* 사진 */}
               <div className="relative z-10">
                 {c.imageUrl && (
                   <div
@@ -106,6 +107,8 @@ export default function FeedClient({ cards: initialCards }: { cards: Card[] }) {
                     />
                   </div>
                 )}
+
+                {/* 텍스트 */}
                 <p className="text-sm font-medium line-clamp-1">정릉기숙사</p>
                 <p className="text-xs text-gray-600 line-clamp-2">
                   <span>
