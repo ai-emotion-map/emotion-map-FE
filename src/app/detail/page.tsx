@@ -38,7 +38,7 @@ const DetailPage = () => {
   }
 
   return (
-    <div className="relative flex flex-col w-full h-screen p-4 bg-background">
+    <div className="relative flex flex-col w-full min-h-screen p-4 bg-background">
       <div className="flex flex-col flex-1 gap-4">
         {/* 제목 */}
         <div>
@@ -75,18 +75,20 @@ const DetailPage = () => {
         </div>
 
         {/* 지도 & 버튼 */}
-        <NaverMap
-          markers={selectedMarker ? [selectedMarker] : []}
-          height="170px"
-          options={{
-            draggable: false, // 지도 드래그 금지
-            pinchZoom: false, // 모바일 핀치 확대 금지
-            scrollWheel: false, // 마우스 휠 확대 금지
-            keyboardShortcuts: false,
-            disableDoubleClickZoom: true,
-          }}
-          zoom={16}
-        />
+        <div className="flex-shrink-0">
+          <NaverMap
+            markers={selectedMarker ? [selectedMarker] : []}
+            height="170px"
+            options={{
+              draggable: false, // 지도 드래그 금지
+              pinchZoom: false, // 모바일 핀치 확대 금지
+              scrollWheel: false, // 마우스 휠 확대 금지
+              keyboardShortcuts: false,
+              disableDoubleClickZoom: true,
+            }}
+            zoom={16}
+          />
+        </div>
 
         <div className="mb-3">
           <Button
