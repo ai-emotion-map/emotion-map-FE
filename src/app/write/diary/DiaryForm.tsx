@@ -90,9 +90,8 @@ const DiaryForm = () => {
       formData.append("images", file);
     });
 
-    // FormData 내용을 콘솔에 출력
     console.log("FormData contents:");
-    for (let [key, value] of formData.entries()) {
+    for (const [key, value] of formData.entries()) {
       if (value instanceof File) {
         console.log(`${key}: ${value.name}`);
       } else {
@@ -100,7 +99,7 @@ const DiaryForm = () => {
       }
     }
 
-    setIsSubmitPopupOpen(true); // 작성 완료 모달
+    setIsSubmitPopupOpen(true);
   };
 
   return (
