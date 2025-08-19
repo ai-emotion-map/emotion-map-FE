@@ -85,6 +85,7 @@ const DetailPage = () => {
             keyboardShortcuts: false,
             disableDoubleClickZoom: true,
           }}
+          zoom={16}
         />
 
         <div className="mb-3">
