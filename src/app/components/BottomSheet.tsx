@@ -117,6 +117,7 @@ const BottomSheet = ({
                   keyboardShortcuts: false,
                   disableDoubleClickZoom: true,
                 }}
+                zoom={16}
               />
             </div>
             <div className="mb-3">
