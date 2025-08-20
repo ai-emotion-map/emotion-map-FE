@@ -1,85 +1,72 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { Image as ImageIcon } from "lucide-react";
+import React, { useState } from "react";
+import NaverMap from "../components/navermap/NaverMap";
+import Button from "../components/common/button/Button";
+import { Search } from "lucide-react";
+import LayerPopup from "../components/common/layerPopup/LayerPopup";
 import { useRouter } from "next/navigation";
+import { TagVariant } from "../components/common/tag/Tag";
 
 const Page = () => {
-  const [text, setText] = useState("");
-  const [image, setImage] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const router = useRouter();
+  const markers = [
+    { lat: 37.5665, lng: 126.978, emotion: "가족 🏠" as TagVariant },
+  ];
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setImage(file);
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-      setPreviewUrl(URL.createObjectURL(file));
-      console.log("이미지 업로드 됨!");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isOpen, setIsOpen] = useState(false); // 레이어팝업
+  const router = useRouter();
+  const handleSearch = () => {
+    // 검색 로직 구현
+    console.log(searchTerm);
+  };
+
+  const handleButtonClick = () => {
+    if (markers.length > 0) {
+      const { lat, lng, emotion } = markers[0];
+      router.push(`/write/diary?lat=${lat}&lng=${lng}`);
     }
   };
 
-  useEffect(() => {
-    // 컴포넌트가 언마운트될 때 생성된 URL을 해제합니다.
-    return () => {
-      if (previewUrl) {
-        URL.revokeObjectURL(previewUrl);
-      }
-    };
-  }, [previewUrl]);
-
-  const handleSubmit = () => {
-    console.log("입력된 글:", text);
-    console.log("첨부 이미지:", image);
-    // 여기서 AI 감정 분석 API 호출 가능
-    router.push('/analysis');
-  };
-
   return (
-    <div className="flex flex-col h-screen bg-white">
-      <main className="flex-grow flex flex-col p-4">
-        {/* 제목 */}
-        <h1 className="text-xl font-semibold mb-4">emomap</h1>
-
-        {/* 입력 박스 */}
-        <div className="relative flex-grow">
-          <textarea
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder="편하게 적어보아요"
-            className="w-full h-full p-4 rounded-2xl outline-none resize-none bg-gradient-to-b from-green-50 to-blue-50 text-gray-800 placeholder-gray-400"
+    <div className="flex flex-col min-h-full gap-10">
+      <div className="relative flex flex-col items-center flex-1 gap-10">
+        <div className="absolute flex items-center justify-center w-[90%] top-3">
+          <input
+            type="text"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            placeholder="오늘의 이야기가 시작될 장소를 찾아보세요."
+            className="focus:outline-none text-sm w-full z-10 pl-4 py-2 border rounded-2xl bg-gradient-to-r from-[#F0FEEF] to-[#EBEEFF]"
           />
-
-          {/* 이미지 업로드 아이콘 */}
-          <label className="absolute bottom-3 right-3 cursor-pointer">
-            <ImageIcon size={24} className="text-green-400" />
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleImageUpload}
-            />
-          </label>
+          <Search
+            className="absolute z-10 text-base cursor-pointer right-3"
+            color="#a6a6a6"
+            size={18}
+            onClick={handleSearch}
+          />
         </div>
-
-        {/* 이미지 미리보기 */}
-        {previewUrl && (
-          <div className="mt-4">
-            <img src={previewUrl} alt="Image preview" className="w-24 h-24 object-cover rounded-lg" />
-          </div>
+        <NaverMap markers={markers} zoom={12} height="60vh" />
+        {isOpen && (
+          <LayerPopup
+            open={isOpen}
+            onOpenChange={setIsOpen}
+            title="위치를 등록할까요?"
+            description="이 위치를 오늘의 이야기 시작 장소로 등록합니다."
+            onConfirm={handleButtonClick}
+            type="cancelConfirm"
+          />
         )}
-
-        {/* 버튼 */}
-        <button
-          className="mt-6 bg-green-400 hover:bg-green-500 text-white font-medium py-3 rounded-xl"
-          onClick={handleSubmit}
+      </div>
+      <div className="z-10 mb-3">
+        <Button
+          onClick={() => {
+            setIsOpen(true);
+          }}
         >
-          AI가 읽은 감정 보기
-        </button>
-      </main>
+          이야기 시작하기
+        </Button>
+      </div>
     </div>
   );
 };

@@ -1,38 +1,35 @@
 "use client";
 
 import { Files, House, MapPin, MessageSquareMore, PenLine } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
 const Navbar = () => {
   const router = useRouter();
+  const pathname = usePathname();
+
+  const iconProps = {
+    size: 30,
+    className: "cursor-pointer",
+  };
+
+  const icons = [
+    { Component: House, path: ["/"] },
+    { Component: PenLine, path: ["/write", "/write/diary", "/analysis"] },
+    { Component: MapPin, path: ["/map"] },
+    { Component: Files, path: ["/feed"] },
+  ];
 
   return (
-    <nav className="flex items-center justify-around px-4 w-full h-[70px] max-w-sm bg-background">
-      <House
-        size={30}
-        color="#B7E0C2"
-        onClick={() => router.push("/")}
-        className="cursor-pointer"
-      />
-      <PenLine
-        size={30}
-        color="#B7E0C2"
-        onClick={() => router.push("/write")}
-        className="cursor-pointer"
-      />
-      <MapPin
-        size={30}
-        color="#B7E0C2"
-        onClick={() => router.push("/map")}
-        className="cursor-pointer"
-      />
-      <Files
-        size={30}
-        color="#B7E0C2"
-        onClick={() => router.push("/feed")}
-        className="cursor-pointer"
-      />
+    <nav className="z-10 flex items-center justify-around px-4 w-full h-[70px] max-w-[430px] bg-background">
+      {icons.map(({ Component, path }, idx) => (
+        <Component
+          key={path.join(",")}
+          {...iconProps}
+          onClick={() => router.push(path[0])}
+          color={path.includes(pathname) ? "#6FCF97" : "#B7E0C2"}
+        />
+      ))}
     </nav>
   );
 };

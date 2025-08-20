@@ -11,10 +11,18 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "YOnepickTTF-Bold";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/YOnepickTTF-Bold.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
 :root {
   /* 변수 정의 */
-  --background: #efefef;
-  --foreground: #171717;
+  --background: #fafafa;
+  --foreground: #3b3b3b;
 }
 
 /* 
@@ -24,6 +32,15 @@
     --foreground: #ededed;
   }
 } */
+
+html,
+body {
+  /* 글로벌 초기화(Reset) */
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
 
 body {
   background: var(--background);
@@ -106,4 +123,52 @@ body {
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
   }
+}
+
+/* react-masonry-css */
+.my-masonry-grid {
+  display: flex;
+  margin-left: -12px; /* gutter size offset */
+  width: auto;
+}
+.my-masonry-grid_column {
+  padding-left: 12px; /* gutter size */
+  background-clip: padding-box;
+}
+
+/* Style your items */
+.my-masonry-grid_column > article {
+  margin-bottom: 5px;
+}
+
+/* 전역 스크롤바 스타일 */
+
+/* 크롬/사파리/엣지 */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* 파이어폭스 */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

@@ -1,17 +1,38 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
-  content: ["./src/**/*.{js,ts,jsx,tsx}", "./src/app/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./src/app/**/*.{js,ts,jsx,tsx}",
+    "./src/components/**/*.{js,ts,jsx,tsx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx}",
+  ],
 
   theme: {
     extend: {
+      keyframes: {
+        scrollLeft: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(-50%)" },
+        },
+        scrollRight: {
+          "0%": { transform: "translateX(-50%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+      },
+      animation: {
+        scrollLeft: "scrollLeft linear infinite",
+        scrollRight: "scrollRight linear infinite",
+      },
       fontFamily: {
         suit: ["SUIT-Regular", "sans-serif"],
         nunito: ['Nunito"', "sans-serif"],
+        onepick: ['"YOnepickTTF-Bold"', "sans-serif"],
       },
       colors: {
         "main-green": "#6FCF97",
         "sub-green": "#B7E0C2",
+        "hover-green": "#23a559ff",
         background: "#fafafa",
         "marker-yellow": "#fff386",
         "marker-blue": "#a2beff",
@@ -19,6 +40,13 @@ module.exports = {
         "marker-purple": "#c26dde",
         "marker-pink": "#ff9fc4",
         "marker-green": "#8fd298",
+
+        "feed-blue1": "#6367dbff",
+        "feed-blue2": "#446bb7ff",
+        "feed-blue3": "#4f60c2ff",
+        "feed-green1": "#48d196e4",
+        "feed-green2": "#32ae8fff",
+        "feed-green3": "#52ddd6ff",
         foreground: "hsl(var(--foreground))",
         card: {
           DEFAULT: "hsl(var(--card))",
@@ -66,5 +94,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("tailwind-scrollbar-hide")],
 };
