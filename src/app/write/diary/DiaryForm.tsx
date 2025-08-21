@@ -110,22 +110,21 @@ const DiaryForm = () => {
   };
 
   return (
-    <div className="relative flex flex-col min-h-full">
+    <div className="relative flex flex-col h-full">
       <form
-        className="flex flex-col min-h-full"
+        className="flex flex-col h-[calc(100vh-230px)]"
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit();
         }}
       >
-        <div className="flex-1 overflow-y-auto min-h-[530px] pb-4">
-          <div className="relative flex flex-col">
+        <div className="flex flex-col flex-1 pb-4 overflow-y-auto">
+          <div className="relative flex flex-col flex-1">
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="편하게 적어보아요"
-              className={`w-full p-3 rounded-2xl outline-none resize-none bg-gradient-to-b from-green-50 to-blue-50 text-gray-800 placeholder-gray-400 transition-all duration-300
-                ${previewUrls.length > 0 ? "min-h-[400px]" : "min-h-[530px]"}`}
+              className="flex-1 w-full p-3 text-gray-800 placeholder-gray-400 transition-all duration-300 outline-none resize-none rounded-2xl bg-gradient-to-b from-green-50 to-blue-50"
               maxLength={500}
             />
             <label className="absolute cursor-pointer bottom-3 right-3">
