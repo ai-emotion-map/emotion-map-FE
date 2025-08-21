@@ -47,14 +47,16 @@ const Weather = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  return (
-    weather && (
-      <span className="px-2 py-1 text-sm text-white bg-main-green rounded-xl">
-        {weatherConditions[weather.current_weather.weathercode].emoji}{" "}
-        {weatherConditions[weather.current_weather.weathercode].text} /{" "}
-        {weather.current_weather.temperature}°C
-      </span>
-    )
+  return weather ? (
+    <span className="px-2 py-1 text-sm text-white bg-main-green rounded-xl">
+      {weatherConditions[weather.current_weather.weathercode].emoji}{" "}
+      {weatherConditions[weather.current_weather.weathercode].text} /{" "}
+      {weather.current_weather.temperature}°C
+    </span>
+  ) : (
+    <span className="px-2 py-1 text-sm text-white bg-main-green rounded-xl">
+      날씨 정보를 불러오는 중...
+    </span>
   );
 };
 
