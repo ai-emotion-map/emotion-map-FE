@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Axios 인스턴스 생성
 // TODO: 실제 API 베이스 URL로 변경해주세요.
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080/api'; 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://clustory.shop'; 
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
@@ -34,6 +34,57 @@ export const Api = {
     });
     return response.data;
   },
+
+
+  /**
+   * 새 게시물을 작성합니다.
+   * @param payload 게시물 작성 데이터
+   * @returns 작성 완료된 게시물 데이터
+   */
+  createPost: async (payload: {
+    userId: number;
+    content: string;
+    emotions: string;
+    lat: number;
+    lng: number;
+    roadAddress: string;
+  }) => {
+    const response = await api.post('/posts', payload);
+    return response.data;
+  },
+
+  /**
+   * 새 게시물을 이미지와 함께 작성합니다.
+   * @param payload 게시물 데이터 + 이미지 파일
+   * @returns 작성 완료된 게시물 데이터
+   */
+  createPostWithImages: async (payload: {
+    id: number;
+    lat: number;
+    lng: number;
+    roadAddress: string;
+    tags: string[];
+    imageUrls: string[];
+    content: string;
+    images: File[];
+  }) => {
+    const formData = new FormData();
+
+    const { images, ...jsonData } = payload;
+
+    // JSON 데이터를 한 덩어리로 append
+    formData.append('post', JSON.stringify(jsonData));
+
+    // 이미지 파일 append
+    if (images && images.length > 0) {
+      images.forEach((file) => formData.append('images', file));
+    }
+
+    const response = await api.post('/posts/form', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data;
+    },
 
   // 여기에 다른 API 호출 함수들을 추가할 수 있습니다.
   // 예시:
