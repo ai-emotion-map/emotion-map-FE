@@ -28,6 +28,7 @@ const DiaryForm = () => {
   const [isCropPopupOpen, setIsCropPopupOpen] = useState(false); // 크롭 모달
   const [isSubmitPopupOpen, setIsSubmitPopupOpen] = useState(false); // 작성 완료 모달
   const [isEmptyTextPopupOpen, setIsEmptyTextPopupOpen] = useState(false); // 내용 없음 모달
+  const [isCancelPopupOpen, setIsCancelPopupOpen] = useState(false); // 작성 취소 모달
 
   // 크롭 관련 상태
   const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
@@ -36,7 +37,8 @@ const DiaryForm = () => {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
   const router = useRouter();
-
+  
+  //
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const file = e.target.files[0];
@@ -170,8 +172,18 @@ const DiaryForm = () => {
         <input type="hidden" name="lat" value={lat ?? ""} />
         <input type="hidden" name="lng" value={lng ?? ""} />
 
-        <div className="absolute left-0 right-0 bottom-3">
-          <Button type="submit">AI가 읽은 감정 보기</Button>
+        <div className="absolute left-0 right-0 bottom-3 flex flex-row justify-center gap-x-4 px-4">
+          {/* 왼쪽 취소 버튼 */}
+          <button
+            type="button"
+            onClick={() => setIsCancelPopupOpen(true)}
+            className="rounded-2xl bg-gray-200 hover:bg-gray-300 text-gray-800 px-8 py-2 text-sm whitespace-nowrap"
+          >
+            작성 취소
+          </button>
+
+          {/* 오른쪽 AI 버튼 */}
+          <Button type="submit" className="whitespace-nowrap">AI가 읽은 감정 보기</Button>
         </div>
       </form>
 
@@ -211,11 +223,22 @@ const DiaryForm = () => {
       {/* 내용 없음 모달 */}
       <LayerPopup
         open={isEmptyTextPopupOpen}
+
         onOpenChange={setIsEmptyTextPopupOpen}
         title="내용 없음"
         description="내용을 입력해주세요."
         onConfirm={() => setIsEmptyTextPopupOpen(false)}
         type="confirm"
+      />
+
+      {/* 작성 취소 모달 */}
+      <LayerPopup
+        open={isCancelPopupOpen}
+        onOpenChange={setIsCancelPopupOpen}
+        title="작성을 취소하시겠습니까?"
+        description="작성된 내용은 저장되지 않습니다."
+        onConfirm={() => router.back()}
+        type="cancelConfirm"
       />
     </div>
   );
