@@ -44,7 +44,7 @@ const Page = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="다양한 이야기를 검색해 보세요!"
-          className="focus:outline-none text-sm w-full z-10 pl-4 py-2 border rounded-2xl bg-gradient-to-r from-[#F0FEEF] to-[#EBEEFF]"
+          className="focus:outline-none text-base w-full z-10 pl-4 py-2 border rounded-2xl bg-gradient-to-r from-[#F0FEEF] to-[#EBEEFF]"
         />
         <Search
           className="absolute z-10 text-base cursor-pointer right-3"

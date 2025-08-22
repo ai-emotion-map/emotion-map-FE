@@ -46,7 +46,7 @@ export default function FeedClient({ cards: initialCards }: { cards: Card[] }) {
           // value={searchTerm}
           // onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="당신이 몰랐던 감정의 장소를 발견해보세요"
-          className="focus:outline-none text-sm w-full z-10 pl-4 py-2 border rounded-2xl bg-gradient-to-r from-[#F0FEEF] to-[#EBEEFF]"
+          className="focus:outline-none text-base w-full z-10 pl-4 py-2 border rounded-2xl bg-gradient-to-r from-[#F0FEEF] to-[#EBEEFF]"
         />
         <Search
           className="absolute z-10 text-base cursor-pointer right-3"
