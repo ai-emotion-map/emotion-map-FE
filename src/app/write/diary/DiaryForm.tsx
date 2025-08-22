@@ -1,6 +1,7 @@
 "use client";
 
 import { Api } from '@/api/api';
+import axios from 'axios';
 
 
 import React, { useState, useCallback } from "react";
@@ -108,20 +109,25 @@ const handleSubmit = async () => {
 
     console.log("서버 응답:", response);
     setIsSubmitPopupOpen(true);
-  } catch (error: any) {
-  if (error.response) {
-    // 서버가 응답했지만 상태 코드가 200이 아닌 경우
-    console.log("에러 상태 코드:", error.response.status);
-    console.log("에러 응답 데이터:", error.response.data);
-    console.log("에러 응답 헤더:", error.response.headers);
-  } else if (error.request) {
-    // 요청은 갔지만 서버가 응답하지 않은 경우
-    console.log("요청이 전송되었지만 응답이 없습니다:", error.request);
-  } else {
-    // 요청 설정 중 발생한 에러
-    console.log("업로드 실패:", error.message);
+  } catch (e) {
+    if (axios.isAxiosError(e)) {
+      if (e.response) {
+        // 서버가 응답했지만 상태 코드가 200이 아닌 경우
+        console.log("에러 상태 코드:", e.response.status);
+        console.log("에러 응답 데이터:", e.response.data);
+        console.log("에러 응답 헤더:", e.response.headers);
+      } else if (e.request) {
+        // 요청은 갔지만 서버가 응답하지 않은 경우
+        console.log("요청이 전송되었지만 응답이 없습니다:", e.request);
+      } else {
+        // 요청 설정 중 발생한 에러
+        console.log("업로드 실패:", e.message);
+      }
+    } else {
+      // Handle non-axios errors
+      console.log("An unexpected error occurred:", e);
+    }
   }
-}
 };
 
 
