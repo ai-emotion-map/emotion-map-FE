@@ -2,7 +2,8 @@
 
 import React, { useState } from "react";
 import Masonry from "react-masonry-css";
-import Tag, { type TagProps } from "../components/common/tag/Tag";
+import Tag from "../components/common/tag/Tag";
+import { type TagProps } from "../components/common/tag/tag";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 

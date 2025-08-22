@@ -6,7 +6,7 @@ import Button from "../components/common/button/Button";
 import { Search } from "lucide-react";
 import LayerPopup from "../components/common/layerPopup/LayerPopup";
 import { useRouter } from "next/navigation";
-import { TagVariant } from "../components/common/tag/Tag";
+import { TagVariant } from "../components/common/tag/tag";
 
 const Page = () => {
   const markers = [
