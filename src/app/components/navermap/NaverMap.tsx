@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Script from "next/script";
-import { TagVariant } from "../common/tag/Tag";
+import { TagVariant } from "../common/tag/tag";
 
 export interface MarkerData {
   lat: number;

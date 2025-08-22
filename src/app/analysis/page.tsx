@@ -5,7 +5,7 @@ import Button from "../components/common/button/Button";
 import NaverMap from "../components/navermap/NaverMap"; // Import NaverMap
 import { MarkerData } from "../components/navermap/NaverMap"; // Import MarkerData
 import Tag from "../components/common/tag/Tag"; // Import Tag component
-import { TagVariant, TAG_STYLES } from "../components/common/tag/Tag"; // Import TagVariant and TAG_STYLES
+import { TagVariant, TAG_STYLES } from "../components/common/tag/tag"; // Import TagVariant and TAG_STYLES
 import { useRouter } from "next/navigation";
 
 const AnalysisPage = () => {

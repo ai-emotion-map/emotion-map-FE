@@ -2,8 +2,10 @@
 
 import React, { useState } from "react";
 import Masonry from "react-masonry-css";
-import Tag, { type TagProps } from "../components/common/tag/Tag";
+import Tag from "../components/common/tag/Tag";
+import { type TagProps } from "../components/common/tag/tag";
 import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
 
 export type Card = {
   id: number;
@@ -36,17 +38,23 @@ export default function FeedClient({ cards: initialCards }: { cards: Card[] }) {
   };
 
   return (
-    <div className="relative sticky flex flex-col h-full">
+    <div className="relative flex flex-col h-full">
       {/* 검색창 */}
-      <div className="mb-4 mt-1">
+      <div className="relative flex items-center mt-1 mb-4">
         <input
           type="text"
+          // value={searchTerm}
+          // onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="당신이 몰랐던 감정의 장소를 발견해보세요"
-          className="w-full bg-background rounded-xl border-[3px] hover:bg-[#F5F5F5] px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
+          className="focus:outline-none text-sm w-full z-10 pl-4 py-2 border rounded-2xl bg-gradient-to-r from-[#F0FEEF] to-[#EBEEFF]"
+        />
+        <Search
+          className="absolute z-10 text-base cursor-pointer right-3"
+          color="#a6a6a6"
+          size={18}
+          // onClick={handleSearch}
         />
       </div>
-
-      
 
       {/* Masonry 카드 그리드 */}
       <div className="flex-1 w-full px-1 pb-2 overflow-auto">

@@ -1,5 +1,6 @@
 import React from "react";
-import Tag, { TagVariant } from "./common/tag/Tag";
+import Tag from "./common/tag/Tag";
+import { TagVariant } from "./common/tag/tag";
 import clsx from "clsx";
 import NaverMap from "./navermap/NaverMap";
 import Button from "./common/button/Button";

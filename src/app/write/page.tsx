@@ -6,7 +6,7 @@ import Button from "../components/common/button/Button";
 import { Search } from "lucide-react";
 import LayerPopup from "../components/common/layerPopup/LayerPopup";
 import { useRouter } from "next/navigation";
-import { TagVariant } from "../components/common/tag/Tag";
+import { TagVariant } from "../components/common/tag/tag";
 
 const Page = () => {
   const markers = [
@@ -59,13 +59,25 @@ const Page = () => {
         )}
       </div>
       <div className="z-10 mb-3">
-        <Button
-          onClick={() => {
-            setIsOpen(true);
-          }}
-        >
-          이야기 시작하기
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => {
+              router.back();
+            }}
+            className="w-1/3"
+            color="gray"
+          >
+            작성 취소
+          </Button>
+          <Button
+            onClick={() => {
+              setIsOpen(true);
+            }}
+            className="w-2/3"
+          >
+            이야기 시작하기
+          </Button>
+        </div>
       </div>
     </div>
   );

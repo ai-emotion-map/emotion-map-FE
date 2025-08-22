@@ -1,8 +1,7 @@
 "use client";
 
-import { Api } from '@/api/api';
-import axios from 'axios';
-
+import { Api } from "@/api/api";
+import axios from "axios";
 
 import React, { useState, useCallback } from "react";
 import { Image as ImageIcon } from "lucide-react";
@@ -41,7 +40,7 @@ const DiaryForm = () => {
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
 
   const router = useRouter();
-  
+
   //
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
@@ -89,48 +88,46 @@ const DiaryForm = () => {
     );
   };
 
-const handleSubmit = async () => {
-  if (!text.trim()) {
-    setIsEmptyTextPopupOpen(true);
-    return;
-  }
-
-  try {
-    const response = await Api.createPostWithImages({
-      id: 0,
-      lat: Number(lat) || 0,
-      lng: Number(lng) || 0,
-      roadAddress: "서울시 정릉동",
-      tags: [],
-      imageUrls: [],
-      content: text,
-      images: images, // 선택된 이미지 파일 배열
-    });
-
-    console.log("서버 응답:", response);
-    setIsSubmitPopupOpen(true);
-  } catch (e) {
-    if (axios.isAxiosError(e)) {
-      if (e.response) {
-        // 서버가 응답했지만 상태 코드가 200이 아닌 경우
-        console.log("에러 상태 코드:", e.response.status);
-        console.log("에러 응답 데이터:", e.response.data);
-        console.log("에러 응답 헤더:", e.response.headers);
-      } else if (e.request) {
-        // 요청은 갔지만 서버가 응답하지 않은 경우
-        console.log("요청이 전송되었지만 응답이 없습니다:", e.request);
-      } else {
-        // 요청 설정 중 발생한 에러
-        console.log("업로드 실패:", e.message);
-      }
-    } else {
-      // Handle non-axios errors
-      console.log("An unexpected error occurred:", e);
+  const handleSubmit = async () => {
+    if (!text.trim()) {
+      setIsEmptyTextPopupOpen(true);
+      return;
     }
-  }
-};
 
+    try {
+      const response = await Api.createPostWithImages({
+        id: 0,
+        lat: Number(lat) || 0,
+        lng: Number(lng) || 0,
+        roadAddress: "서울시 정릉동",
+        tags: [],
+        imageUrls: [],
+        content: text,
+        images: images, // 선택된 이미지 파일 배열
+      });
 
+      console.log("서버 응답:", response);
+      setIsSubmitPopupOpen(true);
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.response) {
+          // 서버가 응답했지만 상태 코드가 200이 아닌 경우
+          console.log("에러 상태 코드:", e.response.status);
+          console.log("에러 응답 데이터:", e.response.data);
+          console.log("에러 응답 헤더:", e.response.headers);
+        } else if (e.request) {
+          // 요청은 갔지만 서버가 응답하지 않은 경우
+          console.log("요청이 전송되었지만 응답이 없습니다:", e.request);
+        } else {
+          // 요청 설정 중 발생한 에러
+          console.log("업로드 실패:", e.message);
+        }
+      } else {
+        // Handle non-axios errors
+        console.log("An unexpected error occurred:", e);
+      }
+    }
+  };
 
   return (
     <div className="relative flex flex-col h-full">
@@ -192,18 +189,18 @@ const handleSubmit = async () => {
         <input type="hidden" name="lat" value={lat ?? ""} />
         <input type="hidden" name="lng" value={lng ?? ""} />
 
-        <div className="absolute left-0 right-0 bottom-3 flex flex-row justify-center gap-x-4 px-4">
-          {/* 왼쪽 취소 버튼 */}
-          <button
-            type="button"
+        <div className="absolute left-0 right-0 flex gap-2 bottom-3">
+          <Button
             onClick={() => setIsCancelPopupOpen(true)}
-            className="rounded-2xl bg-gray-200 hover:bg-gray-300 text-gray-800 px-8 py-2 text-sm whitespace-nowrap"
+            className="w-1/3"
+            type="button"
+            color="gray"
           >
             작성 취소
-          </button>
-
-          {/* 오른쪽 AI 버튼 */}
-          <Button type="submit" className="whitespace-nowrap">AI가 읽은 감정 보기</Button>
+          </Button>
+          <Button type="submit" className="w-2/3">
+            이야기 작성 완료
+          </Button>
         </div>
       </form>
 
@@ -243,7 +240,6 @@ const handleSubmit = async () => {
       {/* 내용 없음 모달 */}
       <LayerPopup
         open={isEmptyTextPopupOpen}
-
         onOpenChange={setIsEmptyTextPopupOpen}
         title="내용 없음"
         description="내용을 입력해주세요."
