@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Masonry from "react-masonry-css";
 import Tag from "../components/common/tag/Tag";
-import { type TagProps } from "../components/common/tag/tag";
+import { TAG_MAP, type TagProps } from "../components/common/tag/tag";
 import { useRouter } from "next/navigation";
-import { Search } from "lucide-react";
+import { getLatestPosts } from "@/api/apiFeed"; // (page:number, size:number)
 
 export type Card = {
   id: number;
@@ -13,6 +13,8 @@ export type Card = {
   overlayOpacity: string;
   imageHeight: number;
   imageUrl?: string;
+  roadAddress: string;
+  tags: string[];
 };
 
 export const TAG_LIST: TagProps[] = [
@@ -24,40 +26,125 @@ export const TAG_LIST: TagProps[] = [
   { variant: "향수 🌿" },
 ];
 
-export default function FeedClient({ cards: initialCards }: { cards: Card[] }) {
-  const [sortBy, setSortBy] = useState("latest");
-  const [cards, setCards] = useState(initialCards);
+// API → Card 변환
+function mapPostsToCards(posts: any[]): Card[] {
+  const colors = [
+    "bg-feed-blue1",
+    "bg-feed-green1",
+    "bg-feed-blue2",
+    "bg-feed-green2",
+    "bg-feed-blue3",
+    "bg-feed-green3",
+  ];
+  return posts.map((post) => {
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    const overlayOpacity = (Math.random() * 0.4 + 0.5).toFixed(2);
+    return {
+      id: post.id,
+      color: randomColor,
+      overlayOpacity,
+      imageHeight: 200,
+      imageUrl: post.thumbnailUrl ?? undefined,
+      roadAddress: post.roadAddress,
+      tags: post.tags,
+    } as Card;
+  });
+}
+
+type FeedClientProps = { cards: Card[] }; // 서버에서 page=0 내려줬다고 가정
+
+export default function FeedClient({ cards: initialCards }: FeedClientProps) {
+  const [cards, setCards] = useState<Card[]>(initialCards);
   const router = useRouter();
 
+  // 페이지네이션 상태
+  const pageRef = useRef<number>(1); // 다음 요청할 페이지 (초기 0을 받았으니 1부터)
+  const hasMoreRef = useRef<boolean>(true);
+  const loadingRef = useRef<boolean>(false);
+
+  // 스크롤 컨테이너/센티널
+  const scrollRootRef = useRef<HTMLDivElement | null>(null);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
   const handleImageError = (cardId: number) => {
-    setCards((prevCards) =>
-      prevCards.map((card) =>
-        card.id === cardId ? { ...card, imageUrl: undefined } : card
-      )
+    setCards((prev) =>
+      prev.map((c) => (c.id === cardId ? { ...c, imageUrl: undefined } : c))
     );
   };
 
+  // 더 불러오기
+  const loadMore = async () => {
+    if (loadingRef.current || !hasMoreRef.current) return;
+    loadingRef.current = true;
+    try {
+      const page = pageRef.current;
+      const resp = await getLatestPosts(page, 20); // ✅ 위치 인자만 사용
+      const nextCards = mapPostsToCards(resp?.content ?? []);
+      setCards((prev) => [...prev, ...nextCards]);
+
+      hasMoreRef.current = !(resp?.last === true || nextCards.length === 0);
+      pageRef.current = page + 1;
+    } catch (e) {
+      console.error(e);
+      hasMoreRef.current = false;
+    } finally {
+      loadingRef.current = false;
+    }
+  };
+
+  // 최초 마운트 시, initialCards 없으면 0페이지 로드
+  useEffect(() => {
+    (async () => {
+      if (initialCards && initialCards.length > 0) return;
+      loadingRef.current = true;
+      try {
+        const resp = await getLatestPosts(0, 20);
+        const first = mapPostsToCards(resp?.content ?? []);
+        setCards(first);
+        hasMoreRef.current = !(resp?.last === true || first.length === 0);
+        pageRef.current = 1;
+      } catch (e) {
+        console.error(e);
+        hasMoreRef.current = false;
+      } finally {
+        loadingRef.current = false;
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // IntersectionObserver 등록
+  useEffect(() => {
+    if (!sentinelRef.current) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting) loadMore();
+      },
+      {
+        root: scrollRootRef.current ?? null, // 내부 스크롤 컨테이너
+        rootMargin: "300px", // 미리 당겨서
+        threshold: 0,
+      }
+    );
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
-    <div className="relative flex flex-col h-full">
+    <div className="relative sticky flex flex-col h-full">
       {/* 검색창 */}
-      <div className="relative flex items-center mt-1 mb-4">
+      <div className="mb-4 mt-1">
         <input
           type="text"
-          // value={searchTerm}
-          // onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="당신이 몰랐던 감정의 장소를 발견해보세요"
-          className="focus:outline-none text-base w-full z-10 pl-4 py-2 border rounded-2xl bg-gradient-to-r from-[#F0FEEF] to-[#EBEEFF]"
-        />
-        <Search
-          className="absolute z-10 text-base cursor-pointer right-3"
-          color="#a6a6a6"
-          size={18}
-          // onClick={handleSearch}
+          className="w-full bg-background rounded-xl border-[3px] hover:bg-[#F5F5F5] px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
         />
       </div>
 
-      {/* Masonry 카드 그리드 */}
-      <div className="flex-1 w-full px-1 pb-2 overflow-auto">
+      {/* Masonry 카드 그리드 + 내부 스크롤 컨테이너 */}
+      <div ref={scrollRootRef} className="flex-1 w-full px-1 pb-2 overflow-auto">
         <Masonry
           breakpointCols={2}
           className="my-masonry-grid"
@@ -65,22 +152,22 @@ export default function FeedClient({ cards: initialCards }: { cards: Card[] }) {
         >
           {cards.map((c) => (
             <article
-              key={c.id}
+              key={`${c.id}-${c.imageUrl ?? "noimg"}`}
               className={`relative p-3 rounded-xl box-shadow-inset ${c.color} hover:brightness-90 transition-all duration-200 cursor-pointer`}
               style={{ overflow: "hidden" }}
-              onClick={() => router.push("/detail")}
+              onClick={() => router.push(`/detail/${c.id}`)}
             >
               {/* 흰색 오버레이 */}
               <div
                 style={{
                   position: "absolute",
                   inset: 0,
-                  background: `rgba(245, 245, 245,${c.overlayOpacity})`,
+                  background: `rgba(245, 245, 245, ${c.overlayOpacity})`,
                   pointerEvents: "none",
                   zIndex: 1,
                 }}
               />
-              {/* 사진 */}
+              {/* 사진/텍스트 */}
               <div className="relative z-10">
                 {c.imageUrl && (
                   <div
@@ -89,31 +176,33 @@ export default function FeedClient({ cards: initialCards }: { cards: Card[] }) {
                   >
                     <img
                       src={c.imageUrl}
-                      alt="피드 이미지"
+                      alt={c.roadAddress}
                       className="object-cover w-full h-full"
                       onError={() => handleImageError(c.id)}
                     />
                   </div>
                 )}
-
-                {/* 텍스트 */}
-                <p className="text-sm font-medium line-clamp-1">정릉기숙사</p>
-                <p className="text-xs text-gray-600 line-clamp-2">
-                  <span>
-                    line-clamp-1 클래스를 사용하면 한 줄만 보이게 할 수
-                    있습니다.
-                  </span>
-                </p>
-
+                <p className="text-sm font-medium line-clamp-1">{c.roadAddress}</p>
                 <div className="flex gap-2 pt-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
-                  {TAG_LIST.map((tag) => (
-                    <Tag key={tag.variant} variant={tag.variant} type="small" />
-                  ))}
+                  {c.tags
+                    .map((tag) => TAG_MAP[tag as keyof typeof TAG_MAP])
+                    .filter(Boolean)
+                    .map((mappedTag) => (
+                      <Tag key={mappedTag} variant={mappedTag} type="small" />
+                    ))}
                 </div>
               </div>
             </article>
           ))}
         </Masonry>
+
+        {/* 센티널 */}
+        <div ref={sentinelRef} className="h-10" />
+
+        {/* 로딩/끝 상태 */}
+        {loadingRef.current && (
+          <p className="py-3 text-center text-sm text-gray-500">불러오는 중…</p>
+        )}
       </div>
     </div>
   );
