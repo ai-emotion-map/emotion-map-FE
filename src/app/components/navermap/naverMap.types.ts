@@ -20,7 +20,7 @@ export interface NaverMapProps {
   markers: MarkerData[];
   zoom?: number;
   height?: string;
-  onMarkerClick?: (marker: MarkerData) => void; // ✅ 마커 클릭 콜백 추가
+  onMarkerClick?: (marker: MarkerData) => void;
   options?: NaverMapOptions;
 }
 
