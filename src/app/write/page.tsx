@@ -8,13 +8,6 @@ import { useRouter } from "next/navigation";
 import { TagVariant } from "../components/common/tag/tag.types";
 import LayerPopup from "../components/common/layerPopup/LayerPopup";
 
-interface NaverGeocodeItem {
-  point: { x: string; y: string }; // x: 경도, y: 위도
-  address: string;
-  roadAddress: string;
-}
-
-// 검색 결과 타입 정의
 interface NaverPlace {
   title: string;
   address: string;
@@ -23,17 +16,16 @@ interface NaverPlace {
 
 const Page = () => {
   const [markers, setMarkers] = useState([
-    { lat: 37.6117, lng: 127.0201, emotion: "기본" as TagVariant },
+    { lat: 37.611039, lng: 126.997257, emotion: "기본" as TagVariant },
   ]);
-  const [center, setCenter] = useState({ lat: 37.6117, lng: 127.0201 });
+  const [center, setCenter] = useState({ lat: 37.611039, lng: 126.997257 });
   const [placeName, setPlaceName] = useState("");
-
   const [isLayerPopupOpen, setIsLayerPopupOpen] = useState(false);
-
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState<NaverPlace[]>([]);
   const [loading, setLoading] = useState(false);
   const [isResultOpen, setIsResultOpen] = useState(false);
+  const [zoom, setZoom] = useState(13);
 
   const router = useRouter();
 
@@ -67,11 +59,12 @@ const Page = () => {
     window.naver.maps.Service.geocode(
       { query: place.roadAddress || place.address },
       (status, response) => {
-        console.log(status, response);
+        if (status !== window.naver.maps.Service.Status.OK) return;
 
-        const lat = parseFloat(response?.v2.addresses[0].y);
-        const lng = parseFloat(response?.v2.addresses[0].x);
+        const lat = parseFloat(response.v2.addresses[0].y);
+        const lng = parseFloat(response.v2.addresses[0].x);
 
+        setZoom(20);
         setCenter({ lat, lng });
         setMarkers([{ lat, lng, emotion: "기본" as TagVariant }]);
         setIsResultOpen(false);
@@ -132,7 +125,14 @@ const Page = () => {
           </div>
         )}
 
-        <NaverMap markers={markers} center={center} zoom={12} height="60vh" />
+        {/* key로 강제 렌더링 */}
+        <NaverMap
+          key={`${center.lat}-${center.lng}`}
+          markers={markers}
+          center={center}
+          zoom={zoom}
+          height="60vh"
+        />
       </div>
 
       <div className="z-10 mb-3">
@@ -152,7 +152,7 @@ const Page = () => {
                   `/write/diary?place=${placeName}&lat=${lat}&lng=${lng}`
                 );
               } else {
-                setIsLayerPopupOpen(true); // 팝업 열기
+                setIsLayerPopupOpen(true);
               }
             }}
             className="w-2/3"
@@ -162,7 +162,7 @@ const Page = () => {
         </div>
       </div>
 
-      {placeName == "" && (
+      {placeName === "" && (
         <LayerPopup
           open={isLayerPopupOpen}
           onOpenChange={setIsLayerPopupOpen}
