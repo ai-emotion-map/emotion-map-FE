@@ -15,6 +15,8 @@ export type Card = {
   imageUrl?: string;
   roadAddress: string;
   tags: string[];
+  placeName: string;
+  content: string;
 };
 
 export const TAG_LIST: TagProps[] = [
@@ -151,7 +153,9 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
                     />
                   </div>
                 )}
-                <p className="text-sm font-medium line-clamp-1">{c.roadAddress}</p>
+                <h3 className="font-bold text-base line-clamp-2 mb-1">{c.placeName}</h3>
+                <p className="text-xs font-medium line-clamp-1 text-gray-500">{c.roadAddress}</p>
+                <p className="text-sm mt-2 line-clamp-2">{c.content}</p>
                 <div className="flex gap-2 pt-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                   {c.tags
                     .map((tag) => TAG_MAP[tag as keyof typeof TAG_MAP])

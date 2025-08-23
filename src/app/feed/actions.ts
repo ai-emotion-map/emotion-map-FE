@@ -27,6 +27,8 @@ function mapPostsToCards(posts: any[]): Card[] {
             imageUrl: post.thumbnailUrl? `${BASE_URL}${post.thumbnailUrl}` : undefined,
             roadAddress: post.roadAddress,
             tags: post.tags,
+            placeName: post.placeName,
+            content: post.content,
         };
     });
 }
