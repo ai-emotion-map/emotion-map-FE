@@ -98,13 +98,11 @@ const DiaryForm = () => {
 
     try {
       const response = await Api.createPostWithImages({
-        userId: 0,
         lat: Number(lat) || 0,
         lng: Number(lng) || 0,
         placeName: place,
         content: text,
         images: images, // 선택된 이미지 파일 배열
-        emotions: ["gkdl"]
       });
 
       setNewPostId(response.id);
