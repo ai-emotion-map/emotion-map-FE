@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Tag from "../components/common/tag/Tag";
 import {
   REVERSE_TAG_MAP,
@@ -45,7 +45,11 @@ const MapClient = ({ markers }: { markers: MarkerData[] }) => {
 
   // 검색어 입력
   const handleSearch = async () => {
-    const markersData = await Api.searchPosts({ q: searchTerm });
+    const markersData = await Api.searchPosts({
+      q: searchTerm,
+      tag: searchTag[0] ? REVERSE_TAG_MAP[searchTag[0]] : undefined,
+    });
+
     if (!markersData.content || markersData.content.length === 0) {
       setIsOpenLayerPopup(true);
       return;
@@ -55,23 +59,41 @@ const MapClient = ({ markers }: { markers: MarkerData[] }) => {
       lat: markersData.content[0].lat,
       lng: markersData.content[0].lng,
     });
-    setZoom(18);
+    setZoom(12);
 
     const searchMarkers = markersData.content.map((marker: Marker) => ({
       lat: marker.lat,
       lng: marker.lng,
-      emotion: (TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] ||
-        "기본") as TagVariant,
+
+      emotion: searchTag[0]
+        ? searchTag[0]
+        : ((TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] ||
+            "기본") as TagVariant),
     }));
 
     setMapMarkers(searchMarkers);
   };
 
   // 태그 필터링
-  const handleFilterByTag = async (tag: TagVariant) => {
-    const markersData = await Api.searchPosts({ tag: REVERSE_TAG_MAP[tag] });
+  const handleFilterByTag = async (tag: TagVariant | null) => {
+    if (!tag) {
+      // 태그가 없으면 전체 마커
+      setMapMarkers(markers); // 초기 마커 상태로 복원
+      setZoom(12);
+      return;
+    }
+
+    const markersData = await Api.searchPosts({
+      q: searchTerm,
+      tag: REVERSE_TAG_MAP[tag],
+    });
+
     if (!markersData.content || markersData.content.length === 0) {
       setIsOpenLayerPopup(true);
+      setSearchTag([]);
+      setSearchTerm("");
+      setMapMarkers(markers); // 초기 마커 상태로 복원
+      setZoom(12);
       return;
     }
 
@@ -118,8 +140,13 @@ const MapClient = ({ markers }: { markers: MarkerData[] }) => {
               variant={tag}
               isActive={searchTag.includes(tag)}
               onClick={() => {
-                setSearchTag([tag]);
-                handleFilterByTag(tag);
+                if (searchTag.includes(tag)) {
+                  setSearchTag([]);
+                  handleFilterByTag(null);
+                } else {
+                  setSearchTag([tag]);
+                  handleFilterByTag(tag);
+                }
               }}
             />
           ))}
