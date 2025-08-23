@@ -64,7 +64,7 @@ const Page = () => {
         const lat = parseFloat(response.v2.addresses[0].y);
         const lng = parseFloat(response.v2.addresses[0].x);
 
-        setZoom(20);
+        setZoom(18);
         setCenter({ lat, lng });
         setMarkers([{ lat, lng, emotion: "기본" as TagVariant }]);
         setIsResultOpen(false);
