@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
 import React, { useEffect, useRef, useState } from "react";
 import Masonry from "react-masonry-css";
 import Tag from "../components/common/tag/Tag";
 import { TAG_MAP, type TagProps } from "../components/common/tag/tag.types";
 import { useRouter } from "next/navigation";
-import { getLatestPosts } from "@/app/api/apiFeed"; // (page:number, size:number)
+import { getCards } from "./actions"; // Import the server action
 
 export type Card = {
   id: number;
@@ -15,6 +15,8 @@ export type Card = {
   imageUrl?: string;
   roadAddress: string;
   tags: string[];
+  placeName: string;
+  content: string;
 };
 
 export const TAG_LIST: TagProps[] = [
@@ -26,42 +28,9 @@ export const TAG_LIST: TagProps[] = [
   { variant: "향수 🌿" },
 ];
 
-// API 응답 타입
-interface FeedPost {
-  id: number;
-  thumbnailUrl: string | null;
-  roadAddress: string;
-  tags: string[];
-}
+type FeedClientProps = { initialCards: Card[] };
 
-// API → Card 변환
-function mapPostsToCards(posts: FeedPost[]): Card[] {
-  const colors = [
-    "bg-feed-blue1",
-    "bg-feed-green1",
-    "bg-feed-blue2",
-    "bg-feed-green2",
-    "bg-feed-blue3",
-    "bg-feed-green3",
-  ];
-  return posts.map((post) => {
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    const overlayOpacity = (Math.random() * 0.4 + 0.5).toFixed(2);
-    return {
-      id: post.id,
-      color: randomColor,
-      overlayOpacity,
-      imageHeight: 200,
-      imageUrl: post.thumbnailUrl ?? undefined, // null → undefined
-      roadAddress: post.roadAddress,
-      tags: post.tags,
-    };
-  });
-}
-
-type FeedClientProps = { cards: Card[] }; // 서버에서 page=0 내려줬다고 가정
-
-export default function FeedClient({ cards: initialCards }: FeedClientProps) {
+export default function FeedClient({ initialCards }: FeedClientProps) {
   const [cards, setCards] = useState<Card[]>(initialCards);
   const router = useRouter();
 
@@ -83,11 +52,10 @@ export default function FeedClient({ cards: initialCards }: FeedClientProps) {
     loadingRef.current = true;
     try {
       const page = pageRef.current;
-      const resp = await getLatestPosts(page, 20);
-      const nextCards = mapPostsToCards(resp.content ?? ([] as FeedPost[]));
+      const { cards: nextCards, isLast } = await getCards(page, 20); // Call server action
       setCards((prev) => [...prev, ...nextCards]);
 
-      hasMoreRef.current = !(resp.last === true || nextCards.length === 0);
+      hasMoreRef.current = !isLast;
       pageRef.current = page + 1;
     } catch (e) {
       console.error(e);
@@ -97,15 +65,15 @@ export default function FeedClient({ cards: initialCards }: FeedClientProps) {
     }
   };
 
+  // Fallback for when server doesn't provide initial cards.
   useEffect(() => {
     (async () => {
       if (initialCards && initialCards.length > 0) return;
       loadingRef.current = true;
       try {
-        const resp = await getLatestPosts(0, 20);
-        const first = mapPostsToCards(resp.content ?? ([] as FeedPost[]));
-        setCards(first);
-        hasMoreRef.current = !(resp.last === true || first.length === 0);
+        const { cards: firstCards, isLast } = await getCards(0, 20);
+        setCards(firstCards);
+        hasMoreRef.current = !isLast;
         pageRef.current = 1;
       } catch (e) {
         console.error(e);
@@ -116,13 +84,18 @@ export default function FeedClient({ cards: initialCards }: FeedClientProps) {
     })();
   }, [initialCards]);
 
+  // IntersectionObserver setup
   useEffect(() => {
     if (!sentinelRef.current) return;
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) loadMore();
       },
-      { root: scrollRootRef.current, rootMargin: "300px", threshold: 0 }
+      {
+        root: scrollRootRef.current ?? null,
+        rootMargin: "300px",
+        threshold: 0,
+      }
     );
     observer.observe(sentinelRef.current);
     return () => observer.disconnect();
@@ -177,9 +150,9 @@ export default function FeedClient({ cards: initialCards }: FeedClientProps) {
                     />
                   </div>
                 )}
-                <p className="text-sm font-medium line-clamp-1">
-                  {c.roadAddress}
-                </p>
+                <h3 className="font-bold text-base line-clamp-2 mb-1">{c.placeName}</h3>
+                <p className="text-xs font-medium line-clamp-1 text-gray-500">{c.roadAddress}</p>
+                <p className="text-sm mt-2 line-clamp-2">{c.content}</p>
                 <div className="flex gap-2 pt-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                   {c.tags
                     .map((tag) => TAG_MAP[tag as keyof typeof TAG_MAP])
