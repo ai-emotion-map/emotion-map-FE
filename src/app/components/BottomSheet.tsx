@@ -1,10 +1,23 @@
-import React from "react";
-import { TagVariant } from "./common/tag/tag.types";
+import React, { useEffect } from "react";
+import { BackendTag, TAG_MAP, TagVariant } from "./common/tag/tag.types";
 import clsx from "clsx";
 import NaverMap from "./navermap/NaverMap";
 import Button from "./common/button/Button";
 import { X } from "lucide-react";
 import Tag from "./common/tag/Tag";
+import { Api } from "../api/api";
+
+export type MarkerDetail = {
+  id: number;
+  lat: number;
+  lng: number;
+  roadAddress: string;
+  placeName: string | null;
+  content: string;
+  tags: BackendTag[];
+  imageUrls: string[];
+  createdAt: string; // ISO 8601 문자열
+};
 
 const BottomSheet = ({
   isExpanded,
@@ -15,23 +28,31 @@ const BottomSheet = ({
   isExpanded: boolean;
   setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   selectedMarker: {
+    id?: number;
     lat: number;
     lng: number;
     emotion: TagVariant;
   } | null;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const data = {
-    title: "서울특별시청",
-    address: "장소 주소",
-    content:
-      "장소에 대한 설명이나 리뷰가 여기에 들어갑니다. 장소에 대한 설명이나 리뷰가 여기에 들어갑니다.장소에 대한 설명이나 리뷰가 여기에 들어갑니다.장소에 대한 설명이나 리뷰가 여기에 들어갑니다.장소에 대한 설명이나 리뷰가 여기에 들어갑니다.장소에 대한 설명이나 리뷰가 여기에 들어갑니다.",
-    images: [
-      "https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d",
-      "https://images.unsplash.com/photo-1518779578993-ec3579fee39f",
-    ],
-    tags: ["가족 🏠", "우정 🤝", "위로/치유 🌱", "외로움 🌙"] as const,
-  };
+  const [data, setData] = React.useState<MarkerDetail | null>(null);
+  console.log(selectedMarker?.id);
+
+  useEffect(() => {
+    const fetchMarkers = async () => {
+      try {
+        if (selectedMarker?.id) {
+          const markersData = await Api.getPostById(selectedMarker?.id);
+          console.log(markersData);
+          setData(markersData);
+        }
+      } catch (err) {
+        console.error("마커 불러오기 실패:", err);
+      }
+    };
+
+    fetchMarkers();
+  }, []);
 
   function openNaverDirections(destinationName: string) {
     const url = `https://map.naver.com/v5/search/${encodeURIComponent(destinationName)}`;
@@ -59,36 +80,37 @@ const BottomSheet = ({
       {/* 내용 */}
       <div className="flex flex-col flex-1 gap-4 p-4 overflow-y-auto">
         <div>
-          <h2 className="mb-1 text-lg font-bold">{data.title}</h2>
-          <h4 className="text-sm">{data.address}</h4>
+          <h2 className="mb-1 text-lg font-bold">{data?.placeName}</h2>
+          <h4 className="text-sm">{data?.roadAddress}</h4>
         </div>
 
         <div
           className={clsx(
-            `flex items-start gap-3`,
-            isExpanded ? "flex-col" : "flex-row"
+            `flex items-start`,
+            isExpanded ? "flex-col" : "flex-row",
+            data?.imageUrls[0] ? "gap-3" : "gap-0"
           )}
         >
-          {!isExpanded ? (
+          {!isExpanded && data?.imageUrls[0] ? (
             <img
-              src={data.images[0]}
-              alt={data.title}
+              src={data?.imageUrls[0]}
+              alt={data?.placeName || "No Image"}
               className="rounded-lg w-[150px] h-28"
             />
           ) : (
             <div className="flex gap-3 overflow-x-auto whitespace-nowrap scrollbar-hide">
-              {data.images.map((image, index) => (
+              {data?.imageUrls.map((image, index) => (
                 <img
                   key={index}
                   src={image}
-                  alt={data.title}
+                  alt={data?.placeName || "No Image"}
                   className="w-full h-auto rounded-lg max-h-72"
                 />
               ))}
             </div>
           )}
           <p className={!isExpanded ? "h-28 overflow-hidden" : ""}>
-            {data.content}
+            {data?.content}
           </p>
         </div>
 
@@ -100,8 +122,8 @@ const BottomSheet = ({
               : "overflow-x-auto whitespace-nowrap scrollbar-hide"
           )}
         >
-          {data.tags.map((tag) => (
-            <Tag key={tag} variant={tag} />
+          {data?.tags.map((tag) => (
+            <Tag key={tag} variant={TAG_MAP[tag]} />
           ))}
         </div>
 
@@ -124,8 +146,8 @@ const BottomSheet = ({
             <div className="mb-3">
               <Button
                 onClick={() => {
-                  if (selectedMarker) {
-                    openNaverDirections(data.title);
+                  if (selectedMarker && data?.placeName) {
+                    openNaverDirections(data?.placeName);
                   }
                 }}
               >

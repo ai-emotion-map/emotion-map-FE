@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Tag from "../components/common/tag/Tag";
 import {
   REVERSE_TAG_MAP,
@@ -15,7 +15,11 @@ import { Api } from "../api/api";
 import { Marker } from "../page";
 import LayerPopup from "../components/common/layerPopup/LayerPopup";
 
-const MapClient = ({ markers }: { markers: MarkerData[] }) => {
+const MapClient = ({
+  markers,
+}: {
+  markers: (MarkerData & { id?: number })[];
+}) => {
   const [mapMarkers, setMapMarkers] = useState<MarkerData[]>(markers);
 
   const tags = [
@@ -29,11 +33,9 @@ const MapClient = ({ markers }: { markers: MarkerData[] }) => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchTag, setSearchTag] = useState<TagVariant[]>([]);
-  const [selectedMarker, setSelectedMarker] = useState<null | {
-    lat: number;
-    lng: number;
-    emotion: TagVariant;
-  }>(null);
+  const [selectedMarker, setSelectedMarker] = useState<
+    null | (MarkerData & { id?: number })
+  >(null);
 
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -45,7 +47,11 @@ const MapClient = ({ markers }: { markers: MarkerData[] }) => {
 
   // 검색어 입력
   const handleSearch = async () => {
-    const markersData = await Api.searchPosts({ q: searchTerm });
+    const markersData = await Api.searchPosts({
+      q: searchTerm,
+      tag: searchTag[0] ? REVERSE_TAG_MAP[searchTag[0]] : undefined,
+    });
+
     if (!markersData.content || markersData.content.length === 0) {
       setIsOpenLayerPopup(true);
       return;
@@ -55,23 +61,41 @@ const MapClient = ({ markers }: { markers: MarkerData[] }) => {
       lat: markersData.content[0].lat,
       lng: markersData.content[0].lng,
     });
-    setZoom(18);
+    setZoom(12);
 
     const searchMarkers = markersData.content.map((marker: Marker) => ({
       lat: marker.lat,
       lng: marker.lng,
-      emotion: (TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] ||
-        "기본") as TagVariant,
+
+      emotion: searchTag[0]
+        ? searchTag[0]
+        : ((TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] ||
+            "기본") as TagVariant),
     }));
 
     setMapMarkers(searchMarkers);
   };
 
   // 태그 필터링
-  const handleFilterByTag = async (tag: TagVariant) => {
-    const markersData = await Api.searchPosts({ tag: REVERSE_TAG_MAP[tag] });
+  const handleFilterByTag = async (tag: TagVariant | null) => {
+    if (!tag) {
+      // 태그가 없으면 전체 마커
+      setMapMarkers(markers); // 초기 마커 상태로 복원
+      setZoom(12);
+      return;
+    }
+
+    const markersData = await Api.searchPosts({
+      q: searchTerm,
+      tag: REVERSE_TAG_MAP[tag],
+    });
+
     if (!markersData.content || markersData.content.length === 0) {
       setIsOpenLayerPopup(true);
+      setSearchTag([]);
+      setSearchTerm("");
+      setMapMarkers(markers); // 초기 마커 상태로 복원
+      setZoom(12);
       return;
     }
 
@@ -118,8 +142,13 @@ const MapClient = ({ markers }: { markers: MarkerData[] }) => {
               variant={tag}
               isActive={searchTag.includes(tag)}
               onClick={() => {
-                setSearchTag([tag]);
-                handleFilterByTag(tag);
+                if (searchTag.includes(tag)) {
+                  setSearchTag([]);
+                  handleFilterByTag(null);
+                } else {
+                  setSearchTag([tag]);
+                  handleFilterByTag(tag);
+                }
               }}
             />
           ))}
@@ -134,8 +163,8 @@ const MapClient = ({ markers }: { markers: MarkerData[] }) => {
             zoom={zoom}
             onMarkerClick={(marker) => {
               setSelectedMarker(marker);
-              setIsOpen(true);
-              setIsExpanded(false); // 처음은 반만 열림
+              setIsExpanded(false); // 항상 처음은 반만 열림
+              if (!isOpen) setIsOpen(true); // 열려있으면 그대로, 안 열려있으면 열기
             }}
             height="95%"
           />
@@ -143,6 +172,7 @@ const MapClient = ({ markers }: { markers: MarkerData[] }) => {
           {/* ✅ 바텀시트 */}
           {isOpen && (
             <BottomSheet
+              key={selectedMarker?.id}
               isExpanded={isExpanded}
               setIsExpanded={setIsExpanded}
               selectedMarker={selectedMarker}

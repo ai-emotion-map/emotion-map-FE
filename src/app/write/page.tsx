@@ -7,6 +7,7 @@ import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { TagVariant } from "../components/common/tag/tag.types";
 import LayerPopup from "../components/common/layerPopup/LayerPopup";
+import { MarkerData } from "../components/navermap/naverMap.types";
 
 interface NaverPlace {
   title: string;
@@ -15,8 +16,8 @@ interface NaverPlace {
 }
 
 const Page = () => {
-  const [markers, setMarkers] = useState([
-    { lat: 37.611039, lng: 126.997257, emotion: "기본" as TagVariant },
+  const [markers, setMarkers] = useState<MarkerData[]>([
+    { lat: 37.611039, lng: 126.997257, emotion: "기본" },
   ]);
   const [center, setCenter] = useState({ lat: 37.611039, lng: 126.997257 });
   const [placeName, setPlaceName] = useState("");
