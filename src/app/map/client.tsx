@@ -163,8 +163,8 @@ const MapClient = ({
             zoom={zoom}
             onMarkerClick={(marker) => {
               setSelectedMarker(marker);
-              setIsOpen(true);
-              setIsExpanded(false); // 처음은 반만 열림
+              setIsExpanded(false); // 항상 처음은 반만 열림
+              if (!isOpen) setIsOpen(true); // 열려있으면 그대로, 안 열려있으면 열기
             }}
             height="95%"
           />
@@ -172,6 +172,7 @@ const MapClient = ({
           {/* ✅ 바텀시트 */}
           {isOpen && (
             <BottomSheet
+              key={selectedMarker?.id}
               isExpanded={isExpanded}
               setIsExpanded={setIsExpanded}
               selectedMarker={selectedMarker}
