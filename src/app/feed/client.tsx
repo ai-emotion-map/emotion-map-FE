@@ -95,11 +95,12 @@ export default function FeedClient({ cards: initialCards }: { cards: Card[] }) {
                 </p>
                 <div className="flex gap-2 pt-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                   {c.tags
-                    .filter((tag) => TAG_MAP[tag as keyof typeof TAG_MAP])
-                    .map((tag) => (
+                    .map((tag) => TAG_MAP[tag as keyof typeof TAG_MAP]) // API 응답 → 프론트 변환
+                    .filter((mappedTag) => mappedTag) // 매칭 안 되면 제외
+                    .map((mappedTag) => (
                       <Tag
-                        key={tag}
-                        variant={tag}   // TAG_MAP 안 거치고 원본 값 그대로
+                        key={mappedTag}
+                        variant={mappedTag}
                         type="small"
                       />
                     ))}
