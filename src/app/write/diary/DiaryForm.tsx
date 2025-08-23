@@ -33,6 +33,7 @@ const DiaryForm = () => {
   const [isSubmitPopupOpen, setIsSubmitPopupOpen] = useState(false); // 작성 완료 모달
   const [isEmptyTextPopupOpen, setIsEmptyTextPopupOpen] = useState(false); // 내용 없음 모달
   const [isCancelPopupOpen, setIsCancelPopupOpen] = useState(false); // 작성 취소 모달
+  const [newPostId, setNewPostId] = useState<number | null>(null); // 새 게시물 ID
 
   // 크롭 관련 상태
   const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
@@ -97,17 +98,16 @@ const DiaryForm = () => {
 
     try {
       const response = await Api.createPostWithImages({
-        id: 0,
+        userId: 0,
         lat: Number(lat) || 0,
         lng: Number(lng) || 0,
-        roadAddress: "서울시 정릉동",
-        tags: [],
-        imageUrls: [],
+        placeName: place,
         content: text,
         images: images, // 선택된 이미지 파일 배열
+        emotions: ["gkdl"]
       });
 
-      console.log("서버 응답:", response);
+      setNewPostId(response.id);
       setIsSubmitPopupOpen(true);
     } catch (e) {
       if (axios.isAxiosError(e)) {
@@ -234,7 +234,11 @@ const DiaryForm = () => {
         onOpenChange={setIsSubmitPopupOpen}
         title="작성 완료"
         description="작성을 완료하시겠습니까?"
-        onConfirm={() => router.push("/analysis")}
+        onConfirm={() => {
+          if (newPostId) {
+            router.push(`/analysis?id=${newPostId}`);
+          }
+        }}
         type="cancelConfirm"
       />
 
