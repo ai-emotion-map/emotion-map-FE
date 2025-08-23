@@ -4,7 +4,7 @@ import clsx from "clsx";
 import React, { useState } from "react";
 import { TAG_STYLES, TagProps } from "./tag.types";
 
-const Tag = ({ variant, type = "default", onClick, isActive }: TagProps) => {
+export const Tag = ({ variant, type = "default", onClick, isActive }: TagProps) => {
   const { color, shadowColor } = TAG_STYLES[variant];
   const [active, setActive] = useState(false);
 
