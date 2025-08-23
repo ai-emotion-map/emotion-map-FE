@@ -32,10 +32,19 @@ export type Page<T> = {
   empty: boolean;
 };
 
+// 피드 페이지 api
 export const getLatestPosts = async (page = 0, size = 20) => {
   const { data } = await api.get<Page<FeedPost>>("/posts/latest", {
     params: {page, size: Math.min(size, 100)},
   }
   );
+  return data;
+};
+
+// 피드 검색용 api
+export const searchPosts = async (q: string, page = 0, size = 20) => {
+  const { data } = await api.get<Page<FeedPost>>("/posts/search", {
+    params: { q, page, size: Math.min(size, 100) },
+  });
   return data;
 };

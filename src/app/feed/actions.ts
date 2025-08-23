@@ -1,6 +1,6 @@
 'use server';
 
-import { getLatestPosts } from "@/app/api/apiFeed";
+import { getLatestPosts, searchPosts } from "@/app/api/apiFeed";
 import type { Card } from "./client";
 import type { FeedPost } from "@/app/api/apiFeed";
 
@@ -36,6 +36,18 @@ function mapPostsToCards(posts: FeedPost[]): Card[] {
 
 export async function getCards(page: number = 0, size: number = 20) {
     const feedData = await getLatestPosts(page, size);
+    const cards = mapPostsToCards(feedData.content ?? []);
+    return {
+        cards,
+        isLast: feedData.last ?? true,
+    };
+}
+
+export async function searchCards(q: string, page: number = 0, size: number = 20) {
+    if (!q.trim()) {
+        return { cards: [], isLast: true };
+    }
+    const feedData = await searchPosts(q, page, size);
     const cards = mapPostsToCards(feedData.content ?? []);
     return {
         cards,
