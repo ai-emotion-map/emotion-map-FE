@@ -8,9 +8,9 @@ const Header = () => {
   const router = useRouter();
 
   return (
-    <header className="flex items-center h-[80px] pl-5 bg-background">
+    <header className="flex items-center h-[80px] pl-4 bg-background">
       <Image
-        src="/images/clustory.png"
+        src="/images/Clustory.png"
         alt="Logo"
         width={150}
         height={40}
