@@ -79,7 +79,7 @@ const MapClient = ({ markers }: { markers: MarkerData[] }) => {
       lat: markersData.content[0].lat,
       lng: markersData.content[0].lng,
     });
-    setZoom(18);
+    setZoom(12);
 
     const searchMarkers = markersData.content.map((marker: Marker) => ({
       lat: marker.lat,
