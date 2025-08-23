@@ -1,8 +1,8 @@
 'use server';
 
-import { getLatestPosts } from "@/api/apiFeed";
+import { getLatestPosts } from "@/app/api/apiFeed";
 import type { Card } from "./client";
-import type { FeedPost } from "@/api/apiFeed";
+import type { FeedPost } from "@/app/api/apiFeed";
 
 const BASE_URL = "https://clustory.shop";
 
