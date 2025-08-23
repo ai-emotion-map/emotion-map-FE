@@ -1,52 +1,48 @@
 "use client";
 
-import React, { useState, useEffect } from "react"; // Import useState and useEffect
+import React, { useState, useEffect } from "react";
 import Button from "../components/common/button/Button";
-import NaverMap from "../components/navermap/NaverMap"; // Import NaverMap
-import { MarkerData } from "../components/navermap/naverMap.types"; // Import MarkerData
-import Tag from "../components/common/tag/Tag"; // Import Tag component
-import { TagVariant, TAG_STYLES } from "../components/common/tag/tag.types"; // Import TagVariant and TAG_STYLES
-import { useRouter } from "next/navigation";
+import NaverMap from "../components/navermap/NaverMap";
+import { MarkerData } from "../components/navermap/naverMap.types";
+import { Tag } from "../components/common/tag/Tag";
+import { TagVariant } from "../components/common/tag/tag.types";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Api } from "@/app/api/api"; // Import Api
 
 const AnalysisPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [tags, setTags] = useState<string[]>([]);
+  const [marker, setMarker] = useState<MarkerData | null>(null);
+
+  useEffect(() => {
+    const id = searchParams.get("id");
+    if (id) {
+      const postId = parseInt(id, 10);
+      Api.getPostById(postId)
+        .then((data) => {
+          setTags(data.tags.slice(0, 3)); // Get first 3 tags
+          setMarker({ lat: data.lat, lng: data.lng, emotion: data.tags[0] as TagVariant });
+        })
+        .catch(console.error);
+    }
+  }, [searchParams]);
+
   const handleSave = () => {
     router.push("/");
   };
-
-  // Dummy marker data for NaverMap
-  const dummyMarkers: MarkerData[] = [
-    { lat: 37.5665, lng: 126.978, emotion: "가족 🏠" as TagVariant }, // Seoul
-    { lat: 35.1796, lng: 129.0756, emotion: "우정 🤝" as TagVariant }, // Busan
-    { lat: 33.4507, lng: 126.5706, emotion: "외로움 🌙" as TagVariant }, // Jeju
-  ];
-
-  // Get all TagVariant values
-  const allTagVariants: TagVariant[] = Object.keys(TAG_STYLES) as TagVariant[];
-
-  // Function to get random tags
-  const getRandomTags = (count: number): TagVariant[] => {
-    const shuffled = [...allTagVariants].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, count);
-  };
-
-  const [randomTags, setRandomTags] = useState<TagVariant[]>([]);
-
-  useEffect(() => {
-    setRandomTags(getRandomTags(3)); // Generate 3 random tags on component mount
-  }, []);
 
   return (
     <div className="flex flex-col h-full">
       {/* Main content */}
       <div className="flex flex-col flex-grow pt-5 space-y-5">
         {/* Map placeholder replaced with NaverMap */}
-        <NaverMap markers={dummyMarkers} height="490px" />
+        <NaverMap markers={marker ? [marker] : []} height="490px" />
 
         {/* Emotion tags */}
         <div className="flex justify-center pb-6 space-x-4">
-          {randomTags.map((tag, index) => (
-            <Tag key={index} variant={tag} type="default" /> // Render Tag component
+          {tags.map((tag, index) => (
+            <Tag key={index} variant={tag as TagVariant} type="default" />
           ))}
         </div>
       </div>
