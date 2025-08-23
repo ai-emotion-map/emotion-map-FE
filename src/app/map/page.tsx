@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Tag from "../components/common/tag/Tag";
-import { TagVariant } from "../components/common/tag/tag";
+import { TagVariant } from "../components/common/tag/tag.types";
 import NaverMap from "../components/navermap/NaverMap";
 import { Search } from "lucide-react";
 import BottomSheet from "../components/BottomSheet";

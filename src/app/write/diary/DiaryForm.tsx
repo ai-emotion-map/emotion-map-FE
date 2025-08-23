@@ -1,6 +1,6 @@
 "use client";
 
-import { Api } from "@/api/api";
+import { Api } from "@/app/api/api";
 import axios from "axios";
 
 import React, { useState, useCallback } from "react";
