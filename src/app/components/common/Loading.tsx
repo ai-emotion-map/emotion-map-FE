@@ -12,7 +12,7 @@
 // ver2. 동그라미들이 돌아감
 export default function Loading() {
   return (
-    <div className="flex items-center justify-center h-screen">
+    <div className="flex items-center justify-center max-h-screen">
       <div className="relative w-24 h-24 animate-[spin-slow_2s_linear_infinite]">
         {" "}
         {/* 이 div가 전체를 회전시킵니다 */}
