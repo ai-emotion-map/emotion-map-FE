@@ -28,8 +28,7 @@ const NaverMap = ({
     mapInstance.current = new window.naver.maps.Map(mapRef.current, {
       center: mapCenter,
       zoom,
-      draggable: options?.draggable ?? true,
-      pinchZoom: options?.pinchZoom ?? true,
+      ...options,
     });
 
     renderMarkers();
