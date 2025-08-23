@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import Tag from "../components/common/tag/Tag";
-import { TagVariant } from "../components/common/tag/tag";
-import NaverMap from "../components/navermap/NaverMap";
+import { TagVariant } from "../components/common/tag/tag.types";
 import Button from "../components/common/button/Button";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Tag from "../components/common/tag/Tag";
+import NaverMap from "../components/navermap/NaverMap";
 
 const DetailPage = () => {
   const [selectedMarker] = useState<{

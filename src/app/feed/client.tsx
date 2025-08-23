@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Masonry from "react-masonry-css";
 import Tag from "../components/common/tag/Tag";
-import { TAG_MAP, type TagProps } from "../components/common/tag/tag";
+import { TAG_MAP, type TagProps } from "../components/common/tag/tag.types";
 import { useRouter } from "next/navigation";
 import { getCards } from "./actions"; // Import the server action
 
@@ -82,8 +82,7 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
         loadingRef.current = false;
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [initialCards]);
 
   // IntersectionObserver setup
   useEffect(() => {
@@ -100,13 +99,11 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
     );
     observer.observe(sentinelRef.current);
     return () => observer.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className="relative sticky flex flex-col h-full">
-      {/* 검색창 */}
-      <div className="mb-4 mt-1">
+      <div className="mt-1 mb-4">
         <input
           type="text"
           placeholder="당신이 몰랐던 감정의 장소를 발견해보세요"
@@ -114,8 +111,10 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
         />
       </div>
 
-      {/* Masonry 카드 그리드 + 내부 스크롤 컨테이너 */}
-      <div ref={scrollRootRef} className="flex-1 w-full px-1 pb-2 overflow-auto">
+      <div
+        ref={scrollRootRef}
+        className="flex-1 w-full px-1 pb-2 overflow-auto"
+      >
         <Masonry
           breakpointCols={2}
           className="my-masonry-grid"
@@ -128,7 +127,6 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
               style={{ overflow: "hidden" }}
               onClick={() => router.push(`/detail/${c.id}`)}
             >
-              {/* 흰색 오버레이 */}
               <div
                 style={{
                   position: "absolute",
@@ -138,7 +136,6 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
                   zIndex: 1,
                 }}
               />
-              {/* 사진/텍스트 */}
               <div className="relative z-10">
                 {c.imageUrl && (
                   <div
@@ -169,12 +166,9 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
           ))}
         </Masonry>
 
-        {/* 센티널 */}
         <div ref={sentinelRef} className="h-10" />
-
-        {/* 로딩/끝 상태 */}
         {loadingRef.current && (
-          <p className="py-3 text-center text-sm text-gray-500">불러오는 중…</p>
+          <p className="py-3 text-sm text-center text-gray-500">불러오는 중…</p>
         )}
       </div>
     </div>

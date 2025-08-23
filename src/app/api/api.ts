@@ -1,19 +1,17 @@
-import axios from 'axios';
+import axios from "axios";
 
-// Axios 인스턴스 생성
-// TODO: 실제 API 베이스 URL로 변경해주세요.
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://clustory.shop'; 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://clustory.shop";
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 // SWR fetcher 함수
-// SWR에서 데이터를 가져올 때 사용할 함수입니다.
-export const fetcher = (url: string) => api.get(url).then(res => res.data);
+export const fetcher = (url: string) => api.get(url).then((res) => res.data);
 
 // API 호출을 위한 함수들을 정의하는 객체
 export const Api = {
@@ -26,7 +24,7 @@ export const Api = {
   getLatestPosts: async (page: number = 0, size: number = 20) => {
     // size는 최대 100으로 제한
     const actualSize = Math.min(size, 100);
-    const response = await api.get('/post/latest', {
+    const response = await api.get("/post/latest", {
       params: {
         page,
         size: actualSize,
@@ -34,7 +32,6 @@ export const Api = {
     });
     return response.data;
   },
-
 
   /**
    * 새 게시물을 작성합니다.
@@ -49,7 +46,7 @@ export const Api = {
     lng: number;
     roadAddress: string;
   }) => {
-    const response = await api.post('/posts', payload);
+    const response = await api.post("/posts", payload);
     return response.data;
   },
 
@@ -73,46 +70,34 @@ export const Api = {
     const { images, ...jsonData } = payload;
 
     // JSON 데이터를 한 덩어리로 append
-    formData.append('post', JSON.stringify(jsonData));
+    formData.append("post", JSON.stringify(jsonData));
 
     // 이미지 파일 append
     if (images && images.length > 0) {
-      images.forEach((file) => formData.append('images', file));
+      images.forEach((file) => formData.append("images", file));
     }
 
-    const response = await api.post('/posts/form', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
+    const response = await api.post("/posts/form", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
-    },
+  },
 
-  // 여기에 다른 API 호출 함수들을 추가할 수 있습니다.
-  // 예시:
-  // getUserProfile: async (userId: string) => {
-  //   const response = await api.get(`/users/${userId}`);
-  //   return response.data;
-  // },
+  /**
+   * 전체 위치 조회 (마커)
+   * @param minLat 최소 위도 (선택)
+   * @param maxLat 최대 위도 (선택)
+   * @param minLng 최소 경도 (선택)
+   * @param maxLng 최대 경도 (선택)
+   * @returns 마커 목록 [{ id, lat, lng, tags[] }]
+   */
+  getAllMarkers: async (params?: {
+    minLat?: number;
+    maxLat?: number;
+    minLng?: number;
+    maxLng?: number;
+  }) => {
+    const response = await api.get("/posts/markers", { params });
+    return response.data; // [{ id, lat, lng, tags[] }]
+  },
 };
-
-// SWR과 함께 사용하는 예시 (client.tsx 등에서)
-// import useSWR from 'swr';
-// import { fetcher, Api } from '../api/api';
-
-// function MyFeedComponent() {
-//   const { data, error } = useSWR('/post/latest?page=0&size=20', fetcher);
-
-//   if (error) return <div>데이터 로드 실패</div>;
-//   if (!data) return <div>로딩 중...</div>;
-
-//   return (
-//     <div>
-//       {data.map((post: any) => (
-//         <div key={post.id}>
-//           <h3>{post.title}</h3>
-//           <p>{post.roadAddress}</p>
-//           {/* 기타 게시물 정보 표시 */}
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }

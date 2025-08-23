@@ -1,21 +1,11 @@
-"use client";
-
 import axios from "axios";
-import React, { useEffect, useState } from "react";
 
-type weatherConditionsProps = {
-  text: string;
-  emoji: string;
-};
-
+type WeatherConditionsProps = { text: string; emoji: string };
 type WeatherData = {
-  current_weather: {
-    temperature: number;
-    weathercode: number;
-  };
+  current_weather: { temperature: number; weathercode: number };
 };
 
-const weatherConditions: Record<number, weatherConditionsProps> = {
+const weatherConditions: Record<number, WeatherConditionsProps> = {
   0: { text: "맑음", emoji: "☀️" },
   1: { text: "약간 흐림", emoji: "🌤️" },
   2: { text: "부분적으로 구름 많음", emoji: "⛅" },
@@ -35,29 +25,29 @@ const weatherConditions: Record<number, weatherConditionsProps> = {
   99: { text: "천둥번개와 우박", emoji: "🌩️❄️" },
 };
 
-const Weather = () => {
-  const [weather, setWeather] = useState<WeatherData | null>(null);
+export default async function Weather() {
+  let weather: WeatherData | null = null;
+  try {
+    const res = await axios.get(
+      "https://api.open-meteo.com/v1/forecast?latitude=37.6123&longitude=127.0174&current_weather=true"
+    );
+    weather = res.data;
+  } catch (err) {
+    console.error("Weather API 호출 실패:", err);
+  }
 
-  useEffect(() => {
-    axios
-      .get(
-        "https://api.open-meteo.com/v1/forecast?latitude=37.6123&longitude=127.0174&current_weather=true"
-      )
-      .then((res) => setWeather(res.data))
-      .catch((err) => console.error(err));
-  }, []);
+  if (!weather)
+    return (
+      <span className="px-2 py-1 text-sm text-white bg-main-green rounded-xl">
+        날씨 정보 없음
+      </span>
+    );
 
-  return weather ? (
+  const code = weather.current_weather.weathercode;
+  return (
     <span className="px-2 py-1 text-sm text-white bg-main-green rounded-xl">
-      {weatherConditions[weather.current_weather.weathercode].emoji}{" "}
-      {weatherConditions[weather.current_weather.weathercode].text} /{" "}
+      {weatherConditions[code]?.emoji} {weatherConditions[code]?.text} /{" "}
       {weather.current_weather.temperature}°C
     </span>
-  ) : (
-    <span className="px-2 py-1 text-sm text-white bg-main-green rounded-xl">
-      날씨 정보를 불러오는 중...
-    </span>
   );
-};
-
-export default Weather;
+}
