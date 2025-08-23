@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from "react"; // Import useState and useEffect
 import Button from "../components/common/button/Button";
 import NaverMap from "../components/navermap/NaverMap"; // Import NaverMap
-import { MarkerData } from "../components/navermap/NaverMap"; // Import MarkerData
+import { MarkerData } from "../components/navermap/naverMap.types"; // Import MarkerData
 import Tag from "../components/common/tag/Tag"; // Import Tag component
-import { TagVariant, TAG_STYLES } from "../components/common/tag/tag"; // Import TagVariant and TAG_STYLES
+import { TagVariant, TAG_STYLES } from "../components/common/tag/tag.types"; // Import TagVariant and TAG_STYLES
 import { useRouter } from "next/navigation";
 
 const AnalysisPage = () => {
