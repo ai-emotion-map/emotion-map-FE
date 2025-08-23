@@ -1,4 +1,4 @@
-import { getLatestPosts } from "@/api/apiFeed";
+import { getLatestPosts } from "@/app/api/apiFeed";
 import FeedClient from "./client";
 import type { Card } from "./client";
 
@@ -25,7 +25,8 @@ export default async function Page() {
       color: randomColor,
       overlayOpacity: overlayOpacity,
       imageHeight: 200,
-      imageUrl: post.thumbnailUrl? `${BASE_URL}${post.thumbnailUrl}` 
+      imageUrl: post.thumbnailUrl
+        ? `${BASE_URL}${post.thumbnailUrl}`
         : undefined,
       roadAddress: post.roadAddress,
       tags: post.tags,
