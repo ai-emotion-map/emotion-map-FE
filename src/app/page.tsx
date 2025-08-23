@@ -73,14 +73,8 @@ export default function Home() {
 
       <div className="relative w-[calc(100%+2rem)] -mx-4 h-[200px] bg-main-green">
         {/* 제목 고정 */}
-        <p className="absolute flex items-center gap-2 font-bold text-white top-4 left-6">
-          <Image
-            src="/images/logo-white.png"
-            alt="logo-white"
-            width={70}
-            height={50}
-          />{" "}
-          이용 후기
+        <p className="absolute text-white top-4 left-6">
+          Clustory 이용 후기 🌟
         </p>
 
         {/* 리뷰 스크롤 영역 */}
