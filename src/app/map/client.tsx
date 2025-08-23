@@ -15,7 +15,11 @@ import { Api } from "../api/api";
 import { Marker } from "../page";
 import LayerPopup from "../components/common/layerPopup/LayerPopup";
 
-const MapClient = ({ markers }: { markers: MarkerData[] }) => {
+const MapClient = ({
+  markers,
+}: {
+  markers: (MarkerData & { id: number })[];
+}) => {
   const [mapMarkers, setMapMarkers] = useState<MarkerData[]>(markers);
 
   const tags = [
@@ -29,11 +33,9 @@ const MapClient = ({ markers }: { markers: MarkerData[] }) => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchTag, setSearchTag] = useState<TagVariant[]>([]);
-  const [selectedMarker, setSelectedMarker] = useState<null | {
-    lat: number;
-    lng: number;
-    emotion: TagVariant;
-  }>(null);
+  const [selectedMarker, setSelectedMarker] = useState<
+    null | (MarkerData & { id?: number })
+  >(null);
 
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);

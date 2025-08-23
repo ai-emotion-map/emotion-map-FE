@@ -10,6 +10,7 @@ const Page = async () => {
   const markersData = await Api.getAllMarkers();
 
   const markers = markersData.map((marker: Marker) => ({
+    id: marker.id,
     lat: marker.lat,
     lng: marker.lng,
     emotion: (TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] ||

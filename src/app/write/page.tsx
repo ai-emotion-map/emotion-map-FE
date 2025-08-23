@@ -16,7 +16,7 @@ interface NaverPlace {
 
 const Page = () => {
   const [markers, setMarkers] = useState([
-    { lat: 37.611039, lng: 126.997257, emotion: "기본" as TagVariant },
+    { id: 1, lat: 37.611039, lng: 126.997257, emotion: "기본" as TagVariant },
   ]);
   const [center, setCenter] = useState({ lat: 37.611039, lng: 126.997257 });
   const [placeName, setPlaceName] = useState("");
