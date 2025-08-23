@@ -2,6 +2,8 @@ import { getLatestPosts } from "@/api/apiFeed";
 import FeedClient from "./client";
 import type { Card } from "./client";
 
+const BASE_URL = "https://clustory.shop";
+
 const colors = [
   "bg-feed-blue1",
   "bg-feed-green1",
@@ -23,7 +25,8 @@ export default async function Page() {
       color: randomColor,
       overlayOpacity: overlayOpacity,
       imageHeight: 200,
-      imageUrl: post.thumbnailUrl ?? undefined,
+      imageUrl: post.thumbnailUrl? `${BASE_URL}${post.thumbnailUrl}` 
+        : undefined,
       roadAddress: post.roadAddress,
       tags: post.tags,
     };
