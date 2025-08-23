@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "http://clustory.shop",
+  baseURL: "https://clustory.shop",
   headers: {
     "Content-Type": "application/json",
   },
@@ -32,10 +32,8 @@ export type Page<T> = {
 
 export const getLatestPosts = async (page = 0, size = 20) => {
   const { data } = await api.get<Page<FeedPost>>("/posts/latest", {
-    params: {
-      page,
-      size: Math.min(size, 100),
-    },
-  });
+    params: {page, size: Math.min(size, 100)},
+  }
+  );
   return data;
 };
