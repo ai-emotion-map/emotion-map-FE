@@ -18,7 +18,7 @@ import LayerPopup from "../components/common/layerPopup/LayerPopup";
 const MapClient = ({
   markers,
 }: {
-  markers: (MarkerData & { id: number })[];
+  markers: (MarkerData & { id?: number })[];
 }) => {
   const [mapMarkers, setMapMarkers] = useState<MarkerData[]>(markers);
 
