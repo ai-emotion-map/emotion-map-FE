@@ -23,7 +23,7 @@ const NaverMap = ({
       ? new window.naver.maps.LatLng(center.lat, center.lng)
       : markers.length
         ? new window.naver.maps.LatLng(markers[0].lat, markers[0].lng)
-        : new window.naver.maps.LatLng(37.5665, 126.978);
+        : new window.naver.maps.LatLng(37.6163, 127.0161); // 정릉동 기본 위치
 
     mapInstance.current = new window.naver.maps.Map(mapRef.current, {
       center: mapCenter,
