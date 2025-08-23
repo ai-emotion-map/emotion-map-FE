@@ -14,8 +14,10 @@ export type FeedPost = {
   lat: number; // 위도
   lng: number; // 경도
   roadAddress: string; // 도로명 주소
+  placeName: string;
   thumbnailUrl: string | null; // 첫 이미지 url
   tags: string[]; // 태그 배열
+  content: string;
   createdAt: string; // 작성 시각
 };
 

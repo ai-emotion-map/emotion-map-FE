@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
 import React, { useEffect, useRef, useState } from "react";
 import Masonry from "react-masonry-css";
 import Tag from "../components/common/tag/Tag";
 import { TAG_MAP, type TagProps } from "../components/common/tag/tag";
 import { useRouter } from "next/navigation";
-import { getLatestPosts } from "@/api/apiFeed"; // (page:number, size:number)
+import { getCards } from "./actions"; // Import the server action
 
 export type Card = {
   id: number;
@@ -26,43 +26,16 @@ export const TAG_LIST: TagProps[] = [
   { variant: "향수 🌿" },
 ];
 
-// API → Card 변환
-function mapPostsToCards(posts: any[]): Card[] {
-  const colors = [
-    "bg-feed-blue1",
-    "bg-feed-green1",
-    "bg-feed-blue2",
-    "bg-feed-green2",
-    "bg-feed-blue3",
-    "bg-feed-green3",
-  ];
-  return posts.map((post) => {
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    const overlayOpacity = (Math.random() * 0.4 + 0.5).toFixed(2);
-    return {
-      id: post.id,
-      color: randomColor,
-      overlayOpacity,
-      imageHeight: 200,
-      imageUrl: post.thumbnailUrl ?? undefined,
-      roadAddress: post.roadAddress,
-      tags: post.tags,
-    } as Card;
-  });
-}
+type FeedClientProps = { initialCards: Card[] };
 
-type FeedClientProps = { cards: Card[] }; // 서버에서 page=0 내려줬다고 가정
-
-export default function FeedClient({ cards: initialCards }: FeedClientProps) {
+export default function FeedClient({ initialCards }: FeedClientProps) {
   const [cards, setCards] = useState<Card[]>(initialCards);
   const router = useRouter();
 
-  // 페이지네이션 상태
-  const pageRef = useRef<number>(1); // 다음 요청할 페이지 (초기 0을 받았으니 1부터)
+  const pageRef = useRef<number>(1);
   const hasMoreRef = useRef<boolean>(true);
   const loadingRef = useRef<boolean>(false);
 
-  // 스크롤 컨테이너/센티널
   const scrollRootRef = useRef<HTMLDivElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -72,17 +45,15 @@ export default function FeedClient({ cards: initialCards }: FeedClientProps) {
     );
   };
 
-  // 더 불러오기
   const loadMore = async () => {
     if (loadingRef.current || !hasMoreRef.current) return;
     loadingRef.current = true;
     try {
       const page = pageRef.current;
-      const resp = await getLatestPosts(page, 20); // ✅ 위치 인자만 사용
-      const nextCards = mapPostsToCards(resp?.content ?? []);
+      const { cards: nextCards, isLast } = await getCards(page, 20); // Call server action
       setCards((prev) => [...prev, ...nextCards]);
 
-      hasMoreRef.current = !(resp?.last === true || nextCards.length === 0);
+      hasMoreRef.current = !isLast;
       pageRef.current = page + 1;
     } catch (e) {
       console.error(e);
@@ -92,16 +63,15 @@ export default function FeedClient({ cards: initialCards }: FeedClientProps) {
     }
   };
 
-  // 최초 마운트 시, initialCards 없으면 0페이지 로드
+  // Fallback for when server doesn't provide initial cards.
   useEffect(() => {
     (async () => {
       if (initialCards && initialCards.length > 0) return;
       loadingRef.current = true;
       try {
-        const resp = await getLatestPosts(0, 20);
-        const first = mapPostsToCards(resp?.content ?? []);
-        setCards(first);
-        hasMoreRef.current = !(resp?.last === true || first.length === 0);
+        const { cards: firstCards, isLast } = await getCards(0, 20);
+        setCards(firstCards);
+        hasMoreRef.current = !isLast;
         pageRef.current = 1;
       } catch (e) {
         console.error(e);
@@ -113,17 +83,16 @@ export default function FeedClient({ cards: initialCards }: FeedClientProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // IntersectionObserver 등록
+  // IntersectionObserver setup
   useEffect(() => {
     if (!sentinelRef.current) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        const entry = entries[0];
-        if (entry.isIntersecting) loadMore();
+        if (entries[0].isIntersecting) loadMore();
       },
       {
-        root: scrollRootRef.current ?? null, // 내부 스크롤 컨테이너
-        rootMargin: "300px", // 미리 당겨서
+        root: scrollRootRef.current ?? null,
+        rootMargin: "300px",
         threshold: 0,
       }
     );
