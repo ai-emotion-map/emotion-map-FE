@@ -2,6 +2,7 @@
 
 import { getLatestPosts } from "@/api/apiFeed";
 import type { Card } from "./client";
+import type { FeedPost } from "@/api/apiFeed";
 
 const BASE_URL = "https://clustory.shop";
 
@@ -14,7 +15,7 @@ const colors = [
   "bg-feed-green3",
 ];
 
-function mapPostsToCards(posts: any[]): Card[] {
+function mapPostsToCards(posts: FeedPost[]): Card[] {
     return posts.map((post) => {
         const randomColor = colors[Math.floor(Math.random() * colors.length)];
         const overlayOpacity = (Math.random() * 0.4 + 0.5).toFixed(2);
