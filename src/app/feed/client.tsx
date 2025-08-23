@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import Masonry from "react-masonry-css";
 import Tag from "../components/common/tag/Tag";
 import { TAG_MAP, type TagProps } from "../components/common/tag/tag.types";
 import { useRouter } from "next/navigation";
-import { getCards } from "./actions"; // Import the server action
+import { getCards, searchCards } from "./actions"; // Import both server actions
 
 export type Card = {
   id: number;
@@ -32,11 +32,13 @@ type FeedClientProps = { initialCards: Card[] };
 
 export default function FeedClient({ initialCards }: FeedClientProps) {
   const [cards, setCards] = useState<Card[]>(initialCards);
+  const [searchQuery, setSearchQuery] = useState("");
   const router = useRouter();
 
   const pageRef = useRef<number>(1);
   const hasMoreRef = useRef<boolean>(true);
   const loadingRef = useRef<boolean>(false);
+  const searchKeywordRef = useRef<string>(""); // To hold the current search term for pagination
 
   const scrollRootRef = useRef<HTMLDivElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
@@ -47,41 +49,62 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
     );
   };
 
-  const loadMore = async () => {
+  const loadMore = useCallback(async () => {
     if (loadingRef.current || !hasMoreRef.current) return;
     loadingRef.current = true;
     try {
       const page = pageRef.current;
-      const { cards: nextCards, isLast } = await getCards(page, 20); // Call server action
-      setCards((prev) => [...prev, ...nextCards]);
+      const result = searchKeywordRef.current
+        ? await searchCards(searchKeywordRef.current, page, 20)
+        : await getCards(page, 20);
 
-      hasMoreRef.current = !isLast;
+      setCards((prev) => [...prev, ...result.cards]);
+      hasMoreRef.current = !result.isLast;
       pageRef.current = page + 1;
     } catch (e) {
       console.error(e);
-      hasMoreRef.current = false;
+      hasMoreRef.current = false; // Stop trying on error
     } finally {
       loadingRef.current = false;
     }
-  };
+  }, []);
 
-  // Fallback for when server doesn't provide initial cards.
-  useEffect(() => {
-    (async () => {
-      if (initialCards && initialCards.length > 0) return;
-      loadingRef.current = true;
-      try {
-        const { cards: firstCards, isLast } = await getCards(0, 20);
-        setCards(firstCards);
-        hasMoreRef.current = !isLast;
+  const handleSearch = async () => {
+    const trimmedQuery = searchQuery.trim();
+    searchKeywordRef.current = trimmedQuery;
+
+    loadingRef.current = true;
+    setCards([]); // Clear existing cards
+    pageRef.current = 0; // Reset page for new search/feed
+    hasMoreRef.current = true; // Assume there's more until told otherwise
+
+    try {
+        const page = pageRef.current;
+        const result = trimmedQuery
+            ? await searchCards(trimmedQuery, page, 20)
+            : await getCards(page, 20);
+        
+        setCards(result.cards);
+        hasMoreRef.current = !result.isLast;
         pageRef.current = 1;
-      } catch (e) {
+    } catch (e) {
         console.error(e);
         hasMoreRef.current = false;
-      } finally {
+    } finally {
         loadingRef.current = false;
-      }
-    })();
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSearch();
+    }
+  };
+
+  // Initial load effect
+  useEffect(() => {
+    setCards(initialCards);
   }, [initialCards]);
 
   // IntersectionObserver setup
@@ -89,7 +112,9 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
     if (!sentinelRef.current) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) loadMore();
+        if (entries[0].isIntersecting) {
+          loadMore();
+        }
       },
       {
         root: scrollRootRef.current ?? null,
@@ -99,14 +124,17 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
     );
     observer.observe(sentinelRef.current);
     return () => observer.disconnect();
-  }, []);
+  }, [loadMore]);
 
   return (
     <div className="relative sticky flex flex-col h-full">
       <div className="mt-1 mb-4">
         <input
           type="text"
-          placeholder="당신이 몰랐던 감정의 장소를 발견해보세요"
+          placeholder="사람들의 이야기가 깃든 장소를 찾아보세요"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={handleKeyDown}
           className="w-full bg-background rounded-xl border-[3px] hover:bg-[#F5F5F5] px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
         />
       </div>
@@ -168,7 +196,11 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
 
         <div ref={sentinelRef} className="h-10" />
         {loadingRef.current && (
-          <p className="py-3 text-sm text-center text-gray-500">불러오는 중…</p>
+          <p className="py-3 text-center text-sm text-gray-500">불러오는 중…</p>
+        )}
+        
+        {!loadingRef.current && cards.length === 0 && (
+            <p className="py-3 text-center text-sm text-gray-500">검색 결과가 없습니다.</p>
         )}
       </div>
     </div>
