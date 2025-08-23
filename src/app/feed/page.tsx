@@ -14,7 +14,13 @@ const colors = [
 ];
 
 export default async function Page() {
-  const feedData = await getLatestPosts();
+  let feedData;
+  try {
+    feedData = await getLatestPosts();
+  } catch (error) {
+    console.error("getLatestPosts 호출 실패:", error);
+    feedData = { content: [] }; // 빈 데이터로 fallback
+  }
 
   const cards: Card[] = feedData.content.map((post) => {
     const randomColor = colors[Math.floor(Math.random() * colors.length)];
@@ -23,7 +29,7 @@ export default async function Page() {
     return {
       id: post.id,
       color: randomColor,
-      overlayOpacity: overlayOpacity,
+      overlayOpacity,
       imageHeight: 200,
       imageUrl: post.thumbnailUrl
         ? `${BASE_URL}${post.thumbnailUrl}`
