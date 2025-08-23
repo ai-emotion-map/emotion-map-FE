@@ -2,7 +2,11 @@ import Review from "./components/common/Review";
 import NaverMap from "./components/navermap/NaverMap";
 import TagTicker from "./components/TagTicker";
 import Weather from "./components/Weather";
-import { TagVariant } from "./components/common/tag/tag.types";
+import {
+  BackendTag,
+  TAG_MAP,
+  TagVariant,
+} from "./components/common/tag/tag.types";
 import { Api } from "./api/api";
 
 export interface Marker {
@@ -15,19 +19,19 @@ export interface Marker {
 export default async function Home() {
   // 서버에서 마커 데이터 가져오기
   const markersData = await Api.getAllMarkers({
-    minLat: 37.61, // 최소 위도
-    maxLat: 37.616, // 최대 위도
-    minLng: 127.015, // 최소 경도
-    maxLng: 127.021, // 최대 경도
+    minLat: 37.6, // 최소 위도
+    maxLat: 37.61, // 최대 위도
+    minLng: 127.01, // 최소 경도
+    maxLng: 127.03, // 최대 경도
   });
 
   // markersData를 NaverMap용으로 변환
   const markers = markersData.map((marker: Marker) => ({
     lat: marker.lat,
     lng: marker.lng,
-    emotion: (marker.tags[0] || "기본") as TagVariant,
+    emotion: (TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] ||
+      "기본") as TagVariant,
   }));
-  console.log(markersData);
 
   const reviews = [
     {
@@ -73,13 +77,6 @@ export default async function Home() {
       date: "2025년 3월 이용",
     },
   ];
-
-  // const markers = [
-  //   { lat: 37.5665, lng: 126.978, emotion: "가족 🏠" as TagVariant },
-  //   { lat: 37.5651, lng: 126.9895, emotion: "우정 🤝" as TagVariant },
-  //   { lat: 37.57, lng: 126.982, emotion: "설렘/사랑 💌" as TagVariant },
-  //   { lat: 37.561, lng: 126.975, emotion: "향수 🌿" as TagVariant },
-  // ];
 
   return (
     <main className="flex flex-col h-[calc(100vh-150px)] gap-5">
