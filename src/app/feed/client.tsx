@@ -5,7 +5,7 @@ import Masonry from "react-masonry-css";
 import Tag from "../components/common/tag/Tag";
 import { TAG_MAP, type TagProps } from "../components/common/tag/tag.types";
 import { useRouter } from "next/navigation";
-import { getLatestPosts } from "@/api/apiFeed"; // (page:number, size:number)
+import { getLatestPosts } from "@/app/api/apiFeed"; // (page:number, size:number)
 
 export type Card = {
   id: number;
