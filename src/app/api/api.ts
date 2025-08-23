@@ -50,7 +50,7 @@ export const Api = {
     const { images, ...jsonData } = payload;
 
     // JSON 데이터를 한 덩어리로 append
-      formData.append(
+    formData.append(
       "post",
       new Blob([JSON.stringify(jsonData)], { type: "application/json" })
     );
@@ -67,38 +67,37 @@ export const Api = {
     return response.data;
   },
 
+  //   /**
+  //  * 새 게시물을 이미지와 함께 작성합니다.
+  //  * @param payload 게시물 데이터 + 이미지 파일
+  //  * @returns 작성 완료된 게시물 데이터
+  //  */
+  // createPostWithImages: async (payload: {
+  //   lat: number;
+  //   lng: number;
+  //   placeName: string;
+  //   content: string;
+  //   images: File[];
+  //   emotions: string[];
+  // }) => {
+  //   const formData = new FormData();
+  //   const { images, ...jsonData } = payload;
 
-//   /**
-//  * 새 게시물을 이미지와 함께 작성합니다.
-//  * @param payload 게시물 데이터 + 이미지 파일
-//  * @returns 작성 완료된 게시물 데이터
-//  */
-// createPostWithImages: async (payload: {
-//   lat: number;
-//   lng: number;
-//   placeName: string;
-//   content: string;
-//   images: File[];
-//   emotions: string[];
-// }) => {
-//   const formData = new FormData();
-//   const { images, ...jsonData } = payload;
+  //   // JSON 데이터를 한 덩어리로 append
+  //   formData.append("post", JSON.stringify(jsonData));
 
-//   // JSON 데이터를 한 덩어리로 append
-//   formData.append("post", JSON.stringify(jsonData));
+  //   // 이미지 파일 append
+  //   if (images && images.length > 0) {
+  //     images.forEach((file) => formData.append("images", file));
+  //   }
 
-//   // 이미지 파일 append
-//   if (images && images.length > 0) {
-//     images.forEach((file) => formData.append("images", file));
-//   }
+  //   const response = await api.post("/posts/form", formData, {
+  //     headers: { "Content-Type": "multipart/form-data" },
+  //   });
 
-//   const response = await api.post("/posts/form", formData, {
-//     headers: { "Content-Type": "multipart/form-data" },
-//   });
-
-//   console.log(response.data);
-//   return response.data;
-// },
+  //   console.log(response.data);
+  //   return response.data;
+  // },
 
   /**
    * 전체 위치 조회 (마커)
@@ -126,5 +125,32 @@ export const Api = {
   getPostById: async (id: number) => {
     const response = await api.get(`/posts/${id}`);
     return response.data;
+  },
+
+  /**
+   * 게시물 검색 (내용/주소, 태그, 지도 범위, 페이지네이션 지원)
+   * @param params 검색 파라미터
+   * @returns 게시물 목록 (페이지네이션 포함)
+   */
+  searchPosts: async (params: {
+    q?: string; // 내용/주소 키워드
+    tag?: string; // 특정 태그
+    minLat?: number; // 지도 최소 위도
+    maxLat?: number; // 지도 최대 위도
+    minLng?: number; // 지도 최소 경도
+    maxLng?: number; // 지도 최대 경도
+    page?: number; // 페이지 번호 (0부터 시작)
+    size?: number; // 페이지 크기 (기본 20, 최대 100)
+  }) => {
+    const { size = 20, ...rest } = params;
+    const actualSize = Math.min(size, 100);
+
+    const response = await api.get("/posts/search", {
+      params: {
+        ...rest,
+        size: actualSize,
+      },
+    });
+    return response.data; // { content: [...], page, size, totalElements, totalPages }
   },
 };

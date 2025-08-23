@@ -77,8 +77,9 @@ const NaverMap = ({
       mapInstance.current.setCenter(
         new window.naver.maps.LatLng(center.lat, center.lng)
       );
+      mapInstance.current.setZoom(zoom);
     }
-  }, [center]);
+  }, [center, zoom]);
 
   return (
     <>

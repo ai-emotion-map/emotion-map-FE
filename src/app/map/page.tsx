@@ -9,15 +9,12 @@ const Page = async () => {
   // 서버에서 마커 데이터 가져오기
   const markersData = await Api.getAllMarkers();
 
-  // markersData를 NaverMap용으로 변환
   const markers = markersData.map((marker: Marker) => ({
     lat: marker.lat,
     lng: marker.lng,
     emotion: (TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] ||
       "기본") as TagVariant,
   }));
-
-  console.log(markers);
 
   return <MapClient markers={markers} />;
 };
