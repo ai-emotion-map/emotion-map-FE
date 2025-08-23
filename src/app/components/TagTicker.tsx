@@ -1,5 +1,5 @@
 import Tag from "./common/tag/Tag";
-import { TagProps } from "./common/tag/tag";
+import { TagProps } from "./common/tag/tag.types";
 
 type TagRowProps = {
   tags: TagProps[];

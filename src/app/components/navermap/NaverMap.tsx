@@ -2,122 +2,89 @@
 
 import { useEffect, useRef } from "react";
 import Script from "next/script";
-import { TagVariant } from "../common/tag/tag";
+import { emotionImages, NaverMapProps } from "./naverMap.types";
 
-export interface MarkerData {
-  lat: number;
-  lng: number;
-  emotion: TagVariant;
-}
-
-interface NaverMapOptions {
-  center?: naver.maps.LatLng;
-  zoom?: number;
-  draggable?: boolean;
-  pinchZoom?: boolean;
-  scrollWheel?: boolean;
-  keyboardShortcuts?: boolean | Record<string, boolean>;
-  disableDoubleClickZoom?: boolean;
-}
-
-interface NaverMapProps {
-  markers: MarkerData[];
-  zoom?: number;
-  height?: string;
-  onMarkerClick?: (marker: MarkerData) => void; // ✅ 마커 클릭 콜백 추가
-  options?: NaverMapOptions;
-}
-
-// 감정별 마커 이미지
-const emotionImages: Record<TagVariant, string> = {
-  "가족 🏠": "/images/marker/yellow-marker.svg",
-  "우정 🤝": "/images/marker/blue-marker.svg",
-  "위로/치유 🌱": "/images/marker/green-marker.svg",
-  "외로움 🌙": "/images/marker/purple-marker.svg",
-  "설렘/사랑 💌": "/images/marker/pink-marker.svg",
-  "향수 🌿": "/images/marker/red-marker.svg",
-};
-
-const NaverMap: React.FC<NaverMapProps> = ({
+const NaverMap = ({
   markers,
   zoom = 10,
   height,
   onMarkerClick,
   options,
-}) => {
+  center,
+}: NaverMapProps & { center?: { lat: number; lng: number } }) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const markerRefs = useRef<naver.maps.Marker[]>([]);
+  const markerRefs = useRef<(naver.maps.Marker | null)[]>([]);
+  const mapInstance = useRef<naver.maps.Map | null>(null);
 
   const initMap = () => {
     if (!window.naver || !mapRef.current) return;
 
-    const map = new window.naver.maps.Map(mapRef.current, {
-      center: markers.length
+    const mapCenter = center
+      ? new window.naver.maps.LatLng(center.lat, center.lng)
+      : markers.length
         ? new window.naver.maps.LatLng(markers[0].lat, markers[0].lng)
-        : new window.naver.maps.LatLng(37.5665, 126.978), // 기본 서울
+        : new window.naver.maps.LatLng(37.5665, 126.978);
+
+    mapInstance.current = new window.naver.maps.Map(mapRef.current, {
+      center: mapCenter,
       zoom,
       draggable: options?.draggable ?? true,
       pinchZoom: options?.pinchZoom ?? true,
-      scrollWheel: options?.scrollWheel ?? true,
-      keyboardShortcuts: options?.keyboardShortcuts ?? true,
-      disableDoubleClickZoom: options?.disableDoubleClickZoom ?? false,
     });
 
+    renderMarkers();
+  };
+
+  const renderMarkers = () => {
+    if (!mapInstance.current) return;
+
     // 기존 마커 제거
-    markerRefs.current.forEach((m) => m.setMap(null));
+    markerRefs.current.forEach((m) => m && m.setMap(null));
     markerRefs.current = [];
 
-    // 각 마커 생성
     markers.forEach((markerData) => {
       const { lat, lng, emotion } = markerData;
 
-      const img = new Image();
-      img.onload = () => {
-        const marker = new window.naver.maps.Marker({
-          position: new window.naver.maps.LatLng(lat, lng),
-          map,
-          icon: {
-            url: emotionImages[emotion],
-            size: new window.naver.maps.Size(40, 40),
-            origin: new window.naver.maps.Point(0, 0),
-            anchor: new window.naver.maps.Point(20, 40),
-          },
-        });
+      const marker = new window.naver.maps.Marker({
+        position: new window.naver.maps.LatLng(lat, lng),
+        map: mapInstance.current!,
+        icon: {
+          url: emotionImages[emotion],
+          size: new window.naver.maps.Size(40, 40),
+          origin: new window.naver.maps.Point(0, 0),
+          anchor: new window.naver.maps.Point(20, 40),
+        },
+      });
 
-        // ✅ 마커 클릭 이벤트 등록
-        window.naver.maps.Event.addListener(marker, "click", () => {
-          if (onMarkerClick) onMarkerClick(markerData);
-        });
+      if (onMarkerClick) {
+        window.naver.maps.Event.addListener(marker, "click", () =>
+          onMarkerClick(markerData)
+        );
+      }
 
-        markerRefs.current.push(marker);
-      };
-
-      img.onerror = () => {
-        const marker = new window.naver.maps.Marker({
-          position: new window.naver.maps.LatLng(lat, lng),
-          map,
-        });
-
-        // ✅ 기본 마커에도 클릭 이벤트
-        window.naver.maps.Event.addListener(marker, "click", () => {
-          if (onMarkerClick) onMarkerClick(markerData);
-        });
-
-        markerRefs.current.push(marker);
-      };
-
-      img.src = emotionImages[emotion];
+      markerRefs.current.push(marker);
     });
   };
 
+  // 마커, zoom, options 변경 시 렌더
   useEffect(() => {
-    if (window.naver) initMap();
+    if (mapInstance.current) renderMarkers();
+    else if (window.naver) initMap();
   }, [markers, zoom, options]);
+
+  // center 변경 시 지도 이동
+  useEffect(() => {
+    if (mapInstance.current && center) {
+      mapInstance.current.setCenter(
+        new window.naver.maps.LatLng(center.lat, center.lng)
+      );
+    }
+  }, [center]);
 
   return (
     <>
       <Script
-        src={`https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${process.env.NEXT_PUBLIC_NAVER_CLIENT_ID}`}
+        src={`https://openapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${process.env.NEXT_PUBLIC_NAVER_CLIENT_ID}&submodules=geocoder`}
         strategy="afterInteractive"
         onLoad={initMap}
       />

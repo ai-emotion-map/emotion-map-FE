@@ -1,10 +1,10 @@
 import React from "react";
-import Tag from "./common/tag/Tag";
-import { TagVariant } from "./common/tag/tag";
+import { TagVariant } from "./common/tag/tag.types";
 import clsx from "clsx";
 import NaverMap from "./navermap/NaverMap";
 import Button from "./common/button/Button";
 import { X } from "lucide-react";
+import Tag from "./common/tag/Tag";
 
 const BottomSheet = ({
   isExpanded,

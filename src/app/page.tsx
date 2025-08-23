@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Review from "./components/common/Review";
-import { TagVariant } from "./components/common/tag/tag";
 import NaverMap from "./components/navermap/NaverMap";
 import TagTicker from "./components/TagTicker";
 import Weather from "./components/Weather";
+import { TagVariant } from "./components/common/tag/tag.types";
 
 export default function Home() {
   const reviews = [

@@ -8,7 +8,8 @@ export type TagVariant =
   | "위로/치유 🌱"
   | "외로움 🌙"
   | "설렘/사랑 💌"
-  | "향수 🌿";
+  | "향수 🌿"
+  | "기본";
 
 export const TAG_MAP: Record<BackendTag, TagVariant> = {
   // 서버에서 받아와서 렌더링 할 때
@@ -36,6 +37,7 @@ export const TAG_STYLES: Record<
   "외로움 🌙": { color: "#E8D8EE", shadowColor: "#D8ABEE" },
   "설렘/사랑 💌": { color: "#FCEBF3", shadowColor: "#E3BCE0" },
   "향수 🌿": { color: "#FEEFEE", shadowColor: "#FFCCCD" },
+  기본: { color: "#F5F5F5", shadowColor: "#D9D9D9" },
 };
 
 export type TagProps = {
