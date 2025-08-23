@@ -26,8 +26,16 @@ export const TAG_LIST: TagProps[] = [
   { variant: "향수 🌿" },
 ];
 
+// API 응답 타입
+interface FeedPost {
+  id: number;
+  thumbnailUrl: string | null;
+  roadAddress: string;
+  tags: string[];
+}
+
 // API → Card 변환
-function mapPostsToCards(posts: any[]): Card[] {
+function mapPostsToCards(posts: FeedPost[]): Card[] {
   const colors = [
     "bg-feed-blue1",
     "bg-feed-green1",
@@ -44,10 +52,10 @@ function mapPostsToCards(posts: any[]): Card[] {
       color: randomColor,
       overlayOpacity,
       imageHeight: 200,
-      imageUrl: post.thumbnailUrl ?? undefined,
+      imageUrl: post.thumbnailUrl ?? undefined, // null → undefined
       roadAddress: post.roadAddress,
       tags: post.tags,
-    } as Card;
+    };
   });
 }
 
@@ -57,12 +65,10 @@ export default function FeedClient({ cards: initialCards }: FeedClientProps) {
   const [cards, setCards] = useState<Card[]>(initialCards);
   const router = useRouter();
 
-  // 페이지네이션 상태
-  const pageRef = useRef<number>(1); // 다음 요청할 페이지 (초기 0을 받았으니 1부터)
+  const pageRef = useRef<number>(1);
   const hasMoreRef = useRef<boolean>(true);
   const loadingRef = useRef<boolean>(false);
 
-  // 스크롤 컨테이너/센티널
   const scrollRootRef = useRef<HTMLDivElement | null>(null);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -72,17 +78,16 @@ export default function FeedClient({ cards: initialCards }: FeedClientProps) {
     );
   };
 
-  // 더 불러오기
   const loadMore = async () => {
     if (loadingRef.current || !hasMoreRef.current) return;
     loadingRef.current = true;
     try {
       const page = pageRef.current;
-      const resp = await getLatestPosts(page, 20); // ✅ 위치 인자만 사용
-      const nextCards = mapPostsToCards(resp?.content ?? []);
+      const resp = await getLatestPosts(page, 20);
+      const nextCards = mapPostsToCards(resp.content ?? ([] as FeedPost[]));
       setCards((prev) => [...prev, ...nextCards]);
 
-      hasMoreRef.current = !(resp?.last === true || nextCards.length === 0);
+      hasMoreRef.current = !(resp.last === true || nextCards.length === 0);
       pageRef.current = page + 1;
     } catch (e) {
       console.error(e);
@@ -92,16 +97,15 @@ export default function FeedClient({ cards: initialCards }: FeedClientProps) {
     }
   };
 
-  // 최초 마운트 시, initialCards 없으면 0페이지 로드
   useEffect(() => {
     (async () => {
       if (initialCards && initialCards.length > 0) return;
       loadingRef.current = true;
       try {
         const resp = await getLatestPosts(0, 20);
-        const first = mapPostsToCards(resp?.content ?? []);
+        const first = mapPostsToCards(resp.content ?? ([] as FeedPost[]));
         setCards(first);
-        hasMoreRef.current = !(resp?.last === true || first.length === 0);
+        hasMoreRef.current = !(resp.last === true || first.length === 0);
         pageRef.current = 1;
       } catch (e) {
         console.error(e);
@@ -110,31 +114,22 @@ export default function FeedClient({ cards: initialCards }: FeedClientProps) {
         loadingRef.current = false;
       }
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [initialCards]);
 
-  // IntersectionObserver 등록
   useEffect(() => {
     if (!sentinelRef.current) return;
     const observer = new IntersectionObserver(
       (entries) => {
-        const entry = entries[0];
-        if (entry.isIntersecting) loadMore();
+        if (entries[0].isIntersecting) loadMore();
       },
-      {
-        root: scrollRootRef.current ?? null, // 내부 스크롤 컨테이너
-        rootMargin: "300px", // 미리 당겨서
-        threshold: 0,
-      }
+      { root: scrollRootRef.current, rootMargin: "300px", threshold: 0 }
     );
     observer.observe(sentinelRef.current);
     return () => observer.disconnect();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <div className="relative sticky flex flex-col h-full">
-      {/* 검색창 */}
       <div className="mt-1 mb-4">
         <input
           type="text"
@@ -143,7 +138,6 @@ export default function FeedClient({ cards: initialCards }: FeedClientProps) {
         />
       </div>
 
-      {/* Masonry 카드 그리드 + 내부 스크롤 컨테이너 */}
       <div
         ref={scrollRootRef}
         className="flex-1 w-full px-1 pb-2 overflow-auto"
@@ -160,7 +154,6 @@ export default function FeedClient({ cards: initialCards }: FeedClientProps) {
               style={{ overflow: "hidden" }}
               onClick={() => router.push(`/detail/${c.id}`)}
             >
-              {/* 흰색 오버레이 */}
               <div
                 style={{
                   position: "absolute",
@@ -170,7 +163,6 @@ export default function FeedClient({ cards: initialCards }: FeedClientProps) {
                   zIndex: 1,
                 }}
               />
-              {/* 사진/텍스트 */}
               <div className="relative z-10">
                 {c.imageUrl && (
                   <div
@@ -201,10 +193,7 @@ export default function FeedClient({ cards: initialCards }: FeedClientProps) {
           ))}
         </Masonry>
 
-        {/* 센티널 */}
         <div ref={sentinelRef} className="h-10" />
-
-        {/* 로딩/끝 상태 */}
         {loadingRef.current && (
           <p className="py-3 text-sm text-center text-gray-500">불러오는 중…</p>
         )}
