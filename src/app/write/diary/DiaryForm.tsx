@@ -1,6 +1,5 @@
 "use client";
 
-import { Api } from "@/app/api/api";
 import axios from "axios";
 
 import React, { useState, useCallback } from "react";
@@ -11,6 +10,7 @@ import Button from "@/app/components/common/button/Button";
 import LayerPopup from "../../components/common/layerPopup/LayerPopup";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "@/util/cropImage";
+import { Api } from "@/app/api/api";
 
 interface Area {
   width: number;
@@ -21,6 +21,7 @@ interface Area {
 
 const DiaryForm = () => {
   const searchParams = useSearchParams();
+  const place = decodeURIComponent(searchParams.get("place") || ""); // 장소 이름
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
 
