@@ -192,10 +192,7 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
         </Masonry>
 
         <div ref={sentinelRef} className="h-10" />
-        {loadingRef.current && (
-          // <p className="py-3 text-sm text-center text-gray-500">불러오는 중…</p>
-          <Loading />
-        )}
+        {loadingRef.current && <Loading />}
 
         {!loadingRef.current && cards.length === 0 && (
           <p className="py-3 text-sm text-center text-gray-500">
