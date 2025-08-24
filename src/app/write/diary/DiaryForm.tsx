@@ -11,6 +11,7 @@ import LayerPopup from "../../components/common/layerPopup/LayerPopup";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "@/util/cropImage";
 import { Api } from "@/app/api/api";
+import Loading from "@/app/components/common/Loading";
 
 interface Area {
   width: number;
@@ -24,6 +25,8 @@ const DiaryForm = () => {
   const place = decodeURIComponent(searchParams.get("place") || ""); // 장소 이름
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
+
+  const [loading, setLoading] = useState(false);
 
   const [text, setText] = useState("");
   const [images, setImages] = useState<File[]>([]);
@@ -96,111 +99,113 @@ const DiaryForm = () => {
     }
 
     try {
+      setLoading(true); // 로딩 시작
       const response = await Api.createPostWithImages({
         lat: Number(lat) || 0,
         lng: Number(lng) || 0,
         placeName: place,
         content: text,
-        images: images, // 선택된 이미지 파일 배열
+        images: images,
       });
 
       setNewPostId(response.id);
-      setIsSubmitPopupOpen(true);
+      router.push(`/analysis?id=${response.id}`);
     } catch (e) {
       if (axios.isAxiosError(e)) {
         if (e.response) {
-          // 서버가 응답했지만 상태 코드가 200이 아닌 경우
           console.log("에러 상태 코드:", e.response.status);
           console.log("에러 응답 데이터:", e.response.data);
           console.log("에러 응답 헤더:", e.response.headers);
         } else if (e.request) {
-          // 요청은 갔지만 서버가 응답하지 않은 경우
           console.log("요청이 전송되었지만 응답이 없습니다:", e.request);
         } else {
-          // 요청 설정 중 발생한 에러
           console.log("업로드 실패:", e.message);
         }
       } else {
-        // Handle non-axios errors
         console.log("An unexpected error occurred:", e);
       }
+      setLoading(false);
     }
   };
 
   return (
     <div className="relative flex flex-col h-full">
-      <form
-        className="flex flex-col h-[calc(100vh-230px)]"
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmit();
-        }}
-      >
-        <div className="flex flex-col flex-1 pb-4 overflow-y-auto">
-          <div className="relative flex flex-col flex-1">
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="편하게 적어보아요"
-              className="flex-1 w-full p-3 text-gray-800 placeholder-gray-400 transition-all duration-300 outline-none resize-none rounded-2xl bg-gradient-to-b from-green-50 to-blue-50"
-              maxLength={500}
-            />
-            <label className="absolute cursor-pointer bottom-3 right-3">
-              <ImageIcon size={24} className="text-main-green" />
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageUpload}
+      {loading ? (
+        <Loading />
+      ) : (
+        <form
+          className="flex flex-col h-[calc(100vh-230px)]"
+          onSubmit={(e) => {
+            e.preventDefault();
+            setIsSubmitPopupOpen(true);
+          }}
+        >
+          <div className="flex flex-col flex-1 pb-4 overflow-y-auto">
+            <div className="relative flex flex-col flex-1">
+              <textarea
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+                placeholder="편하게 적어보아요"
+                className="flex-1 w-full p-3 text-gray-800 placeholder-gray-400 transition-all duration-300 outline-none resize-none rounded-2xl bg-gradient-to-b from-green-50 to-blue-50"
+                maxLength={500}
               />
-            </label>
-            <div className="absolute text-sm text-gray-400 bottom-3 right-12">
-              ({text.length}/500)
+              <label className="absolute cursor-pointer bottom-3 right-3">
+                <ImageIcon size={24} className="text-main-green" />
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                />
+              </label>
+              <div className="absolute text-sm text-gray-400 bottom-3 right-12">
+                ({text.length}/500)
+              </div>
             </div>
+
+            {/* 이미지 미리보기 */}
+            {previewUrls.length > 0 && (
+              <div className="flex pt-4 mt-2 space-x-2 overflow-x-auto">
+                {previewUrls.map((url, index) => (
+                  <div key={index} className="relative">
+                    <Image
+                      src={url}
+                      alt={`Image preview ${index + 1}`}
+                      width={96}
+                      height={120} // 4:5 비율
+                      className="object-cover w-24 rounded-lg h-30"
+                    />
+                    <button
+                      onClick={() => handleRemoveImage(index)}
+                      type="button"
+                      className="absolute top-[-10px] right-[-10px] bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"
+                    >
+                      X
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* 이미지 미리보기 */}
-          {previewUrls.length > 0 && (
-            <div className="flex pt-4 mt-2 space-x-2 overflow-x-auto">
-              {previewUrls.map((url, index) => (
-                <div key={index} className="relative">
-                  <Image
-                    src={url}
-                    alt={`Image preview ${index + 1}`}
-                    width={96}
-                    height={120} // 4:5 비율
-                    className="object-cover w-24 rounded-lg h-30"
-                  />
-                  <button
-                    onClick={() => handleRemoveImage(index)}
-                    type="button"
-                    className="absolute top-[-10px] right-[-10px] bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold"
-                  >
-                    X
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+          <input type="hidden" name="lat" value={lat ?? ""} />
+          <input type="hidden" name="lng" value={lng ?? ""} />
 
-        <input type="hidden" name="lat" value={lat ?? ""} />
-        <input type="hidden" name="lng" value={lng ?? ""} />
-
-        <div className="absolute left-0 right-0 flex gap-2 bottom-3">
-          <Button
-            onClick={() => setIsCancelPopupOpen(true)}
-            className="w-1/3"
-            type="button"
-            color="gray"
-          >
-            작성 취소
-          </Button>
-          <Button type="submit" className="w-2/3">
-            이야기 작성 완료
-          </Button>
-        </div>
-      </form>
+          <div className="absolute left-0 right-0 flex gap-2 bottom-3">
+            <Button
+              onClick={() => setIsCancelPopupOpen(true)}
+              className="w-1/3"
+              type="button"
+              color="gray"
+            >
+              작성 취소
+            </Button>
+            <Button type="submit" className="w-2/3">
+              이야기 작성 완료
+            </Button>
+          </div>
+        </form>
+      )}
 
       {/* 크롭 모달 */}
       {isCropPopupOpen && cropImageSrc && (
@@ -232,9 +237,7 @@ const DiaryForm = () => {
         title="작성 완료"
         description="작성을 완료하시겠습니까?"
         onConfirm={() => {
-          if (newPostId) {
-            router.push(`/analysis?id=${newPostId}`);
-          }
+          handleSubmit();
         }}
         type="cancelConfirm"
       />
