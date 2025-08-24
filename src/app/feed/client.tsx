@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import Masonry from "react-masonry-css";
@@ -6,6 +6,8 @@ import Tag from "../components/common/tag/Tag";
 import { TAG_MAP, type TagProps } from "../components/common/tag/tag.types";
 import { useRouter } from "next/navigation";
 import { getCards, searchCards } from "./actions"; // Import both server actions
+import Input from "../components/common/input/Input";
+import Loading from "../components/common/Loading";
 
 export type Card = {
   id: number;
@@ -79,26 +81,19 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
     hasMoreRef.current = true; // Assume there's more until told otherwise
 
     try {
-        const page = pageRef.current;
-        const result = trimmedQuery
-            ? await searchCards(trimmedQuery, page, 20)
-            : await getCards(page, 20);
-        
-        setCards(result.cards);
-        hasMoreRef.current = !result.isLast;
-        pageRef.current = 1;
-    } catch (e) {
-        console.error(e);
-        hasMoreRef.current = false;
-    } finally {
-        loadingRef.current = false;
-    }
-  };
+      const page = pageRef.current;
+      const result = trimmedQuery
+        ? await searchCards(trimmedQuery, page, 20)
+        : await getCards(page, 20);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      handleSearch();
+      setCards(result.cards);
+      hasMoreRef.current = !result.isLast;
+      pageRef.current = 1;
+    } catch (e) {
+      console.error(e);
+      hasMoreRef.current = false;
+    } finally {
+      loadingRef.current = false;
     }
   };
 
@@ -127,15 +122,13 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
   }, [loadMore]);
 
   return (
-    <div className="relative sticky flex flex-col h-full">
-      <div className="mt-1 mb-4">
-        <input
-          type="text"
-          placeholder="사람들의 이야기가 깃든 장소를 찾아보세요"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="w-full bg-background rounded-xl border-[3px] hover:bg-[#F5F5F5] px-4 py-2 outline-none focus:ring-2 focus:ring-indigo-300"
+    <div className="relative flex flex-col h-full">
+      <div className="flex items-center mt-3 mb-5">
+        <Input
+          searchTerm={searchQuery}
+          setSearchTerm={setSearchQuery}
+          handleSearch={handleSearch}
+          placeholder="사람들의 이야기가 깃든 장소를 찾아보세요!"
         />
       </div>
 
@@ -178,9 +171,13 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
                     />
                   </div>
                 )}
-                <h3 className="font-bold text-base line-clamp-2 mb-1">{c.placeName}</h3>
-                <p className="text-xs font-medium line-clamp-1 text-gray-500">{c.roadAddress}</p>
-                <p className="text-sm mt-2 line-clamp-2">{c.content}</p>
+                <h3 className="mb-1 text-base font-bold line-clamp-2">
+                  {c.placeName}
+                </h3>
+                <p className="text-xs font-medium text-gray-500 line-clamp-1">
+                  {c.roadAddress}
+                </p>
+                <p className="mt-2 text-sm line-clamp-2">{c.content}</p>
                 <div className="flex gap-2 pt-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                   {c.tags
                     .map((tag) => TAG_MAP[tag as keyof typeof TAG_MAP])
@@ -196,11 +193,14 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
 
         <div ref={sentinelRef} className="h-10" />
         {loadingRef.current && (
-          <p className="py-3 text-center text-sm text-gray-500">불러오는 중…</p>
+          // <p className="py-3 text-sm text-center text-gray-500">불러오는 중…</p>
+          <Loading />
         )}
-        
+
         {!loadingRef.current && cards.length === 0 && (
-            <p className="py-3 text-center text-sm text-gray-500">검색 결과가 없습니다.</p>
+          <p className="py-3 text-sm text-center text-gray-500">
+            검색 결과가 없습니다.
+          </p>
         )}
       </div>
     </div>

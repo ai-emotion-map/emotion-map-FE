@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { TagVariant } from "../components/common/tag/tag.types";
 import LayerPopup from "../components/common/layerPopup/LayerPopup";
 import { MarkerData } from "../components/navermap/naverMap.types";
+import Input from "../components/common/input/Input";
 
 interface NaverPlace {
   title: string;
@@ -77,18 +78,11 @@ const Page = () => {
     <div className="flex flex-col min-h-full gap-10">
       <div className="relative flex flex-col items-center flex-1 gap-10">
         <div className="absolute flex items-center justify-center w-[90%] top-3">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+          <Input
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            handleSearch={handleSearch}
             placeholder="오늘의 이야기가 시작될 장소를 찾아보세요."
-            className="focus:outline-none text-base w-full z-10 pl-4 py-2 border rounded-2xl bg-gradient-to-r from-[#F0FEEF] to-[#EBEEFF]"
-          />
-          <Search
-            className="absolute z-10 text-base cursor-pointer right-3"
-            color="#a6a6a6"
-            size={18}
-            onClick={handleSearch}
           />
         </div>
 

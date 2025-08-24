@@ -14,6 +14,7 @@ import { MarkerData } from "../components/navermap/naverMap.types";
 import { Api } from "../api/api";
 import { Marker } from "../page";
 import LayerPopup from "../components/common/layerPopup/LayerPopup";
+import Input from "../components/common/input/Input";
 
 const MapClient = ({
   markers,
@@ -119,18 +120,11 @@ const MapClient = ({
       <div className="flex flex-col h-[calc(100vh-150px)] gap-3 pt-2">
         {/* 검색창 */}
         <div className="relative flex items-center">
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+          <Input
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            handleSearch={handleSearch}
             placeholder="다양한 이야기를 검색해 보세요!"
-            className="focus:outline-none text-base w-full z-10 pl-4 py-2 border rounded-2xl bg-gradient-to-r from-[#F0FEEF] to-[#EBEEFF]"
-          />
-          <Search
-            className="absolute z-10 text-base cursor-pointer right-3"
-            color="#a6a6a6"
-            size={18}
-            onClick={handleSearch}
           />
         </div>
 
