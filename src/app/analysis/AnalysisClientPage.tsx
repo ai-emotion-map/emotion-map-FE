@@ -5,7 +5,7 @@ import Button from "../components/common/button/Button";
 import NaverMap from "../components/navermap/NaverMap";
 import { MarkerData } from "../components/navermap/naverMap.types";
 import { Tag } from "../components/common/tag/Tag";
-import { TagVariant } from "../components/common/tag/tag.types";
+import { TagVariant, TAG_MAP } from "../components/common/tag/tag.types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Api } from "@/app/api/api"; // Import Api
 
@@ -21,8 +21,22 @@ const AnalysisClientPage = () => {
       const postId = parseInt(id, 10);
       Api.getPostById(postId)
         .then((data) => {
-          setTags(data.tags.slice(0, 3)); // Get first 3 tags
-          setMarker({ lat: data.lat, lng: data.lng, emotion: data.tags[0] as TagVariant });
+          if (data) {
+            const tags = data.tags || [];
+            setTags(tags.slice(0, 3));
+
+            const firstTag = tags[0];
+            // Map the raw tag to a TagVariant, provide a fallback
+            const markerEmotion = firstTag
+              ? TAG_MAP[firstTag as keyof typeof TAG_MAP]
+              : "기본";
+
+            setMarker({
+              lat: data.lat,
+              lng: data.lng,
+              emotion: markerEmotion || "기본", // Ensure emotion is never undefined
+            });
+          }
         })
         .catch(console.error);
     }
@@ -41,9 +55,12 @@ const AnalysisClientPage = () => {
 
         {/* Emotion tags */}
         <div className="flex justify-center pb-6 space-x-4">
-          {tags.map((tag, index) => (
-            <Tag key={index} variant={tag as TagVariant} type="default" />
-          ))}
+          {tags
+            .map((tag) => TAG_MAP[tag as keyof typeof TAG_MAP])
+            .filter(Boolean)
+            .map((mappedTag, index) => (
+              <Tag key={index} variant={mappedTag} type="default" />
+            ))}
         </div>
       </div>
       {/* Save button */}
