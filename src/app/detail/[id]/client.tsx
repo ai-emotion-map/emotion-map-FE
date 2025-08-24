@@ -73,9 +73,12 @@ export const DetailClient = ({
 
         {/* 태그 */}
         <div className="flex flex-wrap gap-2 py-1">
-          {data.tags.map((tag) => (
-            <Tag key={tag} variant={TAG_MAP[tag]} />
-          ))}
+          {data.tags
+            .map((tag) => TAG_MAP[tag as keyof typeof TAG_MAP])
+            .filter(Boolean)
+            .map((mappedTag) => (
+              <Tag key={mappedTag} variant={mappedTag} type="default" />
+            ))}
         </div>
 
         {/* 지도 & 버튼 */}
