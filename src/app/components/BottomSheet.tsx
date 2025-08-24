@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BackendTag, TAG_MAP, TagVariant } from "./common/tag/tag.types";
 import clsx from "clsx";
 import NaverMap from "./navermap/NaverMap";
@@ -37,6 +37,22 @@ const BottomSheet = ({
   } | null;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const [vh, setVh] = useState("43vh");
+
+  useEffect(() => {
+    function updateHeight() {
+      if (window.innerHeight < 800) {
+        setVh("50vh");
+      } else {
+        setVh("40vh");
+      }
+    }
+
+    updateHeight(); // 초기 실행
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, []);
+
   const [data, setData] = React.useState<MarkerDetail | null>(null);
 
   console.log(selectedMarker?.id);
@@ -65,7 +81,7 @@ const BottomSheet = ({
   return (
     <motion.div
       className="flex flex-col z-50 fixed left-1/2 bottom-0 transform -translate-x-1/2 w-full max-w-[430px] bg-background rounded-t-2xl border border-gray-200 overflow-hidden"
-      animate={{ height: isExpanded ? "100vh" : "40vh" }}
+      animate={{ height: isExpanded ? "100vh" : vh }}
       transition={{ duration: 0.3, ease: "easeInOut" }}
     >
       {/* 드래그 핸들 */}
@@ -119,7 +135,7 @@ const BottomSheet = ({
                 ))}
               </div>
             )}
-            <p className={!isExpanded ? "h-28 overflow-hidden" : ""}>
+            <p className={!isExpanded ? "h-auto max-h-28 overflow-hidden" : ""}>
               {data.content}
             </p>
           </div>
