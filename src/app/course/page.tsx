@@ -28,7 +28,7 @@ const Page = () => {
     <div className="flex flex-col h-[calc(100vh-150px)] p-4">
       <div className="flex flex-col items-center flex-1 gap-5">
         <p className="text-center">
-          태그를 선택하세요! 코스를 추천해 드려요 📌
+          태그를 선택하면 코스를 추천해드립니다.
         </p>
         {/* 태그 영역 */}
         <div className="flex flex-wrap justify-center gap-x-4 gap-y-4">
@@ -48,7 +48,10 @@ const Page = () => {
                 hover:bg-sub-green
                 transition
                 text-center
-                font-medium
+                font-bold
+
+                text-xl
+                
             `}
             >
               {tag}
