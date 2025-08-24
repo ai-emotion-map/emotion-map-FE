@@ -129,7 +129,7 @@ const DiaryForm = () => {
   };
 
   return (
-    <div className="relative flex flex-col h-full">
+    <div className="relative flex flex-col h-[calc(100vh-150px)]">
       {loading ? (
         <Loading />
       ) : (
