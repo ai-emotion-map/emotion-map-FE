@@ -76,8 +76,8 @@ const Page = () => {
 
   return (
     <div className="flex flex-col min-h-full gap-10">
-      <div className="relative flex flex-col items-center flex-1 gap-10">
-        <div className="absolute flex items-center justify-center w-[90%] top-3">
+      <div className="relative flex flex-col items-center flex-1 gap-10 ">
+        <div className="absolute flex items-center justify-center w-[90%] top-3 ">
           <Input
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
@@ -85,7 +85,6 @@ const Page = () => {
             placeholder="오늘의 이야기가 시작될 장소를 찾아보세요."
           />
         </div>
-
         {isResultOpen && (
           <div className="absolute top-16 left-1/2 -translate-x-1/2 w-[90%] max-h-80 overflow-y-auto bg-background rounded-2xl shadow-lg p-4 z-20">
             <div className="flex items-center justify-between mb-3">
@@ -119,7 +118,6 @@ const Page = () => {
             )}
           </div>
         )}
-
         {/* key로 강제 렌더링 */}
         <NaverMap
           key={`${center.lat}-${center.lng}`}
