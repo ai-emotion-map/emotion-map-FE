@@ -41,12 +41,12 @@ module.exports = {
         "marker-pink": "#ff9fc4",
         "marker-green": "#8fd298",
 
-        "feed-blue1": "#6367dbff",
-        "feed-blue2": "#446bb7ff",
-        "feed-blue3": "#4f60c2ff",
-        "feed-green1": "#48d196e4",
-        "feed-green2": "#32ae8fff",
-        "feed-green3": "#52ddd6ff",
+        "feed-blue1": "#EAEEFE",
+        "feed-blue2": "#B8C6FF",
+        "feed-blue3": "#D5DDFD",
+        "feed-green1": "#C0E5D3",
+        "feed-green2": "#B8EFC6",
+        "feed-green3": "#DFF5E6",
         foreground: "hsl(var(--foreground))",
         card: {
           DEFAULT: "hsl(var(--card))",

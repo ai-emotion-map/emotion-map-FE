@@ -139,4 +139,31 @@ export const Api = {
     const response = await api.get(`/posts/${id}`);
     return response.data;
   },
+
+  /**
+   * 게시물 검색 (내용/주소, 태그, 지도 범위, 페이지네이션 지원)
+   * @param params 검색 파라미터
+   * @returns 게시물 목록 (페이지네이션 포함)
+   */
+  searchPosts: async (params: {
+    q?: string; // 내용/주소 키워드
+    tag?: string; // 특정 태그
+    minLat?: number; // 지도 최소 위도
+    maxLat?: number; // 지도 최대 위도
+    minLng?: number; // 지도 최소 경도
+    maxLng?: number; // 지도 최대 경도
+    page?: number; // 페이지 번호 (0부터 시작)
+    size?: number; // 페이지 크기 (기본 20, 최대 100)
+  }) => {
+    const { size = 20, ...rest } = params;
+    const actualSize = Math.min(size, 100);
+
+    const response = await api.get("/posts/search", {
+      params: {
+        ...rest,
+        size: actualSize,
+      },
+    });
+    return response.data; // { content: [...], page, size, totalElements, totalPages }
+  },
 };
