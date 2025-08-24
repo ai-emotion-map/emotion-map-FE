@@ -65,6 +65,7 @@ const MapClient = ({
     setZoom(12);
 
     const searchMarkers = markersData.content.map((marker: Marker) => ({
+      id: marker.id,
       lat: marker.lat,
       lng: marker.lng,
 
@@ -107,6 +108,7 @@ const MapClient = ({
     setZoom(12);
 
     const searchMarkers = markersData.content.map((marker: Marker) => ({
+      id: marker.id,
       lat: marker.lat,
       lng: marker.lng,
       emotion: tag as TagVariant,
