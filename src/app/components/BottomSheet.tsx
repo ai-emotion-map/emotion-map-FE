@@ -103,16 +103,16 @@ const BottomSheet = ({
           >
             {!isExpanded && data.imageUrls[0] ? (
               <img
-                src={data.imageUrls[0]}
+                src={`https://clustory.shop${data.imageUrls[0]}`}
                 alt={data.placeName || "No Image"}
-                className="rounded-lg w-[150px] h-28"
+                className="rounded-lg w-[120px] h-32"
               />
             ) : (
               <div className="flex gap-3 overflow-x-auto whitespace-nowrap scrollbar-hide">
                 {data.imageUrls.map((image, index) => (
                   <img
                     key={index}
-                    src={image}
+                    src={`https://clustory.shop${image}`}
                     alt={data.placeName || "No Image"}
                     className="w-full h-auto rounded-lg max-h-72"
                   />

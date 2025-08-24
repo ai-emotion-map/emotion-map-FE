@@ -31,6 +31,7 @@ export const DetailClient = ({
     const url = `https://map.naver.com/v5/search/${encodeURIComponent(destinationName)}`;
     window.open(url, "_blank");
   }
+  console.log(data.imageUrls);
 
   return (
     <div className="relative flex flex-col w-full min-h-screen p-4 bg-background">
@@ -49,13 +50,21 @@ export const DetailClient = ({
 
         {/* 이미지 & 내용 */}
         <div className="flex flex-col gap-3">
-          <div className="flex gap-3 overflow-x-auto whitespace-nowrap scrollbar-hide">
+          <div
+            className={`flex gap-3 overflow-x-auto scrollbar-hide ${
+              data?.imageUrls.length === 1 ? "justify-start" : ""
+            }`}
+          >
             {data?.imageUrls.map((image, index) => (
               <img
                 key={index}
-                src={image}
+                src={`https://clustory.shop${image}`}
                 alt={data?.placeName || "No Image"}
-                className="w-full h-auto rounded-lg max-h-72"
+                className={`rounded-lg max-h-72 ${
+                  data?.imageUrls.length === 1
+                    ? "w-auto max-w-full object-contain"
+                    : "w-[200px] flex-shrink-0 object-cover"
+                }`}
               />
             ))}
           </div>
