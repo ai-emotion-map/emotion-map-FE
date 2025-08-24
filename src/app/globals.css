@@ -138,7 +138,7 @@ body {
 
 /* Style your items */
 .my-masonry-grid_column > article {
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 }
 
 /* 전역 스크롤바 스타일 */

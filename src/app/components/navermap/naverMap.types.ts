@@ -22,6 +22,7 @@ export interface NaverMapProps {
   height?: string;
   onMarkerClick?: (marker: MarkerData) => void;
   options?: NaverMapOptions;
+  polyline?: [number, number][]; // lat, lng 좌표 배열
 }
 
 // 감정별 마커 이미지
@@ -32,5 +33,7 @@ export const emotionImages: Record<TagVariant, string> = {
   "외로움 🌙": "/images/marker/purple-marker.svg",
   "설렘/사랑 💌": "/images/marker/pink-marker.svg",
   "향수 🌿": "/images/marker/red-marker.svg",
+  "기쁨/신남 🎉": "/images/marker/mint-marker.svg",
+  "화남/분노 😡": "/images/marker/brown-marker.svg",
   기본: "/images/marker/black-marker.svg",
 };

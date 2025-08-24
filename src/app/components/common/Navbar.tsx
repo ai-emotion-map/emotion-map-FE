@@ -1,6 +1,6 @@
 "use client";
 
-import { Files, House, MapPin, MessageSquareMore, PenLine } from "lucide-react";
+import { Files, House, LandPlot, MapPin, PenLine } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 
@@ -17,6 +17,7 @@ const Navbar = () => {
     { Component: House, path: ["/"] },
     { Component: PenLine, path: ["/write", "/write/diary", "/analysis"] },
     { Component: MapPin, path: ["/map"] },
+    { Component: LandPlot, path: ["/course", "/course/recommend"] },
     { Component: Files, path: ["/feed"] },
   ];
 

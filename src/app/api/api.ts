@@ -33,39 +33,6 @@ export const Api = {
     return response.data;
   },
 
-  //   /**
-  //    * 새 게시물을 이미지와 함께 작성합니다.
-  //    * @param payload 게시물 데이터 + 이미지 파일
-  //    * @returns 작성 완료된 게시물 데이터
-  //    */
-  //   createPostWithImages: async (payload: {
-  //     lat: number;
-  //     lng: number;
-  //     placeName: string;
-  //     content: string;
-  //     images: File[]
-  //   }) => {
-  //     const formData = new FormData();
-
-  //     const { images, ...jsonData } = payload;
-
-  //     // JSON 데이터를 한 덩어리로 append
-  //       formData.append("post", JSON.stringify(jsonData));
-
-  //     // 이미지 파일 append
-  //     if (images && images.length > 0) {
-  //       images.forEach((image) => {
-  //         formData.append("images", image);
-  //       });
-  //     }
-
-  //     const response = await api.post("/posts/form", formData, {
-  //   headers: { "Content-Type": "undefined" },
-  // });
-  //     console.log(response.data);
-  //     return response.data;
-  //   },
-
   /**
    * 새 게시물을 이미지와 함께 작성합니다.
    * @param payload 게시물 데이터 + 이미지 파일
@@ -100,16 +67,11 @@ export const Api = {
       payload.images.forEach((image) => formData.append("images", image));
     }
 
-    // FormData 확인
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
     // POST 요청 (axios가 Content-Type 자동 설정)
     const response = await api.post("/posts/form", formData, {
       headers: { "Content-Type": undefined }, // axios가 FormData boundary를 자동 설정
     });
-    console.log(response.data);
+
     return response.data;
   },
 
@@ -166,5 +128,19 @@ export const Api = {
       },
     });
     return response.data; // { content: [...], page, size, totalElements, totalPages }
+  },
+
+  /**
+   * 감정 기반 코스 추천
+   * @param params 추천 파라미터
+   * @returns 추천 코스 목록
+   */
+  recommendCourses: async (params: {
+    emotion: string; // 선택한 감정 태그
+  }) => {
+    const response = await api.post("/courses/recommend", params);
+
+    return response.data;
+    // 예시: { content: [...], totalElements, totalPages, page, size }
   },
 };

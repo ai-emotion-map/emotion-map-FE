@@ -80,7 +80,7 @@ export default async function Home() {
 
   return (
     <main className="flex flex-col h-[calc(100vh-150px)] gap-5">
-      <div className="flex flex-col flex-1 gap-3">
+      <div className="flex flex-col flex-1 gap-3 pointer-events-none">
         <div className="flex items-end justify-between px-1">
           <p className="text-base">오늘의 정릉동</p>
           <Weather />

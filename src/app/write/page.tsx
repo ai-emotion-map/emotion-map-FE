@@ -76,8 +76,8 @@ const Page = () => {
 
   return (
     <div className="flex flex-col min-h-full gap-10">
-      <div className="relative flex flex-col items-center flex-1 gap-10">
-        <div className="absolute flex items-center justify-center w-[90%] top-3">
+      <div className="relative flex flex-col items-center flex-1 gap-10 ">
+        <div className="absolute flex items-center justify-center w-[90%] top-3 ">
           <Input
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
@@ -85,7 +85,6 @@ const Page = () => {
             placeholder="오늘의 이야기가 시작될 장소를 찾아보세요."
           />
         </div>
-
         {isResultOpen && (
           <div className="absolute top-16 left-1/2 -translate-x-1/2 w-[90%] max-h-80 overflow-y-auto bg-background rounded-2xl shadow-lg p-4 z-20">
             <div className="flex items-center justify-between mb-3">
@@ -119,7 +118,6 @@ const Page = () => {
             )}
           </div>
         )}
-
         {/* key로 강제 렌더링 */}
         <NaverMap
           key={`${center.lat}-${center.lng}`}
@@ -144,15 +142,13 @@ const Page = () => {
             className="w-1/3"
             color="gray"
           >
-            작성 취소
+            이전
           </Button>
           <Button
             onClick={() => {
               if (placeName.length > 0) {
-                const { lat, lng } = markers[0];
-                router.push(
-                  `/write/diary?place=${placeName}&lat=${lat}&lng=${lng}`
-                );
+                // 팝업 먼저 열기
+                setIsLayerPopupOpen(true);
               } else {
                 setIsLayerPopupOpen(true);
               }
@@ -164,13 +160,28 @@ const Page = () => {
         </div>
       </div>
 
-      {placeName === "" && (
+      {placeName === "" ? (
         <LayerPopup
           open={isLayerPopupOpen}
           onOpenChange={setIsLayerPopupOpen}
           title="장소 선택"
           description="장소가 선택되지 않았습니다."
           type="confirm"
+        />
+      ) : (
+        <LayerPopup
+          open={isLayerPopupOpen}
+          onOpenChange={setIsLayerPopupOpen}
+          title="장소 선택"
+          description="해당 장소로 이야기를 시작하시겠습니까?"
+          type="cancelConfirm"
+          // ✅ 팝업 안에서 confirm 시 라우팅
+          onConfirm={() => {
+            const { lat, lng } = markers[0];
+            router.push(
+              `/write/diary?place=${placeName}&lat=${lat}&lng=${lng}`
+            );
+          }}
         />
       )}
     </div>

@@ -26,10 +26,12 @@ const MapClient = ({
   const tags = [
     "가족 🏠",
     "우정 🤝",
+    "기쁨/신남 🎉",
     "위로/치유 🌱",
-    "외로움 🌙",
     "설렘/사랑 💌",
     "향수 🌿",
+    "화남/분노 😡",
+    "외로움 🌙",
   ] as const;
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -65,6 +67,7 @@ const MapClient = ({
     setZoom(12);
 
     const searchMarkers = markersData.content.map((marker: Marker) => ({
+      id: marker.id,
       lat: marker.lat,
       lng: marker.lng,
 
@@ -107,6 +110,7 @@ const MapClient = ({
     setZoom(12);
 
     const searchMarkers = markersData.content.map((marker: Marker) => ({
+      id: marker.id,
       lat: marker.lat,
       lng: marker.lng,
       emotion: tag as TagVariant,
