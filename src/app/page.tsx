@@ -24,6 +24,7 @@ export default async function Home() {
     minLng: 127.01, // 최소 경도
     maxLng: 127.03, // 최대 경도
   });
+  console.log(markersData)
 
   // markersData를 NaverMap용으로 변환
   const markers = markersData.map((marker: Marker) => ({

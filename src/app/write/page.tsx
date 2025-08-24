@@ -124,13 +124,6 @@ const Page = () => {
           markers={markers}
           center={center}
           zoom={zoom}
-          options={{
-            draggable: false, // 지도 드래그 금지
-            pinchZoom: false, // 모바일 핀치 확대 금지
-            scrollWheel: false, // 마우스 휠 확대 금지
-            keyboardShortcuts: false,
-            disableDoubleClickZoom: true,
-          }}
           height="60vh"
         />
       </div>
