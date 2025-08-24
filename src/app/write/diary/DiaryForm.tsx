@@ -33,6 +33,7 @@ const DiaryForm = () => {
   const [isSubmitPopupOpen, setIsSubmitPopupOpen] = useState(false); // 작성 완료 모달
   const [isEmptyTextPopupOpen, setIsEmptyTextPopupOpen] = useState(false); // 내용 없음 모달
   const [isCancelPopupOpen, setIsCancelPopupOpen] = useState(false); // 작성 취소 모달
+  const [newPostId, setNewPostId] = useState<number | null>(null); // 새 게시물 ID
 
   // 크롭 관련 상태
   const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
@@ -67,6 +68,7 @@ const DiaryForm = () => {
       setImages((prev) => [...prev, file]);
       setPreviewUrls((prev) => [...prev, croppedImageUrl]);
 
+      // 크롭 모달 닫기 및 초기화
       setCropImageSrc(null);
       setIsCropPopupOpen(false);
       setCrop({ x: 0, y: 0 });
@@ -87,37 +89,39 @@ const DiaryForm = () => {
     );
   };
 
-  const handleOpenSubmitPopup = () => {
+  const handleSubmit = async () => {
     if (!text.trim()) {
       setIsEmptyTextPopupOpen(true);
       return;
     }
-    setIsSubmitPopupOpen(true);
-  };
 
-  const handleConfirmSubmit = async () => {
-    setIsSubmitPopupOpen(false);
     try {
       const response = await Api.createPostWithImages({
         lat: Number(lat) || 0,
         lng: Number(lng) || 0,
         placeName: place,
         content: text,
-        images: images,
+        images: images, // 선택된 이미지 파일 배열
       });
-      router.push(`/analysis?id=${response.id}`);
+
+      setNewPostId(response.id);
+      setIsSubmitPopupOpen(true);
     } catch (e) {
       if (axios.isAxiosError(e)) {
         if (e.response) {
+          // 서버가 응답했지만 상태 코드가 200이 아닌 경우
           console.log("에러 상태 코드:", e.response.status);
           console.log("에러 응답 데이터:", e.response.data);
           console.log("에러 응답 헤더:", e.response.headers);
         } else if (e.request) {
+          // 요청은 갔지만 서버가 응답하지 않은 경우
           console.log("요청이 전송되었지만 응답이 없습니다:", e.request);
         } else {
+          // 요청 설정 중 발생한 에러
           console.log("업로드 실패:", e.message);
         }
       } else {
+        // Handle non-axios errors
         console.log("An unexpected error occurred:", e);
       }
     }
@@ -125,7 +129,13 @@ const DiaryForm = () => {
 
   return (
     <div className="relative flex flex-col h-full">
-      <div className="flex flex-col h-[calc(100vh-230px)]">
+      <form
+        className="flex flex-col h-[calc(100vh-230px)]"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+      >
         <div className="flex flex-col flex-1 pb-4 overflow-y-auto">
           <div className="relative flex flex-col flex-1">
             <textarea
@@ -149,6 +159,7 @@ const DiaryForm = () => {
             </div>
           </div>
 
+          {/* 이미지 미리보기 */}
           {previewUrls.length > 0 && (
             <div className="flex pt-4 mt-2 space-x-2 overflow-x-auto">
               {previewUrls.map((url, index) => (
@@ -157,7 +168,7 @@ const DiaryForm = () => {
                     src={url}
                     alt={`Image preview ${index + 1}`}
                     width={96}
-                    height={120}
+                    height={120} // 4:5 비율
                     className="object-cover w-24 rounded-lg h-30"
                   />
                   <button
@@ -185,16 +196,13 @@ const DiaryForm = () => {
           >
             작성 취소
           </Button>
-          <Button
-            type="button"
-            className="w-2/3"
-            onClick={handleOpenSubmitPopup}
-          >
+          <Button type="submit" className="w-2/3">
             이야기 작성 완료
           </Button>
         </div>
-      </div>
+      </form>
 
+      {/* 크롭 모달 */}
       {isCropPopupOpen && cropImageSrc && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-black bg-opacity-50">
           <div className="relative w-full max-w-md h-[500px] bg-white rounded-lg overflow-hidden">
@@ -202,7 +210,7 @@ const DiaryForm = () => {
               image={cropImageSrc}
               crop={crop}
               zoom={zoom}
-              aspect={4 / 5}
+              aspect={4 / 5} // 4:5 비율 고정
               onCropChange={setCrop}
               onZoomChange={setZoom}
               onCropComplete={onCropComplete}
@@ -217,15 +225,21 @@ const DiaryForm = () => {
         </div>
       )}
 
+      {/* 작성 완료 모달 */}
       <LayerPopup
         open={isSubmitPopupOpen}
         onOpenChange={setIsSubmitPopupOpen}
         title="작성 완료"
         description="작성을 완료하시겠습니까?"
-        onConfirm={handleConfirmSubmit}
+        onConfirm={() => {
+          if (newPostId) {
+            router.push(`/analysis?id=${newPostId}`);
+          }
+        }}
         type="cancelConfirm"
       />
 
+      {/* 내용 없음 모달 */}
       <LayerPopup
         open={isEmptyTextPopupOpen}
         onOpenChange={setIsEmptyTextPopupOpen}
@@ -235,6 +249,7 @@ const DiaryForm = () => {
         type="confirm"
       />
 
+      {/* 작성 취소 모달 */}
       <LayerPopup
         open={isCancelPopupOpen}
         onOpenChange={setIsCancelPopupOpen}
