@@ -22,6 +22,7 @@ export interface NaverMapProps {
   height?: string;
   onMarkerClick?: (marker: MarkerData) => void;
   options?: NaverMapOptions;
+  polyline?: [number, number][]; // lat, lng 좌표 배열
 }
 
 // 감정별 마커 이미지

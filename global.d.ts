@@ -37,11 +37,32 @@ declare global {
       }
 
       class Icon {
-        constructor(options: { url: string; size?: Size; origin?: Point; anchor?: Point });
+        constructor(options: {
+          url: string;
+          size?: Size;
+          origin?: Point;
+          anchor?: Point;
+        });
       }
 
       class MarkerImage {
-        constructor(url: string, size?: Size, options?: { origin?: Point; anchor?: Point });
+        constructor(
+          url: string,
+          size?: Size,
+          options?: { origin?: Point; anchor?: Point }
+        );
+      }
+
+      class Polyline {
+        constructor(options: {
+          map?: Map;
+          path: LatLng[];
+          strokeColor?: string;
+          strokeWeight?: number;
+          strokeOpacity?: number;
+          strokeStyle?: string;
+        });
+        setMap(map: Map | null): void;
       }
 
       namespace TransCoord {

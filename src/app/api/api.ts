@@ -167,4 +167,18 @@ export const Api = {
     });
     return response.data; // { content: [...], page, size, totalElements, totalPages }
   },
+
+  /**
+   * 감정 기반 코스 추천
+   * @param params 추천 파라미터
+   * @returns 추천 코스 목록
+   */
+  recommendCourses: async (params: {
+    emotion: string; // 선택한 감정 태그
+  }) => {
+    const response = await api.post("/courses/recommend", params);
+
+    return response.data;
+    // 예시: { content: [...], totalElements, totalPages, page, size }
+  },
 };

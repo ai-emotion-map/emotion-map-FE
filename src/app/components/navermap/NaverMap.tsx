@@ -11,6 +11,7 @@ const NaverMap = ({
   onMarkerClick,
   options,
   center,
+  polyline,
 }: NaverMapProps & { center?: { lat: number; lng: number } }) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const markerRefs = useRef<(naver.maps.Marker | null)[]>([]);
@@ -41,11 +42,18 @@ const NaverMap = ({
     markerRefs.current.forEach((m) => m && m.setMap(null));
     markerRefs.current = [];
 
+    // 기존 폴리라인 제거
+    if ((mapInstance.current as any).polyline) {
+      (mapInstance.current as any).polyline.setMap(null);
+    }
+
+    // 마커 그리기
     markers.forEach((markerData) => {
       const { lat, lng, emotion } = markerData;
+      const position = new window.naver.maps.LatLng(lat, lng);
 
       const marker = new window.naver.maps.Marker({
-        position: new window.naver.maps.LatLng(lat, lng),
+        position,
         map: mapInstance.current!,
         icon: {
           url: emotionImages[emotion],
@@ -63,6 +71,23 @@ const NaverMap = ({
 
       markerRefs.current.push(marker);
     });
+
+    // polyline prop이 있으면 그려주기
+    if (polyline && polyline.length >= 2) {
+      const linePath = polyline.map(
+        ([lat, lng]) => new window.naver.maps.LatLng(lat, lng)
+      );
+
+      const polylineInstance = new window.naver.maps.Polyline({
+        map: mapInstance.current!,
+        path: linePath,
+        strokeColor: "#6FCF97",
+        strokeWeight: 4,
+        strokeOpacity: 0.8,
+      });
+
+      (mapInstance.current as any).polyline = polylineInstance;
+    }
   };
 
   // 마커, zoom, options 변경 시 렌더
