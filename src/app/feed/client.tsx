@@ -181,7 +181,7 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
                 {/* 태그 */}
                 <div className="flex gap-2 pt-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                   {c.tags
-                    .sort(() => Math.random() - 0.5) // 무작위 순서로 섞기
+                    // .sort(() => Math.random() - 0.5) // 무작위 순서로 섞기
                     .map((tag) => TAG_MAP[tag as keyof typeof TAG_MAP])
                     .filter(Boolean)
                     .map((mappedTag) => (

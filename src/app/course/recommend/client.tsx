@@ -34,8 +34,9 @@ const RecommendCourseClient = () => {
 
   if (!courseData)
     return (
-      <div className="h-[calc(100vh-150px)] flex flex-col items-center justify-center gap-3 pt-10">
-        <p>♾️ 코스를 가져오는 중입니다 ♾️</p>
+      <div className="h-[calc(100vh-150px)] flex flex-col items-center justify-center gap-3 pt-10 text-sm text-center text-gray-500">
+        <p> 코스를 가져오는 중입니다.</p>  {/*  ♾️ 제거 (다시넣어도 돼요) */}
+        
         <Loading />
       </div>
     );
