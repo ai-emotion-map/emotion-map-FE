@@ -54,7 +54,7 @@ const LayerPopup = ({
       {open && <div className="fixed inset-0 bg-black bg-opacity-50 z-[998]" />}
 
       <DialogContent className="fixed z-[999] w-full max-w-[300px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-xl overflow-hidden">
-        <DialogHeader className="flex flex-col items-start">
+        <DialogHeader className="flex flex-col items-start text-left">
           <DialogTitle className="text-base">{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>

@@ -1,11 +1,38 @@
-import Image from "next/image";
 import Review from "./components/common/Review";
-import { TagVariant } from "./components/common/tag/Tag";
 import NaverMap from "./components/navermap/NaverMap";
 import TagTicker from "./components/TagTicker";
 import Weather from "./components/Weather";
+import {
+  BackendTag,
+  TAG_MAP,
+  TagVariant,
+} from "./components/common/tag/tag.types";
+import { Api } from "./api/api";
 
-export default function Home() {
+export interface Marker {
+  id: number;
+  lat: number;
+  lng: number;
+  tags: string[];
+}
+
+export default async function Home() {
+  // 서버에서 마커 데이터 가져오기
+  const markersData = await Api.getAllMarkers({
+    minLat: 37.6, // 최소 위도
+    maxLat: 37.61, // 최대 위도
+    minLng: 127.01, // 최소 경도
+    maxLng: 127.03, // 최대 경도
+  });
+
+  // markersData를 NaverMap용으로 변환
+  const markers = markersData.map((marker: Marker) => ({
+    lat: marker.lat,
+    lng: marker.lng,
+    emotion: (TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] ||
+      "기본") as TagVariant,
+  }));
+
   const reviews = [
     {
       id: 1,
@@ -51,13 +78,6 @@ export default function Home() {
     },
   ];
 
-  const markers = [
-    { lat: 37.5665, lng: 126.978, emotion: "가족 🏠" as TagVariant },
-    { lat: 37.5651, lng: 126.9895, emotion: "우정 🤝" as TagVariant },
-    { lat: 37.57, lng: 126.982, emotion: "설렘/사랑 💌" as TagVariant },
-    { lat: 37.561, lng: 126.975, emotion: "향수 🌿" as TagVariant },
-  ];
-
   return (
     <main className="flex flex-col h-[calc(100vh-150px)] gap-5">
       <div className="flex flex-col flex-1 gap-3">
@@ -66,21 +86,25 @@ export default function Home() {
           <Weather />
         </div>
 
-        <NaverMap markers={markers} zoom={13} />
+        <NaverMap
+          markers={markers}
+          zoom={13}
+          options={{
+            draggable: false, // 지도 드래그 금지
+            pinchZoom: false, // 모바일 핀치 확대 금지
+            scrollWheel: false, // 마우스 휠 확대 금지
+            keyboardShortcuts: false,
+            disableDoubleClickZoom: true,
+          }}
+        />
       </div>
 
       <TagTicker />
 
       <div className="relative w-[calc(100%+2rem)] -mx-4 h-[200px] bg-main-green">
         {/* 제목 고정 */}
-        <p className="absolute flex items-center gap-2 font-bold text-white top-4 left-6">
-          <Image
-            src="/images/logo-white.png"
-            alt="logo-white"
-            width={70}
-            height={50}
-          />{" "}
-          이용 후기
+        <p className="absolute text-white top-4 left-6">
+          Clustory 이용 후기 🌟
         </p>
 
         {/* 리뷰 스크롤 영역 */}

@@ -1,5 +1,7 @@
 "use client";
 
+import axios from "axios";
+
 import React, { useState, useCallback } from "react";
 import { Image as ImageIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -8,6 +10,7 @@ import Button from "@/app/components/common/button/Button";
 import LayerPopup from "../../components/common/layerPopup/LayerPopup";
 import Cropper from "react-easy-crop";
 import getCroppedImg from "@/util/cropImage";
+import { Api } from "@/app/api/api";
 
 interface Area {
   width: number;
@@ -18,6 +21,7 @@ interface Area {
 
 const DiaryForm = () => {
   const searchParams = useSearchParams();
+  const place = decodeURIComponent(searchParams.get("place") || ""); // 장소 이름
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
 
@@ -28,6 +32,8 @@ const DiaryForm = () => {
   const [isCropPopupOpen, setIsCropPopupOpen] = useState(false); // 크롭 모달
   const [isSubmitPopupOpen, setIsSubmitPopupOpen] = useState(false); // 작성 완료 모달
   const [isEmptyTextPopupOpen, setIsEmptyTextPopupOpen] = useState(false); // 내용 없음 모달
+  const [isCancelPopupOpen, setIsCancelPopupOpen] = useState(false); // 작성 취소 모달
+  const [newPostId, setNewPostId] = useState<number | null>(null); // 새 게시물 ID
 
   // 크롭 관련 상태
   const [cropImageSrc, setCropImageSrc] = useState<string | null>(null);
@@ -83,49 +89,60 @@ const DiaryForm = () => {
     );
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!text.trim()) {
       setIsEmptyTextPopupOpen(true);
       return;
     }
 
-    const formData = new FormData();
-    formData.append("text", text);
-    formData.append("lat", lat ?? "");
-    formData.append("lng", lng ?? "");
-    images.forEach((file) => {
-      formData.append("images", file);
-    });
+    try {
+      const response = await Api.createPostWithImages({
+        lat: Number(lat) || 0,
+        lng: Number(lng) || 0,
+        placeName: place,
+        content: text,
+        images: images, // 선택된 이미지 파일 배열
+      });
 
-    console.log("FormData contents:");
-    for (const [key, value] of formData.entries()) {
-      if (value instanceof File) {
-        console.log(`${key}: ${value.name}`);
+      setNewPostId(response.id);
+      setIsSubmitPopupOpen(true);
+    } catch (e) {
+      if (axios.isAxiosError(e)) {
+        if (e.response) {
+          // 서버가 응답했지만 상태 코드가 200이 아닌 경우
+          console.log("에러 상태 코드:", e.response.status);
+          console.log("에러 응답 데이터:", e.response.data);
+          console.log("에러 응답 헤더:", e.response.headers);
+        } else if (e.request) {
+          // 요청은 갔지만 서버가 응답하지 않은 경우
+          console.log("요청이 전송되었지만 응답이 없습니다:", e.request);
+        } else {
+          // 요청 설정 중 발생한 에러
+          console.log("업로드 실패:", e.message);
+        }
       } else {
-        console.log(`${key}: ${value}`);
+        // Handle non-axios errors
+        console.log("An unexpected error occurred:", e);
       }
     }
-
-    setIsSubmitPopupOpen(true);
   };
 
   return (
-    <div className="relative flex flex-col min-h-full">
+    <div className="relative flex flex-col h-full">
       <form
-        className="flex flex-col min-h-full"
+        className="flex flex-col h-[calc(100vh-230px)]"
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit();
         }}
       >
-        <div className="flex-1 overflow-y-auto min-h-[530px] pb-4">
-          <div className="relative flex flex-col">
+        <div className="flex flex-col flex-1 pb-4 overflow-y-auto">
+          <div className="relative flex flex-col flex-1">
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="편하게 적어보아요"
-              className={`w-full p-3 rounded-2xl outline-none resize-none bg-gradient-to-b from-green-50 to-blue-50 text-gray-800 placeholder-gray-400 transition-all duration-300
-                ${previewUrls.length > 0 ? "min-h-[400px]" : "min-h-[530px]"}`}
+              className="flex-1 w-full p-3 text-gray-800 placeholder-gray-400 transition-all duration-300 outline-none resize-none rounded-2xl bg-gradient-to-b from-green-50 to-blue-50"
               maxLength={500}
             />
             <label className="absolute cursor-pointer bottom-3 right-3">
@@ -170,8 +187,18 @@ const DiaryForm = () => {
         <input type="hidden" name="lat" value={lat ?? ""} />
         <input type="hidden" name="lng" value={lng ?? ""} />
 
-        <div className="absolute left-0 right-0 bottom-3">
-          <Button type="submit">AI가 읽은 감정 보기</Button>
+        <div className="absolute left-0 right-0 flex gap-2 bottom-3">
+          <Button
+            onClick={() => setIsCancelPopupOpen(true)}
+            className="w-1/3"
+            type="button"
+            color="gray"
+          >
+            작성 취소
+          </Button>
+          <Button type="submit" className="w-2/3">
+            이야기 작성 완료
+          </Button>
         </div>
       </form>
 
@@ -204,7 +231,11 @@ const DiaryForm = () => {
         onOpenChange={setIsSubmitPopupOpen}
         title="작성 완료"
         description="작성을 완료하시겠습니까?"
-        onConfirm={() => router.push("/analysis")}
+        onConfirm={() => {
+          if (newPostId) {
+            router.push(`/analysis?id=${newPostId}`);
+          }
+        }}
         type="cancelConfirm"
       />
 
@@ -216,6 +247,16 @@ const DiaryForm = () => {
         description="내용을 입력해주세요."
         onConfirm={() => setIsEmptyTextPopupOpen(false)}
         type="confirm"
+      />
+
+      {/* 작성 취소 모달 */}
+      <LayerPopup
+        open={isCancelPopupOpen}
+        onOpenChange={setIsCancelPopupOpen}
+        title="작성을 취소하시겠습니까?"
+        description="작성된 내용은 저장되지 않습니다."
+        onConfirm={() => router.back()}
+        type="cancelConfirm"
       />
     </div>
   );

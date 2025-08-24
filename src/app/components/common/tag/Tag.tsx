@@ -2,32 +2,9 @@
 
 import clsx from "clsx";
 import React, { useState } from "react";
+import { TAG_STYLES, TagProps } from "./tag.types";
 
-export type TagVariant =
-  | "가족 🏠"
-  | "우정 🤝"
-  | "위로/치유 🌱"
-  | "외로움 🌙"
-  | "설렘/사랑 💌"
-  | "향수 🌿";
-
-export  const TAG_STYLES: Record<TagVariant, { color: string; shadowColor: string }> = {
-  "가족 🏠": { color: "#FDFAE8", shadowColor: "#E7E0A0" },
-  "우정 🤝": { color: "#EEF5FC", shadowColor: "#AEE4FF" },
-  "위로/치유 🌱": { color: "#E0F1E4", shadowColor: "#9ED9A9" },
-  "외로움 🌙": { color: "#E8D8EE", shadowColor: "#D8ABEE" },
-  "설렘/사랑 💌": { color: "#FCEBF3", shadowColor: "#E3BCE0" },
-  "향수 🌿": { color: "#FEEFEE", shadowColor: "#FFCCCD" },
-};
-
-export type TagProps = {
-  variant: TagVariant;
-  type?: "default" | "small";
-  onClick?: () => void;
-  isActive?: boolean;
-};
-
-const Tag = ({ variant, type = "default", onClick, isActive }: TagProps) => {
+export const Tag = ({ variant, type = "default", onClick, isActive }: TagProps) => {
   const { color, shadowColor } = TAG_STYLES[variant];
   const [active, setActive] = useState(false);
 
