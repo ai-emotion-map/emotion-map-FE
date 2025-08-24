@@ -1,5 +1,13 @@
-export type BackendTag = // back용
-  "가족" | "우정" | "위로/치유" | "외로움" | "설렘/사랑" | "향수";
+export type BackendTag =
+  // back용
+  | "가족"
+  | "우정"
+  | "위로/치유"
+  | "외로움"
+  | "설렘/사랑"
+  | "향수"
+  | "기쁨/신남"
+  | "화남/분노";
 
 export type TagVariant =
   // front용
@@ -9,6 +17,8 @@ export type TagVariant =
   | "외로움 🌙"
   | "설렘/사랑 💌"
   | "향수 🌿"
+  | "기쁨/신남 🎉"
+  | "화남/분노 😡"
   | "기본";
 
 export const TAG_MAP: Record<BackendTag, TagVariant> = {
@@ -19,6 +29,8 @@ export const TAG_MAP: Record<BackendTag, TagVariant> = {
   외로움: "외로움 🌙",
   "설렘/사랑": "설렘/사랑 💌",
   향수: "향수 🌿",
+  "기쁨/신남": "기쁨/신남 🎉",
+  "화남/분노": "화남/분노 😡",
 };
 
 export const REVERSE_TAG_MAP: Record<TagVariant, BackendTag> =
@@ -37,7 +49,9 @@ export const TAG_STYLES: Record<
   "외로움 🌙": { color: "#E8D8EE", shadowColor: "#D8ABEE" },
   "설렘/사랑 💌": { color: "#FCEBF3", shadowColor: "#E3BCE0" },
   "향수 🌿": { color: "#FEEFEE", shadowColor: "#FFCCCD" },
-  기본: { color: "#F5F5F5", shadowColor: "#D9D9D9" },
+  "기쁨/신남 🎉": { color: "#E1FFFD", shadowColor: "#BDFFFB" },
+  "화남/분노 😡": { color: "#D3AC84", shadowColor: "#FCA5A5" },
+  기본: { color: "#F5F5F5", shadowColor: "#D8A169" },
 };
 
 export type TagProps = {
