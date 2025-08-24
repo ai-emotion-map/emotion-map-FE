@@ -34,7 +34,7 @@ export const DetailClient = ({
   console.log(data.imageUrls);
 
   return (
-    <div className="relative flex flex-col w-full min-h-screen p-4 bg-background">
+    <div className="relative flex flex-col w-full min-h-[calc(100vh-150px)] p-4 bg-background">
       <div className="flex flex-col flex-1 gap-4">
         {/* 제목 */}
         <div>
@@ -42,11 +42,11 @@ export const DetailClient = ({
           <h4 className="text-sm">{data?.roadAddress}</h4>
         </div>
 
-        <X
-          className="absolute cursor-pointer top-3 right-4"
+        {/* <X
+          className="absolute cursor-pointer top-1 right-4"
           color="#a6a6a6"
           onClick={() => router.back()}
-        />
+        /> */}
 
         {/* 이미지 & 내용 */}
         <div className="flex flex-col gap-3">
@@ -82,7 +82,7 @@ export const DetailClient = ({
         </div>
 
         {/* 지도 & 버튼 */}
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 pointer-events-none">
           <NaverMap
             markers={selectedMarker ? [selectedMarker] : []}
             height="170px"
@@ -98,15 +98,20 @@ export const DetailClient = ({
         </div>
 
         <div className="mb-3">
-          <Button
-            onClick={() => {
-              if (selectedMarker && data?.placeName) {
-                openNaverDirections(data?.placeName);
-              }
-            }}
-          >
-            장소 검색하기
-          </Button>
+          <div className="z-20 flex gap-2">
+            <Button onClick={() => router.back()} color="gray">
+              닫기
+            </Button>
+            <Button
+              onClick={() => {
+                if (selectedMarker && data?.placeName) {
+                  openNaverDirections(data?.placeName);
+                }
+              }}
+            >
+              장소 검색하기
+            </Button>
+          </div>
         </div>
       </div>
     </div>
