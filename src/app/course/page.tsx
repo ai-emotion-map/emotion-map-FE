@@ -27,9 +27,7 @@ const Page = () => {
   return (
     <div className="flex flex-col h-[calc(100vh-150px)] p-4">
       <div className="flex flex-col items-center flex-1 gap-5">
-        <p className="text-center">
-          태그를 선택하면 코스를 추천해드립니다.
-        </p>
+        <p className="text-center">태그를 선택하면 코스를 추천해드립니다.</p>
         {/* 태그 영역 */}
         <div className="flex flex-wrap justify-center gap-x-4 gap-y-4">
           {tags.map((tag) => (
@@ -48,10 +46,7 @@ const Page = () => {
                 hover:bg-sub-green
                 transition
                 text-center
-                font-bold
-
-                text-xl
-                
+                text-base
             `}
             >
               {tag}
