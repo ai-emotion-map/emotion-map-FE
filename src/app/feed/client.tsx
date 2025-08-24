@@ -183,7 +183,7 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
                     .map((tag) => TAG_MAP[tag as keyof typeof TAG_MAP])
                     .filter(Boolean)
                     .map((mappedTag) => (
-                      <Tag key={mappedTag} variant={mappedTag} type="default" />
+                      <Tag key={mappedTag} variant={mappedTag} type="small" />
                     ))}
                 </div>
               </div>
