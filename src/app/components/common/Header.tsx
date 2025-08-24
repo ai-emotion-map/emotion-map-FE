@@ -12,6 +12,8 @@ const Header = () => {
       <Image
         src="/images/Clustory.png"
         alt="Logo"
+        priority
+        unoptimized
         width={150}
         height={40}
         className="cursor-pointer"
