@@ -8,6 +8,7 @@ import MapClient from "./client";
 const Page = async () => {
   // 서버에서 마커 데이터 가져오기
   const markersData = await Api.getAllMarkers();
+  console.log(markersData);
 
   const markers = markersData.map((marker: Marker) => ({
     id: marker.id,
