@@ -10,7 +10,7 @@ const Header = () => {
   return (
     <header className="flex items-center h-[80px] pl-4 bg-background">
       <Image
-        src="/images/Clustory.png"
+        src="/images/clustory.png"
         alt="Logo"
         priority
         unoptimized
