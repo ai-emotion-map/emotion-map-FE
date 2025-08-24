@@ -51,7 +51,22 @@ const AnalysisClientPage = () => {
       {/* Main content */}
       <div className="flex flex-col flex-grow pt-5 space-y-5">
         {/* Map placeholder replaced with NaverMap */}
-        <NaverMap markers={marker ? [marker] : []} height="490px" />
+        <NaverMap
+          markers={marker ? [marker] : []}
+          zoom={18}
+          center={{
+            lat: marker ? marker.lat : 37.611039,
+            lng: marker ? marker.lng : 126.997257,
+          }}
+          options={{
+            draggable: false, // 지도 드래그 금지
+            pinchZoom: false, // 모바일 핀치 확대 금지
+            scrollWheel: false, // 마우스 휠 확대 금지
+            keyboardShortcuts: false,
+            disableDoubleClickZoom: true,
+          }}
+          height="490px"
+        />
 
         {/* Emotion tags */}
         <div className="flex justify-center pb-6 space-x-4">
