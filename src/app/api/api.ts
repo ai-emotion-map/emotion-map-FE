@@ -33,7 +33,40 @@ export const Api = {
     return response.data;
   },
 
-  /**
+//   /**
+//    * 새 게시물을 이미지와 함께 작성합니다.
+//    * @param payload 게시물 데이터 + 이미지 파일
+//    * @returns 작성 완료된 게시물 데이터
+//    */
+//   createPostWithImages: async (payload: {
+//     lat: number;
+//     lng: number;
+//     placeName: string;
+//     content: string;
+//     images: File[]
+//   }) => {
+//     const formData = new FormData();
+
+//     const { images, ...jsonData } = payload;
+
+//     // JSON 데이터를 한 덩어리로 append
+//       formData.append("post", JSON.stringify(jsonData));
+
+//     // 이미지 파일 append
+//     if (images && images.length > 0) {
+//       images.forEach((image) => {
+//         formData.append("images", image);
+//       });
+//     }
+
+//     const response = await api.post("/posts/form", formData, {
+//   headers: { "Content-Type": "undefined" },
+// });
+//     console.log(response.data);
+//     return response.data;
+//   },
+
+/**
    * 새 게시물을 이미지와 함께 작성합니다.
    * @param payload 게시물 데이터 + 이미지 파일
    * @returns 작성 완료된 게시물 데이터
@@ -47,58 +80,37 @@ export const Api = {
   }) => {
     const formData = new FormData();
 
-    const { images, ...jsonData } = payload;
+    // 서버에서 요구하는 JSON 구조
+    const postData = {
+      content: payload.content,
+      lat: payload.lat,
+      lng: payload.lng,
+      roadAddress: "",
+      emotions: "",
+    };
 
-    // JSON 데이터를 한 덩어리로 append
-      formData.append(
+    formData.append(
       "post",
-      new Blob([JSON.stringify(jsonData)], { type: "application/json" })
+      new Blob([JSON.stringify(postData)], { type: "application/json" })
     );
 
-    // 이미지 파일 append
-    if (images && images.length > 0) {
-      images.forEach((image) => {
-        formData.append("images", image);
-      });
+    // 이미지 여러 장 추가
+    if (payload.images && payload.images.length > 0) {
+      payload.images.forEach((image) => formData.append("images", image));
     }
 
-    const response = await api.post("/posts/form", formData);
+    // FormData 확인
+    for (const [key, value] of formData.entries()) {
+      console.log(key, value);
+    }
+
+    // POST 요청 (axios가 Content-Type 자동 설정)
+    const response = await api.post("/posts/form", formData, {
+      headers: { "Content-Type": undefined }, // axios가 FormData boundary를 자동 설정
+    });
     console.log(response.data);
     return response.data;
   },
-
-
-//   /**
-//  * 새 게시물을 이미지와 함께 작성합니다.
-//  * @param payload 게시물 데이터 + 이미지 파일
-//  * @returns 작성 완료된 게시물 데이터
-//  */
-// createPostWithImages: async (payload: {
-//   lat: number;
-//   lng: number;
-//   placeName: string;
-//   content: string;
-//   images: File[];
-//   emotions: string[];
-// }) => {
-//   const formData = new FormData();
-//   const { images, ...jsonData } = payload;
-
-//   // JSON 데이터를 한 덩어리로 append
-//   formData.append("post", JSON.stringify(jsonData));
-
-//   // 이미지 파일 append
-//   if (images && images.length > 0) {
-//     images.forEach((file) => formData.append("images", file));
-//   }
-
-//   const response = await api.post("/posts/form", formData, {
-//     headers: { "Content-Type": "multipart/form-data" },
-//   });
-
-//   console.log(response.data);
-//   return response.data;
-// },
 
   /**
    * 전체 위치 조회 (마커)
