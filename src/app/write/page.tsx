@@ -144,15 +144,13 @@ const Page = () => {
             className="w-1/3"
             color="gray"
           >
-            작성 취소
+            이전
           </Button>
           <Button
             onClick={() => {
               if (placeName.length > 0) {
-                const { lat, lng } = markers[0];
-                router.push(
-                  `/write/diary?place=${placeName}&lat=${lat}&lng=${lng}`
-                );
+                // 팝업 먼저 열기
+                setIsLayerPopupOpen(true);
               } else {
                 setIsLayerPopupOpen(true);
               }
@@ -164,13 +162,28 @@ const Page = () => {
         </div>
       </div>
 
-      {placeName === "" && (
+      {placeName === "" ? (
         <LayerPopup
           open={isLayerPopupOpen}
           onOpenChange={setIsLayerPopupOpen}
           title="장소 선택"
           description="장소가 선택되지 않았습니다."
           type="confirm"
+        />
+      ) : (
+        <LayerPopup
+          open={isLayerPopupOpen}
+          onOpenChange={setIsLayerPopupOpen}
+          title="장소 선택"
+          description="해당 장소로 이야기를 시작하시겠습니까?"
+          type="cancelConfirm"
+          // ✅ 팝업 안에서 confirm 시 라우팅
+          onConfirm={() => {
+            const { lat, lng } = markers[0];
+            router.push(
+              `/write/diary?place=${placeName}&lat=${lat}&lng=${lng}`
+            );
+          }}
         />
       )}
     </div>
