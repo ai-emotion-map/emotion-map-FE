@@ -21,15 +21,6 @@ export type Card = {
   content: string;
 };
 
-export const TAG_LIST: TagProps[] = [
-  { variant: "가족 🏠" },
-  { variant: "우정 🤝" },
-  { variant: "위로/치유 🌱" },
-  { variant: "외로움 🌙" },
-  { variant: "설렘/사랑 💌" },
-  { variant: "향수 🌿" },
-];
-
 type FeedClientProps = { initialCards: Card[] };
 
 export default function FeedClient({ initialCards }: FeedClientProps) {
@@ -157,6 +148,8 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
                   zIndex: 1,
                 }}
               />
+
+              {/* 이미지 */}
               <div className="relative z-10">
                 {c.imageUrl && (
                   <div
@@ -171,15 +164,24 @@ export default function FeedClient({ initialCards }: FeedClientProps) {
                     />
                   </div>
                 )}
+
+                {/* 장소명 */}
                 <h3 className="mb-1 text-base font-bold line-clamp-2">
                   {c.placeName}
                 </h3>
+
+                {/* 주소 */}
                 <p className="text-xs font-medium text-gray-500 line-clamp-1">
                   {c.roadAddress}
                 </p>
+
+                {/* 상세내용 */}
                 <p className="mt-2 text-sm line-clamp-2">{c.content}</p>
+
+                {/* 태그 */}
                 <div className="flex gap-2 pt-2 overflow-x-auto whitespace-nowrap scrollbar-hide">
                   {c.tags
+                    .sort(() => Math.random() - 0.5) // 무작위 순서로 섞기
                     .map((tag) => TAG_MAP[tag as keyof typeof TAG_MAP])
                     .filter(Boolean)
                     .map((mappedTag) => (
