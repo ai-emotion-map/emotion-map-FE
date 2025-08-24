@@ -55,14 +55,11 @@ const BottomSheet = ({
 
   const [data, setData] = React.useState<MarkerDetail | null>(null);
 
-  console.log(selectedMarker?.id);
-
   useEffect(() => {
     const fetchMarkers = async () => {
       try {
         if (selectedMarker?.id) {
           const markersData = await Api.getPostById(selectedMarker?.id);
-          console.log(markersData);
           setData(markersData);
         }
       } catch (err) {
@@ -91,7 +88,7 @@ const BottomSheet = ({
       ></div>
 
       <X
-        className="absolute cursor-pointer top-12 right-6"
+        className="absolute cursor-pointer top-4 right-6"
         color="#a6a6a6"
         onClick={() => setIsOpen(false)}
       />
