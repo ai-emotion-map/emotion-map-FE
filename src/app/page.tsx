@@ -18,7 +18,12 @@ export interface Marker {
 
 export default async function Home() {
   // 서버에서 마커 데이터 가져오기
-  const markersData = await Api.getAllMarkers();
+  const markersData = await Api.getAllMarkers({
+    minLat: 37.6, // 최소 위도
+    maxLat: 37.61, // 최대 위도
+    minLng: 127.01, // 최소 경도
+    maxLng: 127.03, // 최대 경도
+  });
 
   // markersData를 NaverMap용으로 변환
   const markers = markersData.map((marker: Marker) => ({
