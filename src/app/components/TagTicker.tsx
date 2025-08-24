@@ -39,10 +39,12 @@ export default function TagTicker() {
   const tags: TagProps[] = [
     { variant: "가족 🏠" },
     { variant: "우정 🤝" },
+    { variant: "기쁨/신남 🎉" },
     { variant: "위로/치유 🌱" },
-    { variant: "외로움 🌙" },
     { variant: "설렘/사랑 💌" },
     { variant: "향수 🌿" },
+    { variant: "화남/분노 😡" },
+    { variant: "외로움 🌙" },
   ];
 
   return (
