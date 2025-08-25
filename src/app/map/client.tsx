@@ -2,11 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Tag from "../components/common/tag/Tag";
-import {
-  REVERSE_TAG_MAP,
-  TAG_MAP,
-  TagVariant,
-} from "../components/common/tag/tag.types";
+import { REVERSE_TAG_MAP, TAG_MAP, TagVariant } from "../components/common/tag/tag.types";
 import NaverMap from "../components/navermap/NaverMap";
 import BottomSheet from "../components/BottomSheet";
 import { MarkerData } from "../components/navermap/naverMap.types";
@@ -16,19 +12,14 @@ import LayerPopup from "../components/common/layerPopup/LayerPopup";
 import Input from "../components/common/input/Input";
 import useSWR from "swr";
 
-const MapClient = ({
-  markers: initialMarkers,
-}: {
-  markers: (MarkerData & { id?: number })[];
-}) => {
-  // ✅ SWR fallbackData를 빈 배열로 보장
-  const { data: markers } = useSWR("/posts/markers", fetcher, {
+const MapClient = ({ markers: initialMarkers }: { markers: (MarkerData & { id?: number })[] }) => {
+  // SWR fallbackData를 빈 배열로 보장
+  const { data: markers, isLoading } = useSWR("/posts/markers", fetcher, {
     fallbackData: initialMarkers || [],
   });
 
-  // ✅ mapMarkers 초기값도 빈 배열로 보장
+  // mapMarkers 초기값도 빈 배열로 보장
   const [mapMarkers, setMapMarkers] = useState<MarkerData[]>(markers || []);
-
   useEffect(() => {
     if (markers) setMapMarkers(markers);
   }, [markers]);
@@ -46,13 +37,10 @@ const MapClient = ({
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchTag, setSearchTag] = useState<TagVariant[]>([]);
-  const [selectedMarker, setSelectedMarker] = useState<
-    null | (MarkerData & { id?: number })
-  >(null);
+  const [selectedMarker, setSelectedMarker] = useState<null | (MarkerData & { id?: number })>(null);
 
-  // ✅ renderMarkers가 undefined일 경우 대비
-  const renderMarkers =
-    mapMarkers?.filter((m) => m.lat !== undefined && m.lng !== undefined) || [];
+  // renderMarkers가 undefined일 경우 대비
+  const renderMarkers = mapMarkers?.filter((m) => m.lat !== undefined && m.lng !== undefined) || [];
 
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -65,33 +53,23 @@ const MapClient = ({
   // 검색어 입력
   const handleSearch = async () => {
     const tagKey = searchTag[0] ? REVERSE_TAG_MAP[searchTag[0]] : undefined;
-
-    const markersData = await Api.searchPosts({
-      q: searchTerm,
-      tag: tagKey,
-    });
+    const markersData = await Api.searchPosts({ q: searchTerm, tag: tagKey });
 
     if (!markersData?.content || markersData.content.length === 0) {
       setIsOpenLayerPopup(true);
       return;
     }
 
-    setCenter({
-      lat: markersData.content[0].lat,
-      lng: markersData.content[0].lng,
-    });
+    setCenter({ lat: markersData.content[0].lat, lng: markersData.content[0].lng });
     setZoom(12);
 
     const searchMarkers = markersData.content.map((marker: Marker) => ({
       id: marker.id,
       lat: marker.lat,
       lng: marker.lng,
-      // ✅ emotion 처리 시 undefined 체크
       emotion:
         searchTag[0] ||
-        (marker.tags?.[0]
-          ? (TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] as TagVariant)
-          : "기본"),
+        (marker.tags?.[0] ? (TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] as TagVariant) : "기본"),
     }));
 
     setMapMarkers(searchMarkers);
@@ -105,10 +83,7 @@ const MapClient = ({
       return;
     }
 
-    const markersData = await Api.searchPosts({
-      q: searchTerm,
-      tag: REVERSE_TAG_MAP[tag],
-    });
+    const markersData = await Api.searchPosts({ q: searchTerm, tag: REVERSE_TAG_MAP[tag] });
 
     if (!markersData?.content || markersData.content.length === 0) {
       setIsOpenLayerPopup(true);
@@ -119,10 +94,7 @@ const MapClient = ({
       return;
     }
 
-    setCenter({
-      lat: markersData.content[0].lat,
-      lng: markersData.content[0].lng,
-    });
+    setCenter({ lat: markersData.content[0].lat, lng: markersData.content[0].lng });
     setZoom(12);
 
     const searchMarkers = markersData.content.map((marker: Marker) => ({
@@ -135,42 +107,38 @@ const MapClient = ({
     setMapMarkers(searchMarkers);
   };
 
+  if (isLoading) {
+    return <div className="flex justify-center items-center h-[calc(100vh-150px)]">로딩중...</div>;
+  }
+
   return (
     <>
       <div className="flex flex-col h-[calc(100vh-150px)] gap-3 pt-2">
         {/* 검색창 */}
         <div className="relative flex items-center">
-          <Input
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            handleSearch={handleSearch}
-            placeholder="다양한 이야기를 검색해 보세요!"
-          />
+          <Input searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleSearch={handleSearch} placeholder="다양한 이야기를 검색해 보세요!" />
         </div>
 
         {/* 태그 */}
         <div className="flex gap-2 py-1 overflow-x-auto whitespace-nowrap scrollbar-hide">
-          {tags.map((tag) => {
-            const safeTag = tag as TagVariant;
-            return (
-              <Tag
-                key={tag}
-                variant={safeTag}
-                isActive={searchTag.includes(safeTag)}
-                onClick={() => {
-                  if (searchTag.includes(safeTag)) {
-                    setSearchTag([]);
-                    handleFilterByTag(null);
-                  } else {
-                    setSearchTag([safeTag]);
-                    handleFilterByTag(safeTag);
-                  }
-                }}
-              />
-            );
-          })}
+          {tags.map((tag) => (
+            <Tag
+              key={tag}
+              variant={tag}
+              isActive={searchTag.includes(tag as TagVariant)}
+              onClick={() => {
+                if (searchTag.includes(tag as TagVariant)) {
+                  setSearchTag([]);
+                  handleFilterByTag(null);
+                } else {
+                  setSearchTag([tag as TagVariant]);
+                  handleFilterByTag(tag as TagVariant);
+                }
+              }}
+            />
+          ))}
         </div>
-        
+
         {/* 지도 */}
         <div className="relative flex-1">
           {renderMarkers.length > 0 && (
@@ -180,34 +148,22 @@ const MapClient = ({
               center={center}
               zoom={zoom}
               onMarkerClick={(marker) => {
-                if (marker) {
-                  setSelectedMarker(marker);
-                  setIsExpanded(false);
-                  if (!isOpen) setIsOpen(true);
-                }
+                setSelectedMarker(marker);
+                setIsExpanded(false);
+                if (!isOpen) setIsOpen(true);
               }}
               height="95%"
             />
           )}
-        
-          {isOpen && selectedMarker && (
-            <BottomSheet
-              key={selectedMarker.id ?? "no-id"}
-              isExpanded={isExpanded}
-              setIsExpanded={setIsExpanded}
-              selectedMarker={selectedMarker}
-              setIsOpen={setIsOpen}
-            />
+
+          {isOpen && (
+            <BottomSheet key={selectedMarker?.id} isExpanded={isExpanded} setIsExpanded={setIsExpanded} selectedMarker={selectedMarker} setIsOpen={setIsOpen} />
           )}
         </div>
+      </div>
 
       {isOpenLayerPopup && (
-        <LayerPopup
-          open={isOpenLayerPopup}
-          onOpenChange={setIsOpenLayerPopup}
-          title="검색 실패"
-          description="검색 결과가 없습니다."
-        />
+        <LayerPopup open={isOpenLayerPopup} onOpenChange={setIsOpenLayerPopup} title="검색 실패" description="검색 결과가 없습니다." />
       )}
     </>
   );
