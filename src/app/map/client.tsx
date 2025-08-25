@@ -15,12 +15,17 @@ import { Api } from "../api/api";
 import { Marker } from "../page";
 import LayerPopup from "../components/common/layerPopup/LayerPopup";
 import Input from "../components/common/input/Input";
+import useSWR from "swr";
+
 
 const MapClient = ({
-  markers,
+  markers: initialMarkers,
 }: {
   markers: (MarkerData & { id?: number })[];
 }) => {
+  const { data: markers } = useSWR("/posts/markers", fetcher, {
+    fallbackData: initialMarkers,
+  });
   const [mapMarkers, setMapMarkers] = useState<MarkerData[]>(markers);
 
   const tags = [
