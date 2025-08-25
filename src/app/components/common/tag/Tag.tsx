@@ -1,15 +1,21 @@
 "use client";
-
 import clsx from "clsx";
 import React, { useState } from "react";
 import { TAG_STYLES, TagProps } from "./tag.types";
 
-export const Tag = ({ variant, type = "default", onClick, isActive }: TagProps) => {
-  const { color, shadowColor } = TAG_STYLES[variant];
+export const Tag = ({
+  variant,
+  type = "default",
+  onClick,
+  isActive,
+}: TagProps) => {
+  // TAG_STYLES에서 undefined 방지
+  const { color = "#ffffff", shadowColor = "#cccccc" } = TAG_STYLES[variant] || {};
+
   const [active, setActive] = useState(false);
 
-  // HEX -> RGBA 변환
-  const hexToRgba = (hex: string, alpha: number) => {
+  // HEX -> RGBA 변환 (hex가 undefined인 경우 기본값 사용)
+  const hexToRgba = (hex: string = "#000000", alpha: number) => {
     const r = parseInt(hex.slice(1, 3), 16);
     const g = parseInt(hex.slice(3, 5), 16);
     const b = parseInt(hex.slice(5, 7), 16);
