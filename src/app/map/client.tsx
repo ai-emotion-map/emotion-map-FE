@@ -2,7 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import Tag from "../components/common/tag/Tag";
-import { REVERSE_TAG_MAP, TAG_MAP, TagVariant } from "../components/common/tag/tag.types";
+import {
+  REVERSE_TAG_MAP,
+  TAG_MAP,
+  TagVariant,
+} from "../components/common/tag/tag.types";
 import NaverMap from "../components/navermap/NaverMap";
 import BottomSheet from "../components/BottomSheet";
 import { MarkerData } from "../components/navermap/naverMap.types";
@@ -12,16 +16,31 @@ import LayerPopup from "../components/common/layerPopup/LayerPopup";
 import Input from "../components/common/input/Input";
 import useSWR from "swr";
 
-const MapClient = ({ markers: initialMarkers }: { markers: (MarkerData & { id?: number })[] }) => {
+const MapClient = ({
+  markers: initialMarkers,
+}: {
+  markers: (MarkerData & { id?: number })[];
+}) => {
   // SWR fallbackData를 빈 배열로 보장
-  const { data: markers, isLoading } = useSWR("/posts/markers", fetcher, {
+  const { data: markers } = useSWR("/posts/markers", fetcher, {
     fallbackData: initialMarkers || [],
   });
 
   // mapMarkers 초기값도 빈 배열로 보장
-  const [mapMarkers, setMapMarkers] = useState<MarkerData[]>(markers || []);
+  const [mapMarkers, setMapMarkers] = useState<
+    (MarkerData & { id?: number })[]
+  >(initialMarkers || []);
+
   useEffect(() => {
-    if (markers) setMapMarkers(markers);
+    if (markers && Array.isArray(markers)) {
+      const converted = markers.map((marker) => ({
+        ...marker,
+        emotion: marker.tags?.[0]
+          ? TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] || "기본"
+          : "기본",
+      }));
+      setMapMarkers(converted);
+    }
   }, [markers]);
 
   const tags = [
@@ -37,10 +56,9 @@ const MapClient = ({ markers: initialMarkers }: { markers: (MarkerData & { id?: 
 
   const [searchTerm, setSearchTerm] = useState("");
   const [searchTag, setSearchTag] = useState<TagVariant[]>([]);
-  const [selectedMarker, setSelectedMarker] = useState<null | (MarkerData & { id?: number })>(null);
-
-  // renderMarkers가 undefined일 경우 대비
-  const renderMarkers = mapMarkers?.filter((m) => m.lat !== undefined && m.lng !== undefined) || [];
+  const [selectedMarker, setSelectedMarker] = useState<
+    null | (MarkerData & { id?: number })
+  >(null);
 
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -60,7 +78,10 @@ const MapClient = ({ markers: initialMarkers }: { markers: (MarkerData & { id?: 
       return;
     }
 
-    setCenter({ lat: markersData.content[0].lat, lng: markersData.content[0].lng });
+    setCenter({
+      lat: markersData.content[0].lat,
+      lng: markersData.content[0].lng,
+    });
     setZoom(12);
 
     const searchMarkers = markersData.content.map((marker: Marker) => ({
@@ -69,7 +90,9 @@ const MapClient = ({ markers: initialMarkers }: { markers: (MarkerData & { id?: 
       lng: marker.lng,
       emotion:
         searchTag[0] ||
-        (marker.tags?.[0] ? (TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] as TagVariant) : "기본"),
+        (marker.tags?.[0]
+          ? (TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] as TagVariant)
+          : "기본"),
     }));
 
     setMapMarkers(searchMarkers);
@@ -78,12 +101,23 @@ const MapClient = ({ markers: initialMarkers }: { markers: (MarkerData & { id?: 
   // 태그 필터링
   const handleFilterByTag = async (tag: TagVariant | null) => {
     if (!tag) {
-      setMapMarkers(markers || []);
+      if (markers && Array.isArray(markers)) {
+        const converted = markers.map((marker) => ({
+          ...marker,
+          emotion: marker.tags?.[0]
+            ? TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] || "기본"
+            : "기본",
+        }));
+        setMapMarkers(converted);
+      }
       setZoom(12);
       return;
     }
 
-    const markersData = await Api.searchPosts({ q: searchTerm, tag: REVERSE_TAG_MAP[tag] });
+    const markersData = await Api.searchPosts({
+      q: searchTerm,
+      tag: REVERSE_TAG_MAP[tag],
+    });
 
     if (!markersData?.content || markersData.content.length === 0) {
       setIsOpenLayerPopup(true);
@@ -94,7 +128,10 @@ const MapClient = ({ markers: initialMarkers }: { markers: (MarkerData & { id?: 
       return;
     }
 
-    setCenter({ lat: markersData.content[0].lat, lng: markersData.content[0].lng });
+    setCenter({
+      lat: markersData.content[0].lat,
+      lng: markersData.content[0].lng,
+    });
     setZoom(12);
 
     const searchMarkers = markersData.content.map((marker: Marker) => ({
@@ -107,16 +144,17 @@ const MapClient = ({ markers: initialMarkers }: { markers: (MarkerData & { id?: 
     setMapMarkers(searchMarkers);
   };
 
-  if (isLoading) {
-    return <div className="flex justify-center items-center h-[calc(100vh-150px)]">로딩중...</div>;
-  }
-
   return (
     <>
       <div className="flex flex-col h-[calc(100vh-150px)] gap-3 pt-2">
         {/* 검색창 */}
         <div className="relative flex items-center">
-          <Input searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleSearch={handleSearch} placeholder="다양한 이야기를 검색해 보세요!" />
+          <Input
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            handleSearch={handleSearch}
+            placeholder="다양한 이야기를 검색해 보세요!"
+          />
         </div>
 
         {/* 태그 */}
@@ -141,10 +179,10 @@ const MapClient = ({ markers: initialMarkers }: { markers: (MarkerData & { id?: 
 
         {/* 지도 */}
         <div className="relative flex-1">
-          {renderMarkers.length > 0 && (
+          {mapMarkers.length > 0 && (
             <NaverMap
               key={`${center.lat}-${center.lng}-${zoom}`}
-              markers={renderMarkers}
+              markers={mapMarkers}
               center={center}
               zoom={zoom}
               onMarkerClick={(marker) => {
@@ -157,13 +195,24 @@ const MapClient = ({ markers: initialMarkers }: { markers: (MarkerData & { id?: 
           )}
 
           {isOpen && (
-            <BottomSheet key={selectedMarker?.id} isExpanded={isExpanded} setIsExpanded={setIsExpanded} selectedMarker={selectedMarker} setIsOpen={setIsOpen} />
+            <BottomSheet
+              key={selectedMarker?.id}
+              isExpanded={isExpanded}
+              setIsExpanded={setIsExpanded}
+              selectedMarker={selectedMarker}
+              setIsOpen={setIsOpen}
+            />
           )}
         </div>
       </div>
 
       {isOpenLayerPopup && (
-        <LayerPopup open={isOpenLayerPopup} onOpenChange={setIsOpenLayerPopup} title="검색 실패" description="검색 결과가 없습니다." />
+        <LayerPopup
+          open={isOpenLayerPopup}
+          onOpenChange={setIsOpenLayerPopup}
+          title="검색 실패"
+          description="검색 결과가 없습니다."
+        />
       )}
     </>
   );
