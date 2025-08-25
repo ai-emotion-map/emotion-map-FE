@@ -10,7 +10,7 @@ import {
 import NaverMap from "../components/navermap/NaverMap";
 import BottomSheet from "../components/BottomSheet";
 import { MarkerData } from "../components/navermap/naverMap.types";
-import { Api } from "../api/api";
+import { Api, fetcher } from "../api/api";
 import LayerPopup from "../components/common/layerPopup/LayerPopup";
 import Input from "../components/common/input/Input";
 import useSWR from "swr";
@@ -21,7 +21,7 @@ const MapClient = ({
   markers: (MarkerData & { id?: number })[];
 }) => {
   // ✅ SWR fallbackData를 빈 배열로 보장
-  const { data: markers } = useSWR("/posts/markers", Api.fetcher, {
+  const { data: markers } = useSWR("/posts/markers", fetcher, {
     fallbackData: initialMarkers || [],
   });
 
