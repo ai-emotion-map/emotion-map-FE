@@ -8,26 +8,25 @@ import {
   TagVariant,
 } from "../components/common/tag/tag.types";
 import NaverMap from "../components/navermap/NaverMap";
-import { Search } from "lucide-react";
 import BottomSheet from "../components/BottomSheet";
 import { MarkerData } from "../components/navermap/naverMap.types";
-import { Api, fetcher } from "../api/api";
-import { Marker } from "../page";
+import { Api } from "../api/api";
 import LayerPopup from "../components/common/layerPopup/LayerPopup";
 import Input from "../components/common/input/Input";
 import useSWR from "swr";
-
 
 const MapClient = ({
   markers: initialMarkers,
 }: {
   markers: (MarkerData & { id?: number })[];
 }) => {
-  const { data: markers } = useSWR("/posts/markers", fetcher, {
-    fallbackData: initialMarkers,
+  // ✅ SWR fallbackData를 빈 배열로 보장
+  const { data: markers } = useSWR("/posts/markers", Api.fetcher, {
+    fallbackData: initialMarkers || [],
   });
 
-  const [mapMarkers, setMapMarkers] = useState<MarkerData[]>(initialMarkers || []);
+  // ✅ mapMarkers 초기값도 빈 배열로 보장
+  const [mapMarkers, setMapMarkers] = useState<MarkerData[]>(markers || []);
 
   useEffect(() => {
     if (markers) setMapMarkers(markers);
@@ -49,7 +48,10 @@ const MapClient = ({
   const [selectedMarker, setSelectedMarker] = useState<
     null | (MarkerData & { id?: number })
   >(null);
-  const renderMarkers = mapMarkers.filter(m => m.lat !== undefined && m.lng !== undefined);
+
+  // ✅ renderMarkers가 undefined일 경우 대비
+  const renderMarkers =
+    mapMarkers?.filter((m) => m.lat !== undefined && m.lng !== undefined) || [];
 
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -61,12 +63,14 @@ const MapClient = ({
 
   // 검색어 입력
   const handleSearch = async () => {
+    const tagKey = searchTag[0] ? REVERSE_TAG_MAP[searchTag[0]] : undefined;
+
     const markersData = await Api.searchPosts({
       q: searchTerm,
-      tag: searchTag[0] ? REVERSE_TAG_MAP[searchTag[0]] : undefined,
+      tag: tagKey,
     });
 
-    if (!markersData.content || markersData.content.length === 0) {
+    if (!markersData?.content || markersData.content.length === 0) {
       setIsOpenLayerPopup(true);
       return;
     }
@@ -77,13 +81,16 @@ const MapClient = ({
     });
     setZoom(12);
 
-    const searchMarkers = markersData.content.map((marker: Marker) => ({
+    const searchMarkers = markersData.content.map((marker) => ({
       id: marker.id,
       lat: marker.lat,
       lng: marker.lng,
-    
-      emotion: searchTag[0] ||
-        (marker.tags?.[0] ? TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] : "기본") as TagVariant,
+      // ✅ emotion 처리 시 undefined 체크
+      emotion:
+        searchTag[0] ||
+        (marker.tags?.[0]
+          ? (TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] as TagVariant)
+          : "기본"),
     }));
 
     setMapMarkers(searchMarkers);
@@ -92,8 +99,7 @@ const MapClient = ({
   // 태그 필터링
   const handleFilterByTag = async (tag: TagVariant | null) => {
     if (!tag) {
-      // 태그가 없으면 전체 마커
-      setMapMarkers(markers); // 초기 마커 상태로 복원
+      setMapMarkers(markers || []);
       setZoom(12);
       return;
     }
@@ -103,11 +109,11 @@ const MapClient = ({
       tag: REVERSE_TAG_MAP[tag],
     });
 
-    if (!markersData.content || markersData.content.length === 0) {
+    if (!markersData?.content || markersData.content.length === 0) {
       setIsOpenLayerPopup(true);
       setSearchTag([]);
       setSearchTerm("");
-      setMapMarkers(markers); // 초기 마커 상태로 복원
+      setMapMarkers(markers || []);
       setZoom(12);
       return;
     }
@@ -118,7 +124,7 @@ const MapClient = ({
     });
     setZoom(12);
 
-    const searchMarkers = markersData.content.map((marker: Marker) => ({
+    const searchMarkers = markersData.content.map((marker) => ({
       id: marker.id,
       lat: marker.lat,
       lng: marker.lng,
@@ -147,14 +153,15 @@ const MapClient = ({
             <Tag
               key={tag}
               variant={tag}
-              isActive={searchTag.includes(tag)}
+              // ✅ isActive 계산 안전하게
+              isActive={searchTag.includes(tag as TagVariant)}
               onClick={() => {
-                if (searchTag.includes(tag)) {
+                if (searchTag.includes(tag as TagVariant)) {
                   setSearchTag([]);
                   handleFilterByTag(null);
                 } else {
-                  setSearchTag([tag]);
-                  handleFilterByTag(tag);
+                  setSearchTag([tag as TagVariant]);
+                  handleFilterByTag(tag as TagVariant);
                 }
               }}
             />
@@ -169,17 +176,15 @@ const MapClient = ({
               markers={renderMarkers}
               center={center}
               zoom={zoom}
-              onMarkerClick={(marker) => { 
-                setSelectedMarker(marker); 
-                setIsExpanded(false); 
-                if (!isOpen) setIsOpen(true); 
+              onMarkerClick={(marker) => {
+                setSelectedMarker(marker);
+                setIsExpanded(false);
+                if (!isOpen) setIsOpen(true);
               }}
               height="95%"
             />
           )}
 
-
-          {/* ✅ 바텀시트 */}
           {isOpen && (
             <BottomSheet
               key={selectedMarker?.id}
