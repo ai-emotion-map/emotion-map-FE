@@ -80,11 +80,9 @@ const MapClient = ({
       id: marker.id,
       lat: marker.lat,
       lng: marker.lng,
-
-      emotion: searchTag[0]
-        ? searchTag[0]
-        : ((TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] ||
-            "기본") as TagVariant),
+    
+      emotion: searchTag[0] ||
+        (marker.tags?.[0] ? TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] : "기본") as TagVariant,
     }));
 
     setMapMarkers(searchMarkers);
