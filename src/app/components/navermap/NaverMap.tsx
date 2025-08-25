@@ -64,7 +64,7 @@ const NaverMap = ({
         position,
         map: mapInstance.current,
         icon: {
-          url: emotionImages[emotion],
+          url: emotionImages[emotion] || emotionImages["기본"],
           size: new window.naver.maps.Size(40, 40),
           origin: new window.naver.maps.Point(0, 0),
           anchor: new window.naver.maps.Point(20, 40),
