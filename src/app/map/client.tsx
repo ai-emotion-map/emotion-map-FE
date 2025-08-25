@@ -49,6 +49,7 @@ const MapClient = ({
   const [selectedMarker, setSelectedMarker] = useState<
     null | (MarkerData & { id?: number })
   >(null);
+  const renderMarkers = mapMarkers.filter(m => m.lat !== undefined && m.lng !== undefined);
 
   const [isOpen, setIsOpen] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -162,20 +163,21 @@ const MapClient = ({
 
         {/* 지도 */}
         <div className="relative flex-1">
-          {mapMarkers.length > 0 && (
+          {renderMarkers.length > 0 && (
             <NaverMap
               key={`${center.lat}-${center.lng}-${zoom}`}
-              markers={mapMarkers}
+              markers={renderMarkers}
               center={center}
               zoom={zoom}
               onMarkerClick={(marker) => { 
                 setSelectedMarker(marker); 
-                setIsExpanded(false); // 항상 처음은 반만 열림 
-                if (!isOpen) setIsOpen(true); // 열려있으면 그대로, 안 열려있으면 열기 
+                setIsExpanded(false); 
+                if (!isOpen) setIsOpen(true); 
               }}
               height="95%"
             />
           )}
+
 
           {/* ✅ 바텀시트 */}
           {isOpen && (
