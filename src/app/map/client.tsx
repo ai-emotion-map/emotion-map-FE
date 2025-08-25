@@ -11,7 +11,7 @@ import NaverMap from "../components/navermap/NaverMap";
 import { Search } from "lucide-react";
 import BottomSheet from "../components/BottomSheet";
 import { MarkerData } from "../components/navermap/naverMap.types";
-import { Api } from "../api/api";
+import { Api, fetcher } from "../api/api";
 import { Marker } from "../page";
 import LayerPopup from "../components/common/layerPopup/LayerPopup";
 import Input from "../components/common/input/Input";
