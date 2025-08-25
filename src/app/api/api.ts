@@ -11,7 +11,9 @@ export const api = axios.create({
 });
 
 // SWR fetcher 함수
-export const fetcher = (url: string) => api.get(url).then((res) => res.data);
+export const fetcher = (url: string) =>
+  api.get(`https://clustory.shop${url}`).then((res) => res.data);
+
 
 // API 호출을 위한 함수들을 정의하는 객체
 export const Api = {
