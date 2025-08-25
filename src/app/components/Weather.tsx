@@ -29,7 +29,7 @@ export default async function Weather() {
   let weather: WeatherData | null = null;
   try {
     const res = await axios.get(
-      "https://api.open-meteo.com/v1/forecast?latitude=37.6123&longitude=127.0174&current_weather=true"
+      "https://api.open-meteo.com/v1/forecast?latitude=37.5894&longitude=127.0167&current_weather=true"
     );
     weather = res.data;
   } catch (err) {
