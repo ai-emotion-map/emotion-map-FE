@@ -14,7 +14,6 @@ export const api = axios.create({
 export const fetcher = (url: string) =>
   api.get(`https://clustory.shop${url}`).then((res) => res.data);
 
-
 // API 호출을 위한 함수들을 정의하는 객체
 export const Api = {
   /**
@@ -144,5 +143,21 @@ export const Api = {
 
     return response.data;
     // 예시: { content: [...], totalElements, totalPages, page, size }
+  },
+
+  /**
+   * 게시글 태그 업데이트
+   * @param params 게시글 ID와 태그 배열
+   * @returns 업데이트된 태그 정보
+   */
+  updatePostTags: async (params: {
+    id: number; // URL과 body에서 동일해야 함
+    tags: string[]; // 업데이트할 태그 배열
+  }) => {
+    const { id, tags } = params;
+
+    const response = await api.patch(`/posts/${id}/tags`, { id, tags });
+
+    return response.data;
   },
 };

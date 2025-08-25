@@ -7,7 +7,7 @@ import { MarkerData } from "../components/navermap/naverMap.types";
 import { Tag } from "../components/common/tag/Tag";
 import { TAG_MAP } from "../components/common/tag/tag.types";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Api } from "@/app/api/api"; // Import Api
+import { Api } from "@/app/api/api";
 
 const AnalysisClientPage = () => {
   const router = useRouter();
@@ -25,11 +25,11 @@ const AnalysisClientPage = () => {
 
   useEffect(() => {
     const passed = sessionStorage.getItem("passed_diary") === "true";
+    console.log(passed);
 
     if (!passed) {
-      router.replace("/not-found"); // 플래그 없으면 /not-found 이동
+      router.push("/not-found"); // 플래그 없으면 /not-found 이동
     } else {
-      sessionStorage.removeItem("passed_diary"); // 뒤로가기 방지
       setChecking(false);
     }
   }, [router]);
@@ -85,6 +85,17 @@ const AnalysisClientPage = () => {
     const newTags = tags.filter((_, idx) => tagTypes[idx] === "cancel");
 
     console.log(id, newTags); // id, 새 태그 배열 출력
+
+    if (id) {
+      Api.updatePostTags({ id, tags: newTags })
+        .then((updated) => {
+          console.log("태그 업데이트 성공:", updated);
+        })
+        .catch((err) => {
+          console.error("태그 업데이트 실패:", err);
+        });
+    }
+    sessionStorage.removeItem("passed_diary"); // 뒤로가기 방지
     router.push("/");
   };
 
