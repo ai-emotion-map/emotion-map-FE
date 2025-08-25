@@ -125,7 +125,7 @@ const MapClient = ({
     });
     setZoom(12);
 
-    const searchMarkers = markersData.content.map((marker) => ({
+    const searchMarkers = markersData.content.map((marker: Marker) => ({
       id: marker.id,
       lat: marker.lat,
       lng: marker.lng,
