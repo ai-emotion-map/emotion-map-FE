@@ -20,7 +20,7 @@ const Page = () => {
   return (
     <div className="flex flex-col items-center justify-center w-full h-[calc(100vh-150px)] text-center text-gray-500">
       <div className="space-y-6">
-        <h1>⚠️ 직접 접근할 수 없는 페이지입니다 ⚠️</h1>
+        <p className="text-lg">⚠️ 직접 접근할 수 없는 페이지입니다 ⚠️</p>
         <p>
           잠시 후 홈으로 이동합니다... <b>{seconds}</b>초
         </p>
