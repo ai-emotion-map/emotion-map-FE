@@ -27,10 +27,10 @@ const MapClient = ({
     fallbackData: initialMarkers,
   });
 
-  const [mapMarkers, setMapMarkers] = useState<MarkerData[]>(markers);
+  const [mapMarkers, setMapMarkers] = useState<MarkerData[]>(markers || []);
 
   useEffect(() => {
-    setMapMarkers(markers);
+    if (markers) setMapMarkers(markers);
   }, [markers]);
 
   const tags = [
