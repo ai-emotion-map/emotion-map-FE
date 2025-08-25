@@ -10,6 +10,7 @@ import {
 import NaverMap from "../components/navermap/NaverMap";
 import BottomSheet from "../components/BottomSheet";
 import { MarkerData } from "../components/navermap/naverMap.types";
+import { Marker } from "../page";
 import { Api, fetcher } from "../api/api";
 import LayerPopup from "../components/common/layerPopup/LayerPopup";
 import Input from "../components/common/input/Input";
@@ -81,7 +82,7 @@ const MapClient = ({
     });
     setZoom(12);
 
-    const searchMarkers = markersData.content.map((marker) => ({
+    const searchMarkers = markersData.content.map((marker: Marker) => ({
       id: marker.id,
       lat: marker.lat,
       lng: marker.lng,
