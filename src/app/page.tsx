@@ -2,11 +2,7 @@ import Review from "./components/common/Review";
 import NaverMap from "./components/navermap/NaverMap";
 import TagTicker from "./components/TagTicker";
 import Weather from "./components/Weather";
-import {
-  BackendTag,
-  TAG_MAP,
-  TagVariant,
-} from "./components/common/tag/tag.types";
+import { TAG_MAP, TagVariant } from "./components/common/tag/tag.types";
 import { Api } from "./api/api";
 
 export interface Marker {
@@ -18,10 +14,25 @@ export interface Marker {
 
 export default async function Home() {
   // 서버에서 마커 데이터 가져오기
-  const markersData = await Api.getAllMarkers();
+  const markersData = await Api.getAllMarkers({
+    minLat: 37.583,
+    maxLat: 37.617,
+    minLng: 127.011,
+    maxLng: 127.035,
+  });
+
+  const now = new Date();
+  const koreaOffset = 9 * 60 * 60 * 1000;
+  const koreaDate = new Date(now.getTime() + koreaOffset);
+  const today = koreaDate.toISOString().slice(0, 10);
+
+  const todayMarkers = markersData.filter(
+    (marker: Marker & { createdAt?: string }) =>
+      marker.createdAt?.slice(0, 10) === today
+  );
 
   // markersData를 NaverMap용으로 변환
-  const markers = markersData.map((marker: Marker) => ({
+  const markers = todayMarkers.map((marker: Marker) => ({
     lat: marker.lat,
     lng: marker.lng,
     emotion: (TAG_MAP[marker.tags[0] as keyof typeof TAG_MAP] ||
@@ -75,22 +86,16 @@ export default async function Home() {
 
   return (
     <main className="flex flex-col h-[calc(100vh-150px)] gap-5">
-      <div className="flex flex-col flex-1 gap-3 pointer-events-none">
+      <div className="flex flex-col flex-1 gap-3">
         <div className="flex items-end justify-between px-1">
-          <p className="text-base">오늘의 정릉동</p>
+          <p className="text-base">오늘의 성북구 스팟</p>
           <Weather />
         </div>
 
         <NaverMap
           markers={markers}
-          zoom={13}
-          options={{
-            draggable: false, // 지도 드래그 금지
-            pinchZoom: false, // 모바일 핀치 확대 금지
-            scrollWheel: false, // 마우스 휠 확대 금지
-            keyboardShortcuts: false,
-            disableDoubleClickZoom: true,
-          }}
+          center={{ lat: 37.605, lng: 127.0167 }}
+          zoom={12}
         />
       </div>
 
