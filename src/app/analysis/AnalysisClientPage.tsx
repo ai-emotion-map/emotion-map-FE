@@ -19,6 +19,22 @@ const AnalysisClientPage = () => {
     "cancel",
   ]);
   const [marker, setMarker] = useState<MarkerData | null>(null);
+  const [id, setId] = useState<number | null>(null);
+
+  const [checking, setChecking] = useState(true);
+
+  useEffect(() => {
+    const passed = sessionStorage.getItem("passed_diary") === "true";
+
+    if (!passed) {
+      router.replace("/not-found"); // 플래그 없으면 /not-found 이동
+    } else {
+      sessionStorage.removeItem("passed_diary"); // 뒤로가기 방지
+      setChecking(false);
+    }
+  }, [router]);
+
+  if (checking) return null; // 검사 중에는 빈 화면
 
   // tagTypes, tags가 바뀔 때마다 cancel 상태인 태그 중 첫 번째를 마커 emotion으로 사용
   useEffect(() => {
@@ -57,6 +73,7 @@ const AnalysisClientPage = () => {
               lng: data.lng,
               emotion: markerEmotion || "기본", // Ensure emotion is never undefined
             });
+            setId(postId);
           }
         })
         .catch(console.error);
@@ -67,7 +84,7 @@ const AnalysisClientPage = () => {
     // cancel 상태인 태그만 newTags에 남김
     const newTags = tags.filter((_, idx) => tagTypes[idx] === "cancel");
 
-    console.log(newTags);
+    console.log(id, newTags); // id, 새 태그 배열 출력
     router.push("/");
   };
 

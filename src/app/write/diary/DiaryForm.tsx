@@ -109,6 +109,7 @@ const DiaryForm = () => {
       });
 
       setNewPostId(response.id);
+      sessionStorage.setItem("passed_diary", "true");
       router.push(`/analysis?id=${response.id}`);
     } catch (e) {
       if (axios.isAxiosError(e)) {
