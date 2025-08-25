@@ -51,12 +51,14 @@ export const TAG_STYLES: Record<
   "향수 🌿": { color: "#FEEFEE", shadowColor: "#FFCCCD" },
   "기쁨/신남 🎉": { color: "#E1FFFD", shadowColor: "#BDFFFB" },
   "화남/분노 😡": { color: "#D3AC84", shadowColor: "#FCA5A5" },
-  기본: { color: "#F5F5F5", shadowColor: "#D8A169" },
+  기본: { color: "#B9B9B9", shadowColor: "#757575" },
 };
 
 export type TagProps = {
   variant: TagVariant;
-  type?: "default" | "small";
+  type?: "default" | "small" | "cancel" | "add";
   onClick?: () => void;
   isActive?: boolean;
+  cancleOnclick?: () => void;
+  addOnClick?: () => void;
 };
