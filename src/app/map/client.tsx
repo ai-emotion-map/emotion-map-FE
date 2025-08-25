@@ -27,7 +27,7 @@ const MapClient = ({
     fallbackData: initialMarkers,
   });
 
-  const [mapMarkers, setMapMarkers] = useState<MarkerData[]>(markers || []);
+  const [mapMarkers, setMapMarkers] = useState<MarkerData[]>(initialMarkers || []);
 
   useEffect(() => {
     if (markers) setMapMarkers(markers);
