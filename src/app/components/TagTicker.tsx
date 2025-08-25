@@ -10,7 +10,7 @@ type TagRowProps = {
 function TagRow({ tags, direction = "left", speed = "30s" }: TagRowProps) {
   return (
     <div
-      className="relative w-full overflow-hidden py-1
+      className="relative w-full overflow-hidden py-1.5
                  [mask-image:linear-gradient(to_right,transparent,black_64px,black_calc(100%-64px),transparent)]"
     >
       <div
