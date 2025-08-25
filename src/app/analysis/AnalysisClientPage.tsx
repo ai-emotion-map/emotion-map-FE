@@ -34,8 +34,6 @@ const AnalysisClientPage = () => {
     }
   }, [router]);
 
-  if (checking) return null; // 검사 중에는 빈 화면
-
   // tagTypes, tags가 바뀔 때마다 cancel 상태인 태그 중 첫 번째를 마커 emotion으로 사용
   useEffect(() => {
     if (!tags.length) {
@@ -79,6 +77,8 @@ const AnalysisClientPage = () => {
         .catch(console.error);
     }
   }, [searchParams]);
+
+  if (checking) return null; // 검사 중에는 빈 화면
 
   const handleSave = () => {
     // cancel 상태인 태그만 newTags에 남김
