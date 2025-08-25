@@ -130,7 +130,7 @@ export const DetailClient = ({
             <img
               src={`https://clustory.shop${zoomedImage}`}
               alt={data?.placeName || "No Image"}
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain rounded-lg"
               onClick={(e) => e.stopPropagation()} // 이미지 클릭 시 닫히지 않도록
             />
             <button
