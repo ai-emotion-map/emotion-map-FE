@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Clustory - Emotion Map Frontend (emotion-map-FE)
 
-## Getting Started
+**감정 기반 AI 감성 지도 서비스 프론트엔드**
 
-First, run the development server:
+---
 
+## 개요
+Clustory는 사용자의 글·사진을 기반으로 **AI가 감정을 태깅하고 지도에 시각화하는 감성 지도 플랫폼**입니다.  
+단순한 기록을 넘어 **감정을 기준으로 장소와 사람을 연결**하고, 지역 상권 활성화 및 재방문을 유도하는 것을 목표로 합니다.
+
+---
+
+## 지역 문제
+- 정릉은 대학과 전통시장이 공존하지만 상권은 침체되고 있음  
+- 주민·방문객이 감정을 기록하고 공유할 디지털 창구 부재  
+- ‘위로’, ‘향수’ 같은 감정별 탐색이 어려워 정서적 가치가 지역 경제로 연결되지 못함  
+- 기존 지도는 **위치·거리** 중심, SNS는 **관계** 중심, **감정 중심 서비스는 부재**  
+
+---
+
+## 솔루션 및 핵심 기능
+### 핵심 아이디어
+> “감정을 중심으로 장소와 사람을 연결하는 감성 지도 플랫폼”
+
+### 주요 기능
+- **AI 감정 태깅 & 시각화**  
+  - Gemini 2.0 Flash 기반으로 글/사진에서 감정 자동 분석  
+  - 감정별 색상·이모지로 지도에 표시  
+- **감정 기반 탐색 & 코스 추천**  
+  - 예: "위로" → 조용한 카페·산책길  
+  - 예: "향수" → 오래된 골목·분식집  
+- **실시간 감성 피드**  
+  - 최신 감정 기록을 피드로 제공, 공감·소통 기반 커뮤니티 형성   
+
+---
+
+## 기술 스택
+- **Backend**: Spring Boot 3 (Java 17), Spring Security + JWT  
+- **Database**: PostgreSQL + JPA/Hibernate, Redis (토큰 관리)  
+- **Infra**: AWS EC2 (Amazon Linux), Nginx Reverse Proxy, Certbot HTTPS  
+- **API**:  
+  - Google Gemini 2.0 Flash → 감정 태깅  
+  - Kakao Local API → 위·경도 기반 주소 변환  
+
+---
+
+## 실행 방법
+### Requirements
+- Java 17+
+- Gradle  
+- PostgreSQL
+---
+
+### Build & Run
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/ai-emotion-map/emotion-map-BE.git
+cd emotion-map-BE
+./gradlew build
+java -jar build/libs/emotion-map-BE-0.0.1-SNAPSHOT.jar
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 배포 URL
+- Frontend: https://emotion-map-nine.vercel.app/
+- 백엔드 → 프론트 연결 구조 (API 서버는 AWS, 클라이언트는 Vercel)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 기대 효과
+- 개인의 감정 기록이 지역 재방문과 상권 매출로 이어지는 선순환 구조를 만듭니다.
