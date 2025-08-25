@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Tag from "../components/common/tag/Tag";
 import {
   REVERSE_TAG_MAP,
@@ -26,7 +26,12 @@ const MapClient = ({
   const { data: markers } = useSWR("/posts/markers", fetcher, {
     fallbackData: initialMarkers,
   });
+
   const [mapMarkers, setMapMarkers] = useState<MarkerData[]>(markers);
+
+  useEffect(() => {
+    setMapMarkers(markers);
+  }, [markers]);
 
   const tags = [
     "가족 🏠",
