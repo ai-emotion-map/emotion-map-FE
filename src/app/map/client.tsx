@@ -150,25 +150,27 @@ const MapClient = ({
 
         {/* 태그 */}
         <div className="flex gap-2 py-1 overflow-x-auto whitespace-nowrap scrollbar-hide">
-          {tags.map((tag) => (
-            <Tag
-              key={tag}
-              variant={tag}
-              // ✅ isActive 계산 안전하게
-              isActive={searchTag.includes(tag as TagVariant)}
-              onClick={() => {
-                if (searchTag.includes(tag as TagVariant)) {
-                  setSearchTag([]);
-                  handleFilterByTag(null);
-                } else {
-                  setSearchTag([tag as TagVariant]);
-                  handleFilterByTag(tag as TagVariant);
-                }
-              }}
-            />
-          ))}
+          {tags.map((tag) => {
+            const safeTag = tag as TagVariant;
+            return (
+              <Tag
+                key={tag}
+                variant={safeTag}
+                isActive={searchTag.includes(safeTag)}
+                onClick={() => {
+                  if (searchTag.includes(safeTag)) {
+                    setSearchTag([]);
+                    handleFilterByTag(null);
+                  } else {
+                    setSearchTag([safeTag]);
+                    handleFilterByTag(safeTag);
+                  }
+                }}
+              />
+            );
+          })}
         </div>
-
+        
         {/* 지도 */}
         <div className="relative flex-1">
           {renderMarkers.length > 0 && (
@@ -178,17 +180,19 @@ const MapClient = ({
               center={center}
               zoom={zoom}
               onMarkerClick={(marker) => {
-                setSelectedMarker(marker);
-                setIsExpanded(false);
-                if (!isOpen) setIsOpen(true);
+                if (marker) {
+                  setSelectedMarker(marker);
+                  setIsExpanded(false);
+                  if (!isOpen) setIsOpen(true);
+                }
               }}
               height="95%"
             />
           )}
-
-          {isOpen && (
+        
+          {isOpen && selectedMarker && (
             <BottomSheet
-              key={selectedMarker?.id}
+              key={selectedMarker.id ?? "no-id"}
               isExpanded={isExpanded}
               setIsExpanded={setIsExpanded}
               selectedMarker={selectedMarker}
@@ -196,7 +200,6 @@ const MapClient = ({
             />
           )}
         </div>
-      </div>
 
       {isOpenLayerPopup && (
         <LayerPopup
